@@ -1,0 +1,2218 @@
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class ApiStaff extends CI_Controller
+{
+    /**
+     * This is default constructor of the class
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->model('app_staff_login');
+        $this->load->model('login_model');
+        $this->load->model('salary_model');
+        $this->load->model('fee_model','fee');
+    }
+
+    public function checkIsExist()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        //  log_message('debug', 'obj-->' . print_r($obj, true));
+        $mbl_number = $obj['mblnumber'];
+        // log_message('debug', 'mbl_number-->' . print_r($mbl_number, true));
+
+        $isExist = $this->app_staff_login->checkMobNo($mbl_number);
+        if ($isExist > 0) {
+            $otp = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+            $appId = 'BVnhKhGtGAc';
+            $message = "$otp is your verification code for STAFF APP $appId Regards, Parrophins.";
+            $result_sms = $this->sendOtpmsg($mbl_number, $message);
+
+            if (
+                $mbl_number != '1234567891' &&
+                $mbl_number != '1231231231' &&
+                $mbl_number != '1212121212' &&
+                $mbl_number != '1313131313'
+            ) {
+                if ($result_sms == 'success') {
+                    $otpUpdate = [
+                        'last_otp' => $otp,
+                    ];
+
+                    $update = $this->app_staff_login->updateOtp(
+                        $otpUpdate,
+                        $mbl_number
+                    );
+                }
+            }
+            $msg = 'isExist';
+        } else {
+            $msg = 'failed';
+        }
+
+        echo json_encode($msg);
+    }
+
+    public function sendOtpmsg($mobile, $msg){
+        $request =""; //initialise the request variable
+        $param['method']= "sendMessage";
+        $param['send_to'] = $mobile;
+        $param['msg'] = $msg;
+        $param['userid'] = GUPSHUP_USERNAME;
+        $param['password'] = GUPSHUP_PASSWORD;
+        $param['v'] = "1.1";
+        $param['msg_type'] = "TEXT"; //Can be "FLASH”/"UNICODE_TEXT"/”BINARY”
+        $param['auth_scheme'] = "PLAIN";
+        //Have to URL encode the values
+        foreach($param as $key=>$val) {
+        $request.= $key."=".urlencode($val);
+        //we have to urlencode the values
+        $request.= "&";
+        //append the ampersand (&) sign after each parameter/value pair
+        }
+        $request = substr($request, 0, strlen($request)-1);
+        //remove final (&) sign from the request
+        $url = "https://enterprise.smsgupshup.com/GatewayAPI/rest?".$request;
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $parts = explode(' ', $response);
+        $result_sms = $parts[0];
+        return $result_sms;
+    }
+
+    public function checkOtp(){
+        $json = file_get_contents('php://input'); 
+        $obj = json_decode($json,true);  
+       // log_message('debug','obj--->'.print_r($obj,true));
+        $mbl_number = $obj['mobile_number'];
+        $otp=$obj['otp'];
+    
+        
+        $isExist = $this->app_staff_login->checkOtp($mbl_number,$otp);
+
+        if($isExist > 0) {  
+            $msg='success'; 
+        }else { 
+            $msg= 'failed'; 
+        }     
+        //log_message('debug','msg-->'.print_r($msg,true));
+    
+        echo json_encode($msg);
+    }
+
+
+    public function fetchstaffDetails()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        // log_message('debug', 'obj-->' . print_r($obj, true));
+        $mbl_number = $obj['mblnumber'];
+        //  log_message('debug', 'mbl_number-->' . print_r($mbl_number, true));
+
+        $fetchDetails = $this->app_staff_login->fetchStaffDetails($mbl_number);
+
+        // log_message(
+        //     'debug',
+        //     'staffDetails is -->' . print_r($fetchDetails, true)
+        // );
+
+        echo json_encode($fetchDetails);
+    }
+
+    public function leaveType()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        // log_message('debug', 'obj-->' . print_r($obj, true));
+        $staffID = $obj['staff_id'];
+        // log_message('debug', 'staffID-->' . print_r($staffID, true));
+
+        // Fetch leave management information
+        $fetchLeaveManagement = $this->app_staff_login->fetchLeaveMangementInfo(
+            $staffID
+        );
+
+        $leaveTypes = ['CL', 'ML', 'MARL', 'PL', 'MATL', 'LOP','EL', 'OD'];
+
+        $leaveCounts = [];
+        foreach ($leaveTypes as $type) {
+            $leaveCount = $this->app_staff_login->getSumLeaveInfo(
+                $staffID,
+                $type
+            )->total_days_leave;
+           // log_message('debug', 'leaveCount' . print_r($leaveCount, true));
+
+            $leaveCounts[$type] = $leaveCount;
+
+            if ($type == 'CL') {
+                $casualLeaveEarned =
+                    $fetchLeaveManagement[0]->casual_leave_earned;
+             //   log_message('debug', '$casualLeaveEarned' . $casualLeaveEarned);
+
+                $casualLeaveUsed = $leaveCount;
+                $casualRemaining =
+                    $fetchLeaveManagement[0]->casual_leave_earned - $leaveCount;
+            } elseif ($type == 'ML') {
+                $medicalEraned = $fetchLeaveManagement[0]->sick_leave_earned;
+                $medicalUsed = $leaveCount;
+                $medicalRemaining =
+                    $fetchLeaveManagement[0]->sick_leave_earned - $leaveCount;
+            } elseif ($type == 'MARL') {
+                $marriageLeaveEarned =
+                    $fetchLeaveManagement[0]->marriage_leave_earned;
+                $marriageLeaveUsed = $leaveCount;
+                $marriageLeaveRemaining =
+                    $fetchLeaveManagement[0]->marriage_leave_earned -
+                    $leaveCount;
+            } elseif ($type == 'PL') {
+                $paternityLeaveEarned =
+                    $fetchLeaveManagement[0]->paternity_leave_earned;
+                $paternityLeaveUsedd = $leaveCount;
+                $paternityLeaveRemaining =
+                    $fetchLeaveManagement[0]->paternity_leave_earned -
+                    $leaveCount;
+            } elseif ($type == 'MATL') {
+                $maternityLeaveEarned =
+                    $fetchLeaveManagement[0]->maternity_leave_earned;
+                $maternityLeaveUsed = $leaveCount;
+                $maternityLeaveRemaining =
+                    $fetchLeaveManagement[0]->maternity_leave_earned -
+                    $leaveCount;
+            } elseif ($type == 'EL') {
+                $earnedLeaveEarned =
+                    $fetchLeaveManagement[0]->earned_leave;
+                $earnedLeaveUsed = $leaveCount;
+                $earnedLeaveRemaining =
+                    $fetchLeaveManagement[0]->earned_leave -
+                    $leaveCount;
+            } elseif($type =='OD'){
+
+                $officialLeaveEarned =
+                $fetchLeaveManagement[0]->official_duty_earned;
+                $officialLeaveUsed = $leaveCount;
+                $officialLeaveRemaining =
+                    $fetchLeaveManagement[0]->official_duty_earned -
+                    $leaveCount;
+            }
+            
+            elseif ($type == 'LOP') {
+                $lopUsed = $leaveCount ?? 0;
+            }
+
+           // log_message('debug', "$type count of dropdown: $leaveCount");
+        }
+
+        // Initialize an array to store formatted leave types
+        $formattedLeaveTypes = [];
+
+        // Calculate remaining casual leave
+        $casualLeaveRemaining = $casualRemaining ?? 0;
+
+        $sickLeaveRemaining = $medicalRemaining ?? 0;
+
+        $marriageLeaveRemaining = $marriageLeaveRemaining ?? 0;
+
+        $paternityLeaveRemaining = $paternityLeaveRemaining ?? 0;
+
+        $maternityLeaveRemaining = $maternityLeaveRemaining ?? 0;
+
+        $earnedLeaveRemaining =$earnedLeaveRemaining??0;
+
+        $officialLeaveRemaining = $officialLeaveRemaining??0;
+
+        // Display casual leave if remaining is not zero
+        if ($casualLeaveRemaining != 0) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' =>
+                    'Casual Leave(CL)' . ' (' . $casualLeaveRemaining . ')',
+                'leave_name' => 'Casual Leave(CL)',
+                'leave_short' => 'CL',
+                'count' => $casualLeaveRemaining,
+            ];
+        }
+
+
+
+        if ($sickLeaveRemaining != 0) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' =>
+                    'Medical Leave(ML)' . ' (' . $sickLeaveRemaining . ')',
+                'leave_name' => 'Medical Leave(ML)',
+                'leave_short' => 'ML',
+                'count' => $sickLeaveRemaining,
+            ];
+        }
+
+        if ($marriageLeaveRemaining != 0) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' =>
+                    'Marriage Leave(ML)' . ' (' . $marriageLeaveRemaining . ')',
+                'leave_name' => 'Marriage Leave(ML)',
+                'leave_short' => 'MARL',
+                'count' => $marriageLeaveRemaining,
+            ];
+        }
+
+        if ($paternityLeaveRemaining != 0) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' =>
+                    'Paternity Leave(PL)' .
+                    ' (' .
+                    $paternityLeaveRemaining .
+                    ')',
+                'leave_name' => 'Paternity Leave(PL)',
+                'leave_short' => 'PL',
+                'count' => $paternityLeaveRemaining,
+            ];
+        }
+
+        if ($maternityLeaveRemaining != 0) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' =>
+                    'Maternity Leave(ML)' .
+                    ' (' .
+                    $maternityLeaveRemaining .
+                    ')',
+                'leave_name' => 'Maternity Leave(ML)',
+                'leave_short' => 'MATL',
+                'count' => $maternityLeaveRemaining,
+            ];
+        }
+
+        if ($earnedLeaveRemaining != 0) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' =>
+                'Earned Leave(EL)' . ' (' . $earnedLeaveRemaining . ')',
+                'leave_name' => 'Earned Leave(EL)',
+                'leave_short' => 'EL',
+                'count' => $earnedLeaveRemaining,
+            ];
+        }
+
+        if ($officialLeaveRemaining != 0) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' =>
+                    'Official Duty(OD)' .
+                    ' (' .
+                    $officialLeaveRemaining .
+                    ')',
+                'leave_name' => 'Official Duty(OD)',
+                'leave_short' => 'OD',
+                'count' => $officialLeaveRemaining,
+            ];
+        }
+
+        // Display other leave types
+        $formattedLeaveTypes[] = (object) [
+            'leave_type' => 'Loss Of Pay(LOP)' . ' (' . $lopUsed . ' used )',
+            'leave_name' => 'Loss Of Pay(LOP)',
+            'leave_short' => 'LOP',
+            'count' => '0',
+        ];
+        // Add more leave types here if needed
+
+        // log_message(
+        //     'debug',
+        //     'staffDetails is -->' . print_r($formattedLeaveTypes, true)
+        // );
+
+        echo json_encode($formattedLeaveTypes);
+    }
+
+    public function listLeaveInfo()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        //log_message('debug', 'obj-->' . print_r($obj, true));
+        $staffID = $obj['staff_id'];
+        //log_message('debug', 'staffID-->' . print_r($staffID, true));
+
+        // Fetch leave management information
+        $fetchLeaveManagement = $this->app_staff_login->fetchLeaveMangementInfo(
+            $staffID
+        );
+
+       // $leaveTypes = ['CL', 'ML', 'MARL', 'PL', 'MATL', 'LOP' ];
+
+        $leaveTypes = ['CL', 'ML', 'MARL', 'PL', 'MATL', 'LOP','EL', 'OD'];
+
+        $leaveCounts = [];
+        foreach ($leaveTypes as $type) {
+            $leaveCount = $this->app_staff_login->getSumLeaveInfo(
+                $staffID,
+                $type
+            )->total_days_leave;
+         //   log_message('debug', 'leaveCount' . print_r($leaveCount, true));
+
+            $leaveCounts[$type] = $leaveCount;
+
+            if ($type == 'CL') {
+                $casualLeaveEarned =
+                    $fetchLeaveManagement[0]->casual_leave_earned;
+                //log_message('debug', '$casualLeaveEarned' . $casualLeaveEarned);
+
+                $casualLeaveUsed = $leaveCount;
+                $casualRemaining =
+                    $fetchLeaveManagement[0]->casual_leave_earned - $leaveCount;
+            } elseif ($type == 'ML') {
+                $medicalEraned = $fetchLeaveManagement[0]->sick_leave_earned;
+                $medicalUsed = $leaveCount;
+                $medicalRemaining =
+                    $fetchLeaveManagement[0]->sick_leave_earned - $leaveCount;
+            } elseif ($type == 'MARL') {
+                $marriageLeaveEarned =
+                    $fetchLeaveManagement[0]->marriage_leave_earned;
+                $marriageLeaveUsed = $leaveCount;
+                $marriageLeaveRemaining =
+                    $fetchLeaveManagement[0]->marriage_leave_earned -
+                    $leaveCount;
+            } elseif ($type == 'PL') {
+                $paternityLeaveEarned =
+                    $fetchLeaveManagement[0]->paternity_leave_earned;
+                $paternityLeaveUsedd = $leaveCount;
+                $paternityLeaveRemaining =
+                    $fetchLeaveManagement[0]->paternity_leave_earned -
+                    $leaveCount;
+            } elseif ($type == 'MATL') {
+                $maternityLeaveEarned =
+                    $fetchLeaveManagement[0]->maternity_leave_earned;
+                $maternityLeaveUsed = $leaveCount;
+                $maternityLeaveRemaining =
+                    $fetchLeaveManagement[0]->maternity_leave_earned -
+                    $leaveCount;
+            }elseif ($type == 'EL') {
+                $earnedLeaveEarned =
+                    $fetchLeaveManagement[0]->earned_leave;
+                $earnedLeaveUsed = $leaveCount;
+                $earnedLeaveRemaining =
+                    $fetchLeaveManagement[0]->earned_leave -
+                    $leaveCount;
+            }  elseif($type =='OD'){
+                $officialLeaveEarned =
+                $fetchLeaveManagement[0]->official_duty_earned;
+                $officialLeaveUsed = $leaveCount;
+                $officialLeaveRemaining =
+                    $fetchLeaveManagement[0]->official_duty_earned -
+                    $leaveCount;
+            }
+            elseif ($type == 'LOP') {
+                $lopUsed = $leaveCount ?? 0;
+            }
+
+          //  log_message('debug', "$type count of dropdown: $leaveCount");
+        }
+
+        // log_message(
+        //     'debug',
+        //     'fetchLeaveManagement is -->' . print_r($fetchLeaveManagement, true)
+        // );
+
+        // Initialize an array to store formatted leave types
+        $formattedLeaveTypes = [];
+
+        $casualLeaveRemaining = $casualRemaining ?? 0;
+
+        $sickLeaveRemaining = $medicalRemaining ?? 0;
+
+        $marriageLeaveRemaining = $marriageLeaveRemaining ?? 0;
+
+        $paternityLeaveRemaining = $paternityLeaveRemaining ?? 0;
+
+        $maternityLeaveRemaining = $maternityLeaveRemaining ?? 0;
+
+        $earnedLeaveRemaining =$earnedLeaveRemaining??0;
+
+        $officialLeaveRemaining = $officialLeaveRemaining??0;
+
+        // Display casual leave if remaining is not zero
+        if ($casualLeaveEarned != 0) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' => 'Casual Leave(CL)',
+                'leave_short' => 'CL',
+                'earned' => $casualLeaveEarned ?? 0,
+                'used' => $casualLeaveUsed ?? 0,
+                'remaining' => $casualLeaveRemaining,
+            ];
+        }
+
+        if ($medicalEraned != 0) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' => 'Medical Leave(ML)',
+                'leave_short' => 'ML',
+                'earned' => $medicalEraned ?? 0,
+                'used' => $medicalUsed ?? 0,
+                'remaining' => $sickLeaveRemaining,
+            ];
+        }
+
+        if ($marriageLeaveEarned != 0) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' => 'Marriage Leave(ML)',
+                'leave_short' => 'MARL',
+                'earned' => $marriageLeaveEarned ?? 0,
+                'used' => $marriageLeaveUsed ?? 0,
+                'remaining' => $marriageLeaveRemaining,
+            ];
+        }
+
+        if ($paternityLeaveEarned != 0) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' => 'Paternity Leave(PL)',
+                'leave_short' => 'PL',
+                'earned' => $paternityLeaveEarned ?? 0,
+                'used' => $paternityLeaveUsedd ?? 0,
+                'remaining' => $paternityLeaveRemaining,
+            ];
+        }
+
+        if ($maternityLeaveEarned != 0) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' => 'Maternity Leave(ML)',
+                'leave_short' => 'MATL',
+                'earned' => $maternityLeaveEarned ?? 0,
+                'used' => $maternityLeaveUsed ?? 0,
+                'remaining' => $maternityLeaveRemaining,
+            ];
+        }
+
+        if ($officialLeaveEarned != 0) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' => 'Official Duty(OD)',
+                'leave_short' => 'OD',
+                'earned' => $officialLeaveEarned ?? 0,
+                'used' => $officialLeaveUsed ?? 0,
+                'remaining' => $officialLeaveRemaining,
+                
+            ];
+        }
+
+        if ($earnedLeaveRemaining != 0) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' => 'Earned Leave(EL)',
+                'leave_short' => 'EL',
+                'earned' => $earnedLeaveEarned ?? 0,
+                'used' => $earnedLeaveUsed ?? 0,
+                'remaining' => $earnedLeaveRemaining,
+            ];
+        }
+
+
+        // Display other leave types
+        // if (!empty($fetchLeaveManagement)) {
+            $formattedLeaveTypes[] = (object) [
+                'leave_type' => 'Loss Of Pay(LOP)',
+                'leave_short' => 'LOP',
+                'earned' => '0',
+                'used' => '0',
+                'remaining' => $lopUsed??'0',
+            ];
+        // } else {
+            
+       // }
+        // Add more leave types here if needed
+
+        // log_message(
+        //     'debug',
+        //     'staffDetails is -->' . print_r($formattedLeaveTypes, true)
+        // );
+
+        echo json_encode($formattedLeaveTypes);
+    }
+
+    public function applyLeaveWithoutDoc()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        $staff_id = $obj['staff_id'];
+        $totalLeave = $obj['total_leave'];
+        $leaveFromDate = $obj['leave_from_date'];
+        $leaveToDate = $obj['leave_to_date'];
+        $leaveType = $obj['leave_type'];
+        $leaveReason = $obj['leave_reason'];
+        $leaveName = $obj['leave_name'];
+        $staffName = $obj['staff_name'];
+       if($leaveType!='ML'){
+        $leaveInfo = [
+            'staff_id' => $staff_id,
+            'applied_date_time' => date('Y-m-d H:i:s'),
+            'date_from' => date('Y-m-d', strtotime($leaveFromDate)),
+            'date_to' => date('Y-m-d', strtotime($leaveToDate)),
+            'leave_reason' => $leaveReason,
+            'total_days_leave' => $totalLeave,
+            'leave_type' => $leaveType,
+            'created_by' => $staff_id,
+            'leave_name' => $leaveName,
+            'year' => LEAVE_YEAR,
+            'created_date_time' => date('Y-m-d H:i:s'),
+        ];
+
+        $insertLeave = $this->app_staff_login->applyLeaveInsert($leaveInfo);
+
+        if ($insertLeave > 0) {
+            $fetchApproversList = $this->app_staff_login->fetchApproverList();
+
+            $fetchMangementStatus = $this->app_staff_login->getManagmentStatus($staff_id);
+            //log_message('debug', 'fetchMangementStatus: '.print_r($fetchMangementStatus,true));
+
+            $title = 'Leave Request';
+
+            $body = "$staffName  has requested leave for $totalLeave days";
+
+            if ($fetchMangementStatus[0]->management_view_status == 1) {
+                // Make GET request to the API endpoint
+                $apiUrl = KJES_LINK;
+                $ch = curl_init($apiUrl);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                curl_close($ch);
+                
+                // Parse JSON response
+                $tokens = json_decode($response, true);
+                
+                // Initialize an array to collect all tokens
+                $tokenList = [];
+            
+                // Log tokens
+                if ($tokens !== null) {
+                    foreach ($tokens as $tokenData) {
+                        if (isset($tokenData['token'])) {
+                            $tokenList[] = $tokenData['token'];  // Collect each token in the array
+                        }
+                    }
+            
+                    // If tokens were found, pass the entire list to sendNotificationStaff
+                    if (!empty($tokenList)) {
+                        $this->sendNotificationStaff($tokenList, $title, $body);  // Pass all tokens at once
+                    }
+            
+                } else {
+                    // Log error if tokens couldn't be fetched
+                    log_message('error', 'Failed to fetch tokens from the API.');
+                }
+            }
+            else{
+
+                $tokens = [];
+                foreach ($fetchApproversList as $info) {
+                    $staff_tokens = $this->app_staff_login->getToken($info->staff_id);
+                    log_message("debug", 'staff_tokens--->' . print_r($staff_tokens, true));
+                
+                    // Collect all tokens for the staff
+                    foreach ($staff_tokens as $tokenObj) {
+                        if (!empty($tokenObj->token)) {
+                            $tokens[] = $tokenObj->token;  // Add each token to the tokens list
+                        }
+                    }
+                }
+                
+                // Now pass the entire list of tokens to sendNotificationStaff
+                if (!empty($tokens)) {
+                    $this->sendNotificationStaff($tokens, $title, $body);  // Pass the entire tokens array
+                }
+
+            }
+                                   
+
+            $msg = 'success';
+        } else {
+            $msg = 'failed';
+        }
+        } else {
+            $msg = 'failed';
+        }
+       // log_message('debug', 'leaveInfo is -->' . print_r($leaveInfo, true));
+
+        echo json_encode($msg);
+    }
+
+    public function applyLeaveWithDoc()
+    {
+        $file = $_FILES['file'];
+        $filename = $file['name'] . '.' . $_POST['file_type'];
+        $tmpFilePath = $file['tmp_name'];
+        $targetDir = 'upload/medical_certificate/' . $_POST['staff_id'] . '/';
+
+        // Check if target directory exists, if not create it
+        if (!file_exists($targetDir)) {
+            mkdir($targetDir, 0777, true); // Creates the directory recursively
+        }
+
+        $targetPath = $targetDir . $filename;
+        $profileImageSize = filesize($tmpFilePath);
+
+        move_uploaded_file($tmpFilePath, $targetPath);
+
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        $staff_id = $_POST['staff_id'];
+        $totalLeave = $_POST['total_leave'];
+        $leaveFromDate = $_POST['leave_from_date'];
+        $leaveToDate = $_POST['leave_to_date'];
+        $leaveType = $_POST['leave_type'];
+        $leaveReason = $_POST['leave_reason'];
+        $leaveName = $_POST['leave_name'];
+        $staffName = $_POST['staff_name'];
+
+        $leaveInfo = [
+            'staff_id' => $staff_id,
+            'applied_date_time' => date('Y-m-d H:i:s'),
+            'date_from' => date('Y-m-d', strtotime($leaveFromDate)),
+            'date_to' => date('Y-m-d', strtotime($leaveToDate)),
+            'leave_reason' => $leaveReason,
+            'total_days_leave' => $totalLeave,
+            'leave_type' => $leaveType,
+            'created_by' => $staff_id,
+            'created_date_time' => date('Y-m-d H:i:s'),
+            'leave_name' => $leaveName,
+            'year' => LEAVE_YEAR,
+            'medical_certificate' => $targetPath,
+        ];
+
+        $insertLeave = $this->app_staff_login->applyLeaveInsert($leaveInfo);
+
+        if ($insertLeave > 0) {
+            $fetchApproversList = $this->app_staff_login->fetchApproverList();
+
+
+            $fetchMangementStatus = $this->app_staff_login->getManagmentStatus($staff_id);
+          //  log_message('debug', 'fetchMangementStatus: '.print_r($fetchMangementStatus,true));
+
+            $title = 'Leave Request';
+
+            $body = "$staffName  has requested leave for $totalLeave days";
+
+            if ($fetchMangementStatus[0]->management_view_status == 1) {
+                // Make GET request to the API endpoint
+                $apiUrl = KJES_LINK;
+                $ch = curl_init($apiUrl);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                curl_close($ch);
+                
+                // Parse JSON response
+                $tokens = json_decode($response, true);
+                
+                // Initialize an array to collect all tokens
+                $tokenList = [];
+            
+                // Log tokens
+                if ($tokens !== null) {
+                    foreach ($tokens as $tokenData) {
+                        if (isset($tokenData['token'])) {
+                            $tokenList[] = $tokenData['token'];  // Collect each token in the array
+                        }
+                    }
+            
+                    // If tokens were found, pass the entire list to sendNotificationStaff
+                    if (!empty($tokenList)) {
+                        $this->sendNotificationStaff($tokenList, $title, $body);  // Pass all tokens at once
+                    }
+            
+                } else {
+                    // Log error if tokens couldn't be fetched
+                    log_message('error', 'Failed to fetch tokens from the API.');
+                }
+            }
+            else{
+
+                $tokens = [];
+                foreach ($fetchApproversList as $info) {
+                    $staff_tokens = $this->app_staff_login->getToken($info->staff_id);
+                    log_message("debug", 'staff_tokens--->' . print_r($staff_tokens, true));
+                
+                    // Collect all tokens for the staff
+                    foreach ($staff_tokens as $tokenObj) {
+                        if (!empty($tokenObj->token)) {
+                            $tokens[] = $tokenObj->token;  // Add each token to the tokens list
+                        }
+                    }
+                }
+                
+                // Now pass the entire list of tokens to sendNotificationStaff
+                if (!empty($tokens)) {
+                    $this->sendNotificationStaff($tokens, $title, $body);  // Pass the entire tokens array
+                }
+
+            }
+
+
+            // foreach ($fetchApproversList as $info) {
+            //     $title = 'Leave Request';
+
+            //     $body = "$staffName  has requested leave for $totalLeave days";
+
+            //     log_message('debug', 'body-->' . print_r($body, true));
+
+            //     $staff_token = $this->app_staff_login->getToken(
+            //         $info->staff_id
+            //     );
+
+            //     $tokenCheck = $staff_token[0]->token;
+            //     log_message(
+            //         'debug',
+            //         'tokenCheck-->' . print_r($tokenCheck, true)
+            //     );
+
+            //     if (!empty($tokenCheck)) {
+            //         $this->app_staff_login->sendMessage(
+            //             $title,
+            //             $body,
+            //             $tokenCheck,
+            //             ''
+            //         );
+            //     }
+            // }
+            $msg = 'success';
+        } else {
+            $msg = 'failed';
+        }
+
+       // log_message('debug', 'leaveInfo is -->' . print_r($leaveInfo, true));
+
+        echo json_encode($msg);
+    }
+
+
+    public function listLeaveHistory()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        //log_message('debug', 'obj-->' . print_r($obj, true));
+        $staff_id = $obj['staff_id'];
+        //  log_message('debug', 'staff_id-->' . print_r($staff_id, true));
+
+        $fetchLeaveHistory = $this->app_staff_login->getLeaveHistory($staff_id);
+
+        $db_data = [];
+        foreach ($fetchLeaveHistory as $info) {
+            $info->date_from = date('d-m-Y', strtotime($info->date_from));
+            $info->date_to = date('d-m-Y', strtotime($info->date_to));
+
+            if ($info->approved_status == 0) {
+                $info->status = 'Pending';
+            } elseif ($info->approved_status == 1) {
+                $info->status = 'Approved';
+            } else {
+                $info->status = 'Rejected';
+            }
+
+            $db_data[] = $info;
+        }
+       // log_message('debug', 'db_data-->' . print_r($db_data, true));
+
+        $data = json_encode($db_data);
+        echo $data;
+    }
+
+    public function cancellLeave()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+       // log_message('debug', 'obj-->' . print_r($obj, true));
+
+        $leaveId = $obj['leave_id'];
+        $staffName = $obj['name'];
+        $totalLeave = $obj['total_leave'];
+        $staff_id = $obj['staff_id'];
+      //  log_message('debug', 'leaveId-->' . print_r($leaveId, true));
+
+        $leaveInfo = [
+            'is_deleted' => 1,
+        ];
+
+        $cancellLeave = $this->app_staff_login->cancellLeave(
+            $leaveId,
+            $leaveInfo
+        );
+
+        if ($cancellLeave > 0) {
+            $fetchApproversList = $this->app_staff_login->fetchApproverList();
+
+            $fetchMangementStatus = $this->app_staff_login->getManagmentStatus($staff_id);
+          //  log_message('debug', 'fetchMangementStatus: '.print_r($fetchMangementStatus,true));
+
+            $title = 'Leave Cancelled';
+
+            $body = "$staffName  has cancelled leave request for $totalLeave days";
+
+            if ($fetchMangementStatus[0]->management_view_status == 1) {
+                // Make GET request to the API endpoint
+                $apiUrl = KJES_LINK;
+                $ch = curl_init($apiUrl);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                curl_close($ch);
+                
+                // Parse JSON response
+                $tokens = json_decode($response, true);
+                
+                // Initialize an array to collect all tokens
+                $tokenList = [];
+            
+                // Log tokens
+                if ($tokens !== null) {
+                    foreach ($tokens as $tokenData) {
+                        if (isset($tokenData['token'])) {
+                            $tokenList[] = $tokenData['token'];  // Collect each token in the array
+                        }
+                    }
+            
+                    // If tokens were found, pass the entire list to sendNotificationStaff
+                    if (!empty($tokenList)) {
+                        $this->sendNotificationStaff($tokenList, $title, $body);  // Pass all tokens at once
+                    }
+            
+                } else {
+                    // Log error if tokens couldn't be fetched
+                    log_message('error', 'Failed to fetch tokens from the API.');
+                }
+            }
+            else{
+
+                $tokens = [];
+                foreach ($fetchApproversList as $info) {
+                    $staff_tokens = $this->app_staff_login->getToken($info->staff_id);
+                    log_message("debug", 'staff_tokens--->' . print_r($staff_tokens, true));
+                
+                    // Collect all tokens for the staff
+                    foreach ($staff_tokens as $tokenObj) {
+                        if (!empty($tokenObj->token)) {
+                            $tokens[] = $tokenObj->token;  // Add each token to the tokens list
+                        }
+                    }
+                }
+                
+                // Now pass the entire list of tokens to sendNotificationStaff
+                if (!empty($tokens)) {
+                    $this->sendNotificationStaff($tokens, $title, $body);  // Pass the entire tokens array
+                }
+
+            }
+            // foreach ($fetchApproversList as $info) {
+              
+
+            //     log_message('debug', 'body-->' . print_r($body, true));
+
+                
+
+            //     $staff_token = $this->app_staff_login->getToken(
+            //         $info->staff_id
+            //     );
+
+            //     $tokenCheck = $staff_token[0]->token;
+            //     log_message(
+            //         'debug',
+            //         'tokenCheck-->' . print_r($tokenCheck, true)
+            //     );
+
+            //     if (!empty($tokenCheck)) {
+            //         $this->app_staff_login->sendMessage(
+            //             $title,
+            //             $body,
+            //             $tokenCheck,
+            //             ''
+            //         );
+            //     }
+            // }
+            $msg = 'success';
+        } else {
+            $msg = 'failed';
+        }
+
+        // log_message('debug', 'leaveInfo is -->' . print_r($leaveInfo, true));
+
+        echo json_encode($msg);
+    }
+
+    function dashboardMenu()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        $staff_id = $obj['staff_id'];
+
+        $fetchRole = $this->app_staff_login->getStaffRoleId($staff_id);
+
+        $role = $fetchRole[0]->roleId;
+        $approvedStatus = $fetchRole[0]->leave_approved_status;
+
+        $dashboardInfo = $this->app_staff_login->dashboardInfo();
+
+
+        $db_data = [];
+        foreach ($dashboardInfo as $info) {
+            if ($info->title == 'STUDENTS INFO' ) {
+                if (
+                    $role == ROLE_ADMIN ||
+                    $role == ROLE_PRINCIPAL ||
+                    $role == ROLE_VICE_PRINCIPAL ||
+                    $role == ROLE_PRIMARY_ADMINISTRATOR ||
+                    $role == ROLE_OFFICE ||
+                    $role == ROLE_TEACHING_STAFF
+                ) {
+                    $db_data[] = $info;
+                } else {
+                    continue;
+                }
+            } elseif($info->title == 'STAFF INFO'){
+                if($role == ROLE_ADMIN || $role == ROLE_PRINCIPAL || $role == ROLE_VICE_PRINCIPAL || $role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_OFFICE){
+                    $db_data[] = $info;
+                }else{
+                    continue;
+                }
+            }elseif($info->title == 'STUDENT SUGGESTION'){
+                if($role == ROLE_PRINCIPAL|| $role == ROLE_PRIMARY_ADMINISTRATOR){
+                    $db_data[] = $info;
+                }else{
+                    continue;
+                }
+            }
+           
+            // elseif($info->title == 'SEND NOTIFICATION'){
+            //     if($role == ROLE_PRINCIPAL || $role == ROLE_VICE_PRINCIPAL || $role == ROLE_PRIMARY_ADMINISTRATOR ){
+            //         $db_data[] = $info;
+            //     }else{
+            //         continue;
+            //     }
+            // }
+            elseif($info->title == 'DOCUMENT INFO'){
+                if($role == ROLE_PRINCIPAL || $role == ROLE_PRIMARY_ADMINISTRATOR ){
+                    $db_data[] = $info;
+                }else{
+                    continue;
+                }
+            } elseif($info->title == 'STAFF ATTENDANCE'){
+                if($role == ROLE_PRINCIPAL || $role == ROLE_PRIMARY_ADMINISTRATOR ){
+                    $db_data[] = $info;
+                }else{
+                    continue;
+                }
+            } 
+            elseif (
+                $info->title == 'TAKE ATTENDANCE' ||
+                $info->title == 'ABSENT INFO' ||
+                $info->title == 'CLASS COMPLETED' ||
+                $info->title == 'EXAM MARKS' || 
+                $info->title == 'STUDY MATERIAL' 
+                
+            ) {
+                if (
+                    $role == ROLE_ADMIN ||
+                    $role == ROLE_VICE_PRINCIPAL ||
+                    $role == ROLE_PRIMARY_ADMINISTRATOR ||
+                    $role == ROLE_TEACHING_STAFF ||
+                    $role == ROLE_OFFICE ||
+                    $role == ROLE_PRINCIPAL
+                ) {
+                    $db_data[] = $info;
+                } else {
+                    continue;
+                }
+            }elseif( $info->title == 'APPROVE LEAVE' && $approvedStatus==0){
+                continue;
+            }
+              else {
+                $db_data[] = $info;
+            }
+        }
+
+        $data = json_encode($db_data);
+        echo $data;
+    }
+
+    function webLogin($staff_id,$headShow)
+    {
+        $result = $this->login_model->loginMe($staff_id, PASSWORD);
+
+        if (!empty($result)) {
+            $lastLogin = $this->login_model->lastLoginInfo($result->staff_id);
+
+            $sessionArray = [
+                'staff_id' => $result->staff_id,
+
+                'role' => $result->roleId,
+
+                'roleText' => $result->role,
+
+                'mobile' => $result->mobile_one,
+
+                'email' => $result->email,
+
+                'name' => $result->name,
+
+                'type' => $result->type,
+
+                'photo_url' => $result->photo_url,
+
+                'lastLogin' => $lastLogin->createdDtm,
+
+                'dept_id' => $result->department_id,
+
+                'isLoggedIn' => true,
+            ];
+
+            $this->session->set_userdata($sessionArray);
+
+            unset(
+                $sessionArray['userId'],
+                $sessionArray['isLoggedIn'],
+                $sessionArray['lastLogin']
+            );
+
+            if($headShow!='show'){
+                $_SESSION['loggedIn_type'] = 'Mobile';
+            }else{
+                $_SESSION['loggedIn_type'] = 'Web';
+            }
+
+            $loginInfo = [
+                'userId' => $result->staff_id,
+                'sessionData' => json_encode($sessionArray),
+                'machineIp' => $_SERVER['REMOTE_ADDR'],
+                'userAgent' => getBrowserAgent(),
+                'agentString' => $this->agent->agent_string(),
+                'platform' => $this->agent->platform(),
+            ];
+
+            $this->login_model->lastLogin($loginInfo);
+        }
+    }
+
+    function staffAppStudentDetails()
+    {
+        $staff_id = $_GET['staffId'];
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('studentDetails');
+    }
+
+    function staffAppStaffDetails()
+    {
+        $staff_id = $_GET['staffId'];
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('staffDetails');
+    }
+
+    function staffAppTakeAttendance()
+    {
+        $staff_id = $_GET['staffId'];
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('getAttendanceDetails');
+    }
+
+    function staffAppAbsentInfo()
+    {
+        $staff_id = $_GET['staffId'];
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('viewAttendanceInfo');
+    }
+
+    function staffAppClassComplete()
+    {
+        $staff_id = $_GET['staffId'];
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('viewClassCompletedInfo');
+    }
+
+    function staffAppExamMark()
+    {
+        $staff_id = $_GET['staffId'];
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('addInternalMark');
+    }
+
+    function staffAppStudyMaterial()
+    {
+        $staff_id = $_GET['staffId'];
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('viewStudyMaterials');
+    }
+
+    function superAdminFeesDashboard()
+    {
+        $staff_id = $_GET['staffId'];
+       // log_message('debug','staff_id-->'.print_r($staff_id,true));
+
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('viewFeeDashboard');
+    }
+
+    function staffSendNotification()
+    {
+        $staff_id = $_GET['staffId'];
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('pushNotification');
+    }
+
+    function staffViewHoliday()
+    {
+        $staff_id = $_GET['staffId'];
+       // log_message('debug','staff_id-->'.print_r($staff_id,true));
+
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('viewHolidayList');
+    }
+
+    function staffDocumentInfo()
+    {
+        $staff_id = $_GET['staffId'];
+       // log_message('debug','staff_id-->'.print_r($staff_id,true));
+
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('viewDocumentInfo');
+    }
+
+    function staffCalendar()
+    {
+        $staff_id = $_GET['staffId'];
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('calendar');
+    }
+
+    function staffAppStudentSuggetion()
+    {
+        $staff_id = $_GET['staffId'];
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('suggestionListing');
+    }
+
+    function staffDashboard()
+    {
+        $staff_id = $_GET['staffId'];
+        $headShow='show';
+        $this->webLogin($staff_id,$headShow);
+        redirect('dashboard');
+    }
+
+    function staffAppStaffAttendance()
+    {
+        $staff_id = $_GET['staffId'];
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('getStaffAttendanceInfo');
+    }
+
+    function staffHomeWorkInfo()
+    {
+        $staff_id = $_GET['staffId'];
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect('getStudentHomework'); 
+    }
+     function dynamicRedirect()
+    {
+        $staff_id = $_GET['staffId'];
+        $function = $_GET['func_name'];
+        $headShow='noshow';
+        $this->webLogin($staff_id,$headShow);
+        redirect($function);
+    }
+
+    public function approveLeaveList()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        //log_message('debug', 'obj-->' . print_r($obj, true));
+        $staff_id = $obj['staff_id'];
+        //  log_message('debug', 'staff_id-->' . print_r($staff_id, true));
+
+        $fetchLeaveHistory = $this->app_staff_login->getApproveLeaveList(
+            $staff_id
+        );
+        //log_message('debug', 'fetchLeaveHistory-->' . print_r($fetchLeaveHistory, true));
+
+        $db_data = [];
+        foreach ($fetchLeaveHistory as $info) {
+            $info->date_from = date('d-m-Y', strtotime($info->date_from));
+            $info->date_to = date('d-m-Y', strtotime($info->date_to));
+            $info->applied_date_time = date(
+                'd-m-Y',
+                strtotime($info->applied_date_time)
+            );
+
+            $getStaffDetails = $this->app_staff_login->getStaffName(
+                $info->staff_id
+            );
+
+            $fetchLeaveManagement = $this->app_staff_login->fetchLeaveMangementInfo(
+                $info->staff_id
+            );
+
+            $leaveTypes = ['CL', 'ML', 'MARL', 'PL', 'MATL', 'LOP' , 'EL' ,'OD'];
+
+            $leaveCounts = [];
+            foreach ($leaveTypes as $type) {
+                $leaveCount = $this->app_staff_login->getSumLeaveInfo(
+                    $info->staff_id,
+                    $type
+                )->total_days_leave;
+                $leaveCounts[$type] = $leaveCount;
+
+                if ($type == 'CL') {
+                    $casualLeaveEarned =
+                        $fetchLeaveManagement[0]->casual_leave_earned;
+                    // log_message(
+                    //     'debug',
+                    //     '$casualLeaveEarned' . $casualLeaveEarned
+                    // );
+
+                    $casualLeaveUsed = $leaveCount;
+                    $casualRemaining =
+                        $fetchLeaveManagement[0]->casual_leave_earned -
+                        $leaveCount;
+                } elseif ($type == 'ML') {
+                    $medicalEraned =
+                        $fetchLeaveManagement[0]->sick_leave_earned;
+                    $medicalUsed = $leaveCount;
+                    $medicalRemaining =
+                        $fetchLeaveManagement[0]->sick_leave_earned -
+                        $leaveCount;
+                } elseif ($type == 'MARL') {
+                    $marriageLeaveEarned =
+                        $fetchLeaveManagement[0]->marriage_leave_earned;
+                    $marriageLeaveUsed = $leaveCount;
+                    $marriageLeaveRemaining =
+                        $fetchLeaveManagement[0]->marriage_leave_earned -
+                        $leaveCount;
+                } elseif ($type == 'PL') {
+                    $paternityLeaveEarned =
+                        $fetchLeaveManagement[0]->paternity_leave_earned;
+                    $paternityLeaveUsedd = $leaveCount;
+                    $paternityLeaveRemaining =
+                        $fetchLeaveManagement[0]->paternity_leave_earned -
+                        $leaveCount;
+                } elseif ($type == 'MATL') {
+                    $maternityLeaveEarned =
+                        $fetchLeaveManagement[0]->maternity_leave_earned;
+                    $maternityLeaveUsed = $leaveCount;
+                    $maternityLeaveRemaining =
+                        $fetchLeaveManagement[0]->maternity_leave_earned -
+                        $leaveCount;
+                } elseif ($type == 'EL') {
+                    $earnedLeaveEarned =
+                        $fetchLeaveManagement[0]->earned_leave;
+                    $earnedLeaveUsed = $leaveCount;
+                    $earnedLeaveRemaining =
+                        $fetchLeaveManagement[0]->earned_leave -
+                        $leaveCount;
+                }  elseif($type =='OD'){
+                    $officialLeaveEarned =
+                    $fetchLeaveManagement[0]->official_duty_earned;
+                    $officialLeaveUsed = $leaveCount;
+                    $officialLeaveRemaining =
+                        $fetchLeaveManagement[0]->official_duty_earned -
+                        $leaveCount;
+                }
+                elseif ($type == 'LOP') {
+                    $lopUsed = $leaveCount;
+                }
+
+               // log_message('debug', "$type count: $leaveCount");
+            }
+
+            if ($info->approved_status == 0) {
+                $info->status = 'Pending';
+            } elseif ($info->approved_status == 1) {
+                $info->status = 'Approved';
+            } else {
+                $info->status = 'Rejected';
+            }
+
+            $info->staff_name = $getStaffDetails[0]->name;
+
+            //csual leave
+
+            $info->casualLeaveEarned = $casualLeaveEarned ?? 0;
+            $info->casualLeaveUsed = $casualLeaveUsed ?? 0;
+            $info->casualLeaveRemain = $casualRemaining ?? 0;
+
+            //medical leave
+
+            $info->medicalLeaveEarned = $medicalEraned ?? 0;
+            $info->medicalLeaveUsed = $medicalUsed ?? 0;
+            $info->medicalLeaveRemain = $medicalRemaining ?? 0;
+
+            //marriage leave
+
+            $info->marriageLeaveEarned = $marriageLeaveEarned ?? 0;
+            $info->marriageLeaveUsed = $marriageLeaveUsed ?? 0;
+            $info->marriageLeaveRemain = $marriageLeaveRemaining ?? 0;
+
+            //paternity Leave
+
+            $info->paternityLeaveEarned = $paternityLeaveEarned ?? 0;
+            $info->paternityLeaveUsed = $paternityLeaveUsedd ?? 0;
+            $info->paternityLeaveRemain = $paternityLeaveRemaining ?? 0;
+
+            //maternity leave
+            $info->maternityLeaveEarned = $maternityLeaveEarned ?? 0;
+            $info->maternityLeaveUsed = $maternityLeaveUsed ?? 0;
+            $info->maternityLeaveRemain = $maternityLeaveRemaining ?? 0;
+
+            $info->earnedLeaveEarned = $earnedLeaveEarned??0;
+            $info->earnedLeaveUsed = $earnedLeaveUsed??0;
+            $info->earnedLeaveRemaining = $earnedLeaveRemaining??0;
+
+            $info->officialLeaveEarned = $officialLeaveEarned??0;
+            $info->officialLeaveUsed = $officialLeaveUsed??0;
+            $info->officialLeaveRemaining = $officialLeaveRemaining??0;
+            //LOP
+            $info->lopused = $lopUsed ?? '0';
+
+            $db_data[] = $info;
+        }
+        //log_message('debug', 'db_data-->' . print_r($db_data, true));
+
+        $data = json_encode($db_data);
+        echo $data;
+    }
+
+
+    public function approveLeave()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        $staff_id = $obj['staff_id'];
+        $leaveStaffId = $obj['leave_staff_id'];
+        $leaveRowId = $obj['leave_row_id'];
+        $leaveType = $obj['leave_type'];
+        $remark = $obj['remark'];
+
+       // log_message('debug', 'leaveName is -->' . print_r($leaveName, true));
+
+        $leaveInfo = [
+            'approved_status' => 1,
+            'updated_date_time' => date('Y-m-d H:i:s'),
+            'remark' => $remark,
+            'approved_by' => $staff_id,
+        ];
+
+        $updateLeave = $this->app_staff_login->approveLeaveUpdate(
+            $leaveRowId,
+            $leaveInfo
+        );
+
+        // $title='Leave Request';
+
+        // $body = "staffname(staffId) has requested the leave";
+
+        // $title='Leave Applied';
+
+        // $body = "successfully leave applied";
+
+        if ($updateLeave > 0) {
+            $msg = 'success';
+
+            $fetchLeaveInfo = $this->app_staff_login->fetchGivenLeave(
+                $leaveRowId
+            );
+
+            $title = 'Leave Approved';
+            $body =
+                'Your ' .
+                $fetchLeaveInfo[0]->total_days_leave .
+                ' day leave has been approved.';
+            // $body = "Your leave has been approved for ".$fetchLeaveInfo[0]->total_days_leave." days ";
+            // log_message(
+            //     'debug',
+            //     'fetchLeave-->' . print_r($fetchLeaveInfo[0]->staff_id, true)
+            // );
+
+            $staff_tokens = $this->app_staff_login->getToken($fetchLeaveInfo[0]->staff_id);
+
+            $tokens = [];
+            
+            // Collect all tokens for the staff member
+            foreach ($staff_tokens as $tokenObj) {
+                if (!empty($tokenObj->token)) {
+                    $tokens[] = $tokenObj->token;  // Add each token to the tokens array
+                }
+            }
+            
+            // Now pass the entire list of tokens to sendNotificationStaff
+            if (!empty($tokens)) {
+                $this->sendNotificationStaff($tokens, $title, $body);  // Pass the entire tokens array
+            }
+        } else {
+            $msg = 'failed';
+        }
+
+       // log_message('debug', 'leaveInfo is -->' . print_r($leaveInfo, true));
+
+        echo json_encode($msg);
+    }
+
+    public function rejectLeave()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        $staff_id = $obj['staff_id'];
+        $leaveStaffId = $obj['leave_staff_id'];
+        $leaveRowId = $obj['leave_row_id'];
+        $leaveType = $obj['leave_type'];
+        $remark = $obj['remark'];
+
+        //log_message('debug', 'leaveName is -->' . print_r($leaveName, true));
+
+        $leaveInfo = [
+            'approved_status' => 2,
+            'updated_date_time' => date('Y-m-d H:i:s'),
+            'remark' => $remark,
+            'rejected_by' => $staff_id,
+        ];
+
+        $updateLeave = $this->app_staff_login->approveLeaveUpdate(
+            $leaveRowId,
+            $leaveInfo
+        );
+
+        if ($updateLeave > 0) {
+            $msg = 'success';
+
+            $fetchLeaveInfo = $this->app_staff_login->fetchGivenLeave(
+                $leaveRowId
+            );
+            // log_message(
+            //     'debug',
+            //     'fetchLeave-->' . print_r($fetchLeaveInfo[0]->staff_id, true)
+            // );
+
+            $title = 'Leave Rejected';
+            $body =
+                'Your ' .
+                $fetchLeaveInfo[0]->total_days_leave .
+                ' day leave has been rejected.';
+
+            // $body = "Your leave has been rejected for ".$fetchLeaveInfo[0]->total_days_leave." days ";
+
+            $staff_tokens = $this->app_staff_login->getToken($fetchLeaveInfo[0]->staff_id);
+
+            $tokens = [];
+            
+            // Collect all tokens for the staff member
+            foreach ($staff_tokens as $tokenObj) {
+                if (!empty($tokenObj->token)) {
+                    $tokens[] = $tokenObj->token;  // Add each token to the tokens array
+                }
+            }
+            
+            // Now pass the entire list of tokens to sendNotificationStaff
+            if (!empty($tokens)) {
+                $this->sendNotificationStaff($tokens, $title, $body);  // Pass the entire tokens array
+            }
+        } else {
+            $msg = 'failed';
+        }
+
+       // log_message('debug', 'leaveInfo is -->' . print_r($leaveInfo, true));
+
+        echo json_encode($msg);
+    }
+
+    function tokenToDB()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        $staffRowId = $obj['staff_row_id'];
+        $token = $obj['token'];
+        $staffName = $obj['staff_name'];
+        $staffId = $obj['staff_id'];
+        $mobileNumber = $obj['mobile_number'];
+        $staffRole = $obj['staff_role'];
+        $model = $obj['model'];
+        $sdk = $obj['sdk'];
+        $device_id = $obj['device_id'];
+        // log_message("debug","err=".print_r($device_id,true));
+        if ($staffId != '' && $device_id != '') {
+            $check_device = $this->app_staff_login->checkDeviceExists(
+                $staffId,
+                $device_id
+            );
+            if ($check_device > 0) {
+                $info = [
+                    'token' => $token,
+                    'updated_by' => $staffId,
+                    'updated_date_time' => date('Y-m-d H:i:s'),
+                ];
+                $result = $this->app_staff_login->updateToken(
+                    $device_id,
+                    $info,
+                    $staffId
+                );
+            } else {
+                $info = [
+                    'staff_row_id' => $staffRowId,
+                    'token' => $token,
+                    'staff_name' => $staffName,
+                    'staff_id' => $staffId,
+                    'mobile_number' => $mobileNumber,
+                    'staff_role' => $staffRole,
+                    'device_model' => $model,
+                    'device_sdk' => $sdk,
+                    'device_id' => $device_id,
+                    'created_by' => $staffId,
+                    'created_date_time' => date('Y-m-d H:i:s'),
+                ];
+                $result = $this->app_staff_login->addToken($info);
+            }
+        }
+        if ($result > 0) {
+            $msg = 'token success';
+        } else {
+            $msg = 'token failed';
+        }
+        $jsonmsg = json_encode($msg);
+        echo $jsonmsg;
+    }
+
+    public function attendance()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+
+        $staffId = $obj['staff_id'];
+
+        $fetchTodaysCheckIn = $this->app_staff_login->getAttendance($staffId);
+
+        // Convert time format for each entry
+        foreach ($fetchTodaysCheckIn as $entry) {
+            if ($entry->punch_time != '00:00:00') {
+                $entry->punch_time = date(
+                    'g:i A',
+                    strtotime($entry->punch_time)
+                );
+            } else {
+                $entry->punch_time = ''; // Set to empty string
+            }
+            if ($entry->punch_out_time != '00:00:00') {
+                $entry->punch_out_time = date(
+                    'g:i A',
+                    strtotime($entry->punch_out_time)
+                );
+            } else {
+                $entry->punch_out_time = ''; // Set to empty string
+            }
+        }
+//
+        echo json_encode($fetchTodaysCheckIn);
+    }
+
+    public function attendanceList()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+
+        $staffId = $obj['staff_id'];
+
+      //  log_message('debug', 'staffId-->' . print_r($staffId, true));
+
+        $fetchList = $this->app_staff_login->getAttendanceList($staffId);
+     //   log_message('debug', 'fetchList-->' . print_r($fetchList, true));
+
+        foreach ($fetchList as $entry) {
+            if ($entry->punch_time != '00:00:00') {
+                $entry->punch_time = date(
+                    'g:i A',
+                    strtotime($entry->punch_time)
+                );
+            } else {
+                $entry->punch_time = ''; // Set to empty string
+            }
+            if ($entry->punch_out_time != '00:00:00') {
+                $entry->punch_out_time = date(
+                    'g:i A',
+                    strtotime($entry->punch_out_time)
+                );
+            } else {
+                $entry->punch_out_time = ''; // Set to empty string
+            }
+            $entry->punch_date = date('d-m-Y', strtotime($entry->punch_date));
+            # code...
+        }
+
+        echo json_encode($fetchList);
+    }
+
+    public function subjectList()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        //log_message('debug', 'obj-->' . print_r($obj, true));
+        $staff_id = $obj['staff_id'];
+        //  log_message('debug', 'staff_id-->' . print_r($staff_id, true));
+
+        $fetchAssignedSubjects = $this->app_staff_login->fetchSubjectList($staff_id);
+       
+      //  log_message('debug', 'fetchAssignedSubjects-->' . print_r($fetchAssignedSubjects, true));
+
+        $data = json_encode($fetchAssignedSubjects);
+        echo $data;
+    }
+
+
+    public function deleteToken(){
+        $json = file_get_contents('php://input'); 
+        $obj = json_decode($json,true);
+        $id = $obj['id'];
+        $return = $this->app_staff_login->deleteToken($id);
+
+        if($return>0){
+            $msg='success';
+        }else{
+            $msg='failed';
+        }
+
+        $data = json_encode($msg);
+        echo $data;
+    }
+
+
+    public function checkStaffValid()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+    // log_message('debug', 'obj of check valid-->' . print_r($obj, true));
+        $row_id = $obj['row_id'];
+        //  log_message('debug', 'mbl_number-->' . print_r($mbl_number, true));
+
+        $fetchDetails = $this->app_staff_login->fecthStaffAllDetails($row_id);
+
+        // log_message(
+        //     'debug',
+        //     'staffDetails is -->' . print_r($fetchDetails, true)
+        // );
+
+        echo json_encode($fetchDetails);
+    }
+
+    public function approveAllLeaveList()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        //log_message('debug', 'obj-->' . print_r($obj, true));
+        $staff_id = $obj['staff_id'];
+        //  log_message('debug', 'staff_id-->' . print_r($staff_id, true));
+
+        $fetchLeaveHistory = $this->app_staff_login->getAllApproveLeaveList(
+            $staff_id
+        );
+       // log_message('debug', 'all fetchLeaveHistory-->' . print_r($fetchLeaveHistory, true));
+
+        $db_data = [];
+        foreach ($fetchLeaveHistory as $info) {
+            $info->date_from = date('d-m-Y', strtotime($info->date_from));
+            $info->date_to = date('d-m-Y', strtotime($info->date_to));
+            $info->applied_date_time = date(
+                'd-m-Y',
+                strtotime($info->applied_date_time)
+            );
+
+            $getStaffDetails = $this->app_staff_login->getStaffName(
+                $info->staff_id
+            );
+
+            $fetchLeaveManagement = $this->app_staff_login->fetchLeaveMangementInfo(
+                $info->staff_id
+            );
+
+            $leaveTypes = ['CL', 'ML', 'MARL', 'PL', 'MATL', 'LOP', 'EL' ,'OD'];
+
+            $leaveCounts = [];
+            foreach ($leaveTypes as $type) {
+                $leaveCount = $this->app_staff_login->getSumLeaveInfo(
+                    $info->staff_id,
+                    $type
+                )->total_days_leave;
+                $leaveCounts[$type] = $leaveCount;
+
+                if ($type == 'CL') {
+                    $casualLeaveEarned =
+                        $fetchLeaveManagement[0]->casual_leave_earned;
+                    // log_message(
+                    //     'debug',
+                    //     '$casualLeaveEarned' . $casualLeaveEarned
+                    // );
+
+                    $casualLeaveUsed = $leaveCount;
+                    $casualRemaining =
+                        $fetchLeaveManagement[0]->casual_leave_earned -
+                        $leaveCount;
+                } elseif ($type == 'ML') {
+                    $medicalEraned =
+                        $fetchLeaveManagement[0]->sick_leave_earned;
+                    $medicalUsed = $leaveCount;
+                    $medicalRemaining =
+                        $fetchLeaveManagement[0]->sick_leave_earned -
+                        $leaveCount;
+                } elseif ($type == 'MARL') {
+                    $marriageLeaveEarned =
+                        $fetchLeaveManagement[0]->marriage_leave_earned;
+                    $marriageLeaveUsed = $leaveCount;
+                    $marriageLeaveRemaining =
+                        $fetchLeaveManagement[0]->marriage_leave_earned -
+                        $leaveCount;
+                } elseif ($type == 'PL') {
+                    $paternityLeaveEarned =
+                        $fetchLeaveManagement[0]->paternity_leave_earned;
+                    $paternityLeaveUsedd = $leaveCount;
+                    $paternityLeaveRemaining =
+                        $fetchLeaveManagement[0]->paternity_leave_earned -
+                        $leaveCount;
+                } elseif ($type == 'MATL') {
+                    $maternityLeaveEarned =
+                        $fetchLeaveManagement[0]->maternity_leave_earned;
+                    $maternityLeaveUsed = $leaveCount;
+                    $maternityLeaveRemaining =
+                        $fetchLeaveManagement[0]->maternity_leave_earned -
+                        $leaveCount;
+                } elseif ($type == 'EL') {
+                    $earnedLeaveEarned =
+                        $fetchLeaveManagement[0]->earned_leave;
+                    $earnedLeaveUsed = $leaveCount;
+                    $earnedLeaveRemaining =
+                        $fetchLeaveManagement[0]->earned_leave -
+                        $leaveCount;
+                } elseif($type =='OD'){
+                    $officialLeaveEarned =
+                    $fetchLeaveManagement[0]->official_duty_earned;
+                    $officialLeaveUsed = $leaveCount;
+                    $officialLeaveRemaining =
+                        $fetchLeaveManagement[0]->official_duty_earned -
+                        $leaveCount;
+                } 
+                 elseif ($type == 'LOP') {
+                    $lopUsed = $leaveCount;
+                }
+
+               // log_message('debug', "$type count: $leaveCount");
+            }
+
+            if ($info->approved_status == 0) {
+                $info->status = 'Pending';
+            } elseif ($info->approved_status == 1) {
+                $info->status = 'Approved';
+            } else {
+                $info->status = 'Rejected';
+            }
+
+            $info->staff_name = $getStaffDetails[0]->name;
+
+            //csual leave
+
+            $info->casualLeaveEarned = $casualLeaveEarned ?? 0;
+            $info->casualLeaveUsed = $casualLeaveUsed ?? 0;
+            $info->casualLeaveRemain = $casualRemaining ?? 0;
+
+            //medical leave
+
+            $info->medicalLeaveEarned = $medicalEraned ?? 0;
+            $info->medicalLeaveUsed = $medicalUsed ?? 0;
+            $info->medicalLeaveRemain = $medicalRemaining ?? 0;
+
+            //marriage leave
+
+            $info->marriageLeaveEarned = $marriageLeaveEarned ?? 0;
+            $info->marriageLeaveUsed = $marriageLeaveUsed ?? 0;
+            $info->marriageLeaveRemain = $marriageLeaveRemaining ?? 0;
+
+            //paternity Leave
+
+            $info->paternityLeaveEarned = $paternityLeaveEarned ?? 0;
+            $info->paternityLeaveUsed = $paternityLeaveUsedd ?? 0;
+            $info->paternityLeaveRemain = $paternityLeaveRemaining ?? 0;
+
+            //maternity leave
+            $info->maternityLeaveEarned = $maternityLeaveEarned ?? 0;
+            $info->maternityLeaveUsed = $maternityLeaveUsed ?? 0;
+            $info->maternityLeaveRemain = $maternityLeaveRemaining ?? 0;
+
+            $info->earnedLeaveEarned = $earnedLeaveEarned??0;
+            $info->earnedLeaveUsed = $earnedLeaveUsed??0;
+            $info->earnedLeaveRemaining = $earnedLeaveRemaining??0;
+
+            $info->officialLeaveEarned = $officialLeaveEarned??0;
+            $info->officialLeaveUsed = $officialLeaveUsed??0;
+            $info->officialLeaveRemaining = $officialLeaveRemaining??0;
+
+            //LOP
+            $info->lopused = $lopUsed ?? '0';
+
+            $db_data[] = $info;
+        }
+      //  log_message('debug', 'db_data-->' . print_r($db_data, true));
+
+        $data = json_encode($db_data);
+        echo $data;
+    }
+
+    
+    public function listallStaff()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        $fetchAllSTaff = $this->app_staff_login->getAllStaffList();
+      //  log_message('debug', 'fetchAllSTaff-->' . print_r($fetchAllSTaff, true));
+        $data = json_encode($fetchAllSTaff);
+        echo $data;
+    }
+
+    
+    public function fetchNotifiationData()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        $title=$obj['title'];
+        $description=$obj['description'];
+        $sendByStaffId = $obj['send_by_staffId'];
+        $sendbyStaffName = $obj['send_by_staffName'];
+        $staff_id=$obj['staff_id'];
+        $type=$obj['type'];
+
+        if($type=='all'){
+          $department='ALL';  
+        }else{
+          $department = $staff_id;
+        }
+
+        $notification = [
+            'department' => $department,
+            'subject' => $title,
+            'message' => $description,
+            'filepath' => '',
+            'sent_by' => $sendbyStaffName,
+            'date_time' =>  date('Y-m-d H:i:s'),
+            'is_deleted'=>0,
+            'updated_date_time' => date('Y-m-d H:i:s'),
+        ];
+
+        $this->app_staff_login->addStaffNotification($notification);
+
+       
+
+    }
+
+    public function listAllNotification()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        $staff_id = $obj['staff_id'];
+    
+        // Fetch staff info
+        $fetchStaffInfo = $this->app_staff_login->fetchStaffById($staff_id);
+    
+        // Get all notifications for the staff's department
+        $fetchNotification = $this->app_staff_login->getAllNotification($fetchStaffInfo[0]->dept_id);
+    
+        // Add time ago for each notification
+        foreach ($fetchNotification as &$notification) {
+            $notification->time_ago = $this->timeAgo($notification->date_time);
+            $notification->timestamp = strtotime($notification->date_time); // Add timestamp for sorting
+        }
+    
+        // Get single notification for the staff member
+        $fetchSingleNotification = $this->app_staff_login->getSingleNotification($fetchStaffInfo[0]->row_id);
+    
+        // Add time ago for the single notification
+        foreach ($fetchSingleNotification as &$singleNotification) {
+            $singleNotification->time_ago = $this->timeAgo($singleNotification->updated_date_time);
+            $singleNotification->timestamp = strtotime($singleNotification->updated_date_time); // Add timestamp for sorting
+        }
+    
+        // Combine both notifications into one array
+        $combinedNotifications = array_merge($fetchNotification, $fetchSingleNotification);
+
+     //   log_message("debug","combined string -->".print_r($combinedNotifications,true));
+    
+        // Sort the combined notifications by timestamp (latest first)
+        usort($combinedNotifications, function ($a, $b) {
+            return $b->timestamp - $a->timestamp;
+        });
+    
+        // Encode the data into JSON and echo it
+        echo json_encode($combinedNotifications);
+    }
+    
+    private function timeAgo($datetime)
+    {
+        $now = new DateTime();
+        $notificationTime = new DateTime($datetime);
+        $interval = $now->diff($notificationTime);
+    
+        if ($interval->y > 0) {
+            return $interval->y . ' y ago';
+        } elseif ($interval->m > 0) {
+            return $interval->m . ' m ago';
+        } elseif ($interval->d >= 7) {
+            return floor($interval->d / 7) . ' w ago';
+        } elseif ($interval->d > 0) {
+            return $interval->d . ' d ago';
+        } elseif ($interval->h > 0) {
+            return $interval->h . ' h ago';
+        } elseif ($interval->i > 0) {
+            return $interval->i . ' min ago';
+        } else {
+            return 'Just now';
+        }
+    }
+
+    public function pucSubjectList()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        //log_message('debug', 'obj-->' . print_r($obj, true));
+        $staff_id = $obj['staff_id'];
+        //  log_message('debug', 'staff_id-->' . print_r($staff_id, true));
+
+        $fetchAssignedSubjects = $this->app_staff_login->fetchPucSubjectList($staff_id);
+       
+      //  log_message('debug', 'fetchAssignedSubjects-->' . print_r($fetchAssignedSubjects, true));
+
+        $data = json_encode($fetchAssignedSubjects);
+        echo $data;
+    }
+
+
+    public function sectionList()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        //log_message('debug', 'obj-->' . print_r($obj, true));
+        $staff_id = $obj['staff_id'];
+        //  log_message('debug', 'staff_id-->' . print_r($staff_id, true));
+
+        $fetchAssignedSubjects = $this->app_staff_login->fetchSectionList($staff_id);
+       
+      //  log_message('debug', 'fetchAssignedSubjects-->' . print_r($fetchAssignedSubjects, true));
+
+        $data = json_encode($fetchAssignedSubjects);
+        echo $data;
+    }
+    
+    function sendNotificationStaff($token,$title,$body){
+        // log_message('debug','token-->'.print_r($token,true));
+        // log_message('debug','title-->'.print_r($title,true));
+        // log_message('debug','body-->'.print_r($body,true));
+    
+            $data = [
+            "tokens" => $token,
+            "title" => $title,
+            "body" => $body,
+            "keyName" => 'p4',
+            "dataPayload" => [
+                "key1" => "value1",
+                "key2" => "value2"
+            ]
+        ];
+        
+        // Convert data to JSON
+        $jsonData = json_encode($data);
+        $url = "http://node.parrophins.com/send-notification/";
+        
+        // Initialize cURL session
+        $ch = curl_init($url);
+        
+        // Set cURL options
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($jsonData)
+        ]);
+        
+        $response = curl_exec($ch);
+        log_message('debug','response-->'.print_r($response,true));
+        curl_close($ch);
+        }
+        
+public function salarySlip() {
+    $json = file_get_contents('php://input');
+    $obj = json_decode($json, true);
+    $row_id = $obj['staff_id'];
+    $date = $obj['date'];
+    $dateParts = explode(' ', $date);
+    $year = $dateParts[0];
+    $month = $dateParts[1];
+    $fetchSalarySlip = $this->app_staff_login->getSalarySlip($row_id, $year, $month);
+    $earnings = $this ->app_staff_login->getEarnings($row_id);
+    $deductions = $this ->app_staff_login->getDeductions($row_id);
+    
+    $data['fetchSalarySlip'] = $fetchSalarySlip;
+    $data['earnings'] = $earnings;
+    $data['deductions'] = $deductions;
+    // log_message('debug', 'aggregated_result-->'.print_r($data, true));
+    echo json_encode($data);
+
+}
+     public function mySalaryPrint(){
+                $student_id = $_GET['rowId'];
+                $filter = array();
+                $filter['student_id'] = $student_id;
+                $this->global['pageTitle'] = ''.TAB_TITLE.' : Salary Slip';
+                $data['staffData'] = $this->app_staff_login->getStaffSalarySlipInfoById($filter);
+                $data['salaryModel'] = $this->salary_model;
+                define('_MPDF_TTFONTPATH', __DIR__ . '/fonts');
+                $mpdf = new \Mpdf\Mpdf(['tempDir' => sys_get_temp_dir().DIRECTORY_SEPARATOR.'mpdf','format' => 'A4-L']);
+                $mpdf->AddPage('P','','','','',10,10,8,8,8,8);
+                $mpdf->SetTitle('Staff Salary Slip');
+                $html = $this->load->view('salary/printSalarySlipNew',$data,true);
+                $mpdf->WriteHTML($html);
+                $mpdf->Output('Salary_Slip.pdf', 'I');
+            
+        }
+
+
+        public function getStaffSwitchProfile()
+    {
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        $mobile_one = $obj['mobile_one'];
+        $mobile_two = $obj['mobile_two'];
+        // log_message('debug', '==   cbse switch ===>' . print_r($obj, true));
+        // Check if staff_id is present
+        if (isset($obj['staff_id'])) {
+            $staff_id = $obj['staff_id'];
+        } else {
+            echo json_encode(["error" => "staff_id not provided"]);
+            return;
+        }
+        if (empty($mobile_one) && empty($mobile_two)) {
+            echo json_encode([]);
+            return;
+        }
+    
+        $switchProfile = array();
+    
+        // Fetch profile based on father's mobile number
+        if (!empty($mobile_one)) {
+            $switchProfile1 = $this->app_staff_login->getSwitchProfile($mobile_one);
+            // log_message("debug", 'switchprofile 1-->'.print_r($switchProfile1, true));
+        }
+    
+        // Fetch profile based on mother's mobile number
+        if (!empty($mobile_two)) {
+            $switchProfile2 = $this->app_staff_login->getSwitchProfile($mobile_two);
+            // log_message("debug", 'switchprofile 2-->'.print_r($switchProfile2, true));
+        }
+    
+        // Combine profiles, ensuring uniqueness
+        $allProfiles = array();
+        
+        if (!empty($switchProfile1)) {
+            $allProfiles = array_merge($allProfiles, $switchProfile1);
+        }
+        
+        if (!empty($switchProfile2)) {
+            $allProfiles = array_merge($allProfiles, $switchProfile2);
+        }
+    
+        // Remove duplicates based on row_id
+        $uniqueProfiles = array();
+        $seenRowIds = array();
+    
+        foreach ($allProfiles as $profile) {
+            if (!in_array($profile->row_id, $seenRowIds)) {
+                $uniqueProfiles[] = $profile;
+                $seenRowIds[] = $profile->row_id;
+            }
+        }
+    
+        // log_message("debug", 'uniqueProfiles-->'.print_r($uniqueProfiles, true));
+    
+        // $data = json_encode($uniqueProfiles);
+        echo json_encode($uniqueProfiles);
+       
+    }
+
+    public function resetStaffSwitchProfile()
+        {
+            $json = file_get_contents('php://input');
+            $obj = json_decode($json, true);
+            // log_message('debug', 'obj of check valid-->' . print_r($obj, true));
+            $staff_id = $obj['staff_id'];
+            // log_message('debug', 'staff_id-->' . print_r($staff_id, true));
+
+            $fetchDetails = $this->app_staff_login->fecthStaffswitchProfileAllDetails($staff_id);
+
+        // log_message(
+        //     'debug',
+        //     'staffDetails is -->' . print_r($fetchDetails, true)
+        // );
+
+            echo json_encode($fetchDetails);
+        }
+    
+    public function retrieveStudentFee(){
+        $json = file_get_contents('php://input');
+        $obj = json_decode($json, true);
+        // $merchant_email = $obj['merchant_email'];
+        // $merchant_key   = $obj['merchant_key'];
+        // $payout_date    = $obj['payout_date'];
+        // $salt           = $obj['salt']; 
+        $merchant_email = EB_EMAIL_SETTLEMENT;
+        $merchant_key   = EB_MERCHANT_KEY;
+        $payout_date    = date('d-m-Y');
+        $salt           = EB_SALT; 
+        $hash_string = $merchant_key . "|" . $merchant_email."|" .$payout_date . "|" . $salt;
+        $hash = hash('sha512', $hash_string);
+        $postData = array(
+            "merchant_email" => $merchant_email,
+            "merchant_key"   => $merchant_key,
+            "hash"           => $hash,
+            "payout_date"    => $payout_date
+        );
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://dashboard.easebuzz.in/payout/v1/retrieve",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($postData),
+            CURLOPT_HTTPHEADER => array(
+                "Content-Type: application/json"
+            ),
+        ));
+        $response = curl_exec($curl);
+        $settlementInfo = array();
+        if (curl_errno($curl)) {
+            $result = array('status' => false, 'message' => curl_error($curl));
+        } else {
+            $result = json_decode($response, true);
+            if(!empty($result['payouts_history_data'])) {
+                foreach($result['payouts_history_data'] as $history) {
+                    foreach($history['peb_transactions'] as $transaction) {
+                        if($transaction['status'] == 'settled') {
+                            // Convert UTC to IST and fetch only date
+                            $utcDate = new DateTime($history['payout_actual_date'], new DateTimeZone('UTC'));
+                            $utcDate->setTimezone(new DateTimeZone('Asia/Kolkata'));
+                            $settleDate = $utcDate->format('Y-m-d');
+                            $settlementInfo = array(
+                                'bank_settlement_date' => $settleDate,
+                                'bank_settlement_status' => 1,
+                            );
+                            $this->fee->updatefeeSettleStatusNew($settlementInfo, $transaction['txnid']);
+                        }
+                    }
+                }
+            }
+        }
+        curl_close($curl);
+        echo json_encode($settlementInfo);
+    }
+}
+?>

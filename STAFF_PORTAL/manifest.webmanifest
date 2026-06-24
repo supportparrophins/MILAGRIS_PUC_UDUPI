@@ -1,0 +1,37 @@
+{
+    "theme_color": "#317EFB",
+    "background_color": "#105f86",
+    "display": "standalone",
+    "start_url": "login",
+    "name": "MILAGRES COLLEGE, KALLIANPUR, UDUPI",
+    "short_name": "MILAGRES COLLEGE, KALLIANPUR, UDUPI",
+    "description": "MILAGRES COLLEGE, KALLIANPUR, UDUPI",
+    "icons": [
+        {
+            "src": "icons/anns_logo_192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/anns_logo_256.png",
+            "sizes": "256x256",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/anns_logo_384.png",
+            "sizes": "384x384",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/anns_logo_512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+          "src": "icons/anns_logo_192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable" 
+        }
+    ]
+}

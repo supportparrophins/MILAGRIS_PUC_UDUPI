@@ -1,0 +1,224 @@
+.navigation_btn {
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: #D18B49;
+    background-color: #f8f9fa;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: 0.5s ease;
+}
+
+.card.card_view {
+    background: #e1e5eb;
+    max-width: 500px;
+    margin: 15px auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    box-sizing: border-box;
+    padding: 5px;
+    text-align: center;
+}
+
+.card_view_student_list {
+    transition: 0.5s ease;
+}
+
+.student {
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.5s ease;
+    width: 100%;
+    padding: 5px 10px;
+    display: none;
+}
+.student.active {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+}
+.dynamic_color {
+    margin: 0px;
+    color: #D18B49;
+    transition: 0.5s ease;
+}
+.footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+[ripple] {
+    z-index: 1;
+    position: relative;
+    overflow: hidden;
+}
+[ripple] .ripple {
+    position: absolute;
+    background: #FFFFFF;
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+    transform: scale(0);
+    -webkit-animation: ripple 2s;
+    animation: ripple 2s;
+}
+@-webkit-keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 0.2;
+    }
+    100% {
+        transform: scale(20);
+        opacity: 0;
+    }
+}
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 0.2;
+    }
+    100% {
+        transform: scale(20);
+        opacity: 0;
+    }
+}
+.card_view_head{
+    display: flex;
+    justify-content: space-between;
+}
+.action-badges{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+.action-badges > .badge{
+    color: #fff;
+    background-color: #007bff;
+    padding: 8px !important;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 7px;
+}
+.action-badges > .badge >span{
+    color: #fff;
+    display: none;
+}
+.action-badges > .badge:hover{
+    color: #212529;
+    background-color: #d4d0d0;
+}
+.action-badges > .badge.active:hover > span{
+    color: #212529;
+}
+.action-badges > .badge.active{
+    background-color: #dc3545;
+}
+.action-badges > .badge.active >span{
+    display: inline;
+}
+input.card_view_obtained_mark, input.card_view_obtained_mark_lab,input.table_view_obtained_mark {
+    font: 15px/24px "Lato", Arial, sans-serif;
+    color: #333;
+    width: 100%;
+    box-sizing: border-box;
+    letter-spacing: 1px;
+}
+:focus {
+    outline: none;
+}
+input.card_view_obtained_mark,input.card_view_obtained_mark_lab, input.table_view_obtained_mark {
+    border: 1px solid #ccc;
+    padding: 7px 14px 9px;
+    transition: 0.4s;
+}
+input.card_view_obtained_mark ~ .focus-border:before,
+input.card_view_obtained_mark ~ .focus-border:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 2px;
+    background-color: #3399ff;
+    transition: 0.2s;
+    transition-delay: 0.2s;
+}
+input.card_view_obtained_mark ~ .focus-border:after {
+    top: auto;
+    bottom: 0;
+    right: auto;
+    left: 0;
+    transition-delay: 0.6s;
+}
+input.card_view_obtained_mark ~ .focus-border i:before,
+input.card_view_obtained_mark ~ .focus-border i:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 0;
+    background-color: #3399ff;
+    transition: 0.2s;
+}
+input.card_view_obtained_mark ~ .focus-border i:after {
+    left: auto;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    transition-delay: 0.4s;
+}
+input.card_view_obtained_mark:focus ~ .focus-border:before,
+input.card_view_obtained_mark:focus ~ .focus-border:after {
+    width: 100%;
+    transition: 0.2s;
+    transition-delay: 0.6s;
+}
+input.card_view_obtained_mark:focus ~ .focus-border:after {
+    transition-delay: 0.2s;
+}
+input.card_view_obtained_mark:focus ~ .focus-border i:before,
+input.card_view_obtained_mark:focus ~ .focus-border i:after {
+    height: 100%;
+    transition: 0.2s;
+}
+input.card_view_obtained_mark:focus ~ .focus-border i:after {
+    transition-delay: 0.4s;
+}
+.student_stats{
+    padding: 8px;
+    border-radius: 6px;
+    width: 120px;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+}
+.error-hint{
+    color: #c53940;
+    font-style: normal;
+    font-size: 12px;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    margin: 0;
+    padding: 0px 2px;
+}
+.display-none{
+    display: none;
+}
+.display-block{
+    display: block;
+}
+.exam_result{
+    display: block;
+}
+.exam_result.pass{
+    display: block;
+    color: green;
+}
+.exam_result.fail{
+    display: block;
+    color: red;
+}

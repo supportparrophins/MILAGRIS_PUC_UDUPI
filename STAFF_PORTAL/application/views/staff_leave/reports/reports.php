@@ -1,0 +1,1902 @@
+<!-- <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script> -->
+<?php
+    $this->load->helper('form');
+    ?>
+
+<div class="main-content-container px-3">
+    <!-- Page Header -->
+    <div class="row mt-1 mb-1 ">
+        <div class="col padding_left_right_null">
+            <div class="card card_heading_title card-small p-0">
+                <div class="card-body p-2 ml-2">
+                    <span class="page-title">
+                        <i class="material-icons">description</i> Report
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row ">
+        <!-- <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a data-toggle="modal" data-target="#downloadAdmissionEnquiryReport" class="more-info text-white dashboard_link" href="#">
+                <div class="card card-small dash-card" style="background: #3e50b3;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">Admission Enquiry</h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+            </a>
+        </div> -->
+        <?php if($role != EXAM_COMMITTEE){ ?>
+        <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a data-toggle="modal" data-target="#downloadFeeStructure" class="more-info text-white dashboard_link" href="#">
+                <div class="card card-small dash-card" style="background: #3e50b3;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">Fee Paid Consolidated</h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a data-toggle="modal" data-target="#downloadDayWiseFeeReport" class="more-info text-white dashboard_link" href="#">
+                <div class="card card-small dash-card" style="background: #3e50b3;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">Day-wise Fee Paid Report</h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a data-toggle="modal" data-target="#IpucMarkSheetSubjectWise" class="more-info text-white dashboard_link" href="#">
+                <div class="card card-small dash-card" style="background: #3e50b3;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">Exam Mark Sheet - 21</h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a data-toggle="modal" data-target="#assignmentConsolidatedMarkReport" class="more-info text-white dashboard_link" href="#">
+                <div class="card card-small dash-card" style="background: #3e50b3;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">Exam Mark Report </h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <?php }
+         if($role == ROLE_ADMIN || $role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_PRINCIPAL){ ?>
+        <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a data-toggle="modal" data-target="#applicationApprovedReport" class="more-info text-white dashboard_link" href="#">
+                <div class="card card-small dash-card" style="background: #3e50b3;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">Approved Application</h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a data-toggle="modal" data-target="#downloadMerit" class="more-info text-white dashboard_link" href="#">
+                <div class="card card-small dash-card" style="background: #3e50b3;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">Merit List</h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a data-toggle="modal" data-target="#downloadShortlistedMerit" class="more-info text-white dashboard_link" href="#">
+                <div class="card card-small dash-card" style="background: green;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">Shortlisted Application</h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a data-toggle="modal" data-target="#applicationRejectedReport" class="more-info text-white dashboard_link" href="#">
+                <div class="card card-small dash-card" style="background: #3e50b3;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">Rejected Application</h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <?php } ?>
+        <?php if($role != EXAM_COMMITTEE){ ?>
+        <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a data-toggle="modal" data-target="#admissionRegisteredStudent" class="more-info text-white dashboard_link" href="#">
+                <div class="card card-small dash-card" style="background: #3e50b3;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">Admitted Students</h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+         <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a data-toggle="modal" data-target="#downloadStaffReport" class="more-info text-white dashboard_link" href="#">
+                <div class="card card-small dash-card" style="background: #3e50b3;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">Staff</h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+         <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a data-toggle="modal" data-target="#downloadMunExternalReport" class="more-info text-white dashboard_link" href="#">
+                <div class="card card-small dash-card" style="background: #3e50b3;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">MUN External</h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+         <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a class="more-info text-white dashboard_link" href="<?php echo base_url() ?>downloadMunInternalReport">
+                <div class="card card-small dash-card" style="background: #3e50b3;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">MUN INTERNAL</h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+        </a>
+        </div>
+        <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a data-toggle="modal" data-target="#downloadFeeStructure2020" class="more-info text-white dashboard_link" href="#">
+                <div class="card card-small dash-card" style="background: #3e50b3;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">2020 Fee Paid</h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <?php } ?>
+        <?php if($role == EXAM_COMMITTEE){ ?>
+        <div class="col-lg-3 col-6 mb-2 column_padding_card">
+            <a data-toggle="modal" data-target="#downloadIPuReport" class="more-info text-white dashboard_link" href="#">
+                <div class="card card-small dash-card" style="background: #3e50b3;">
+                    <div class="card-body pt-1 pb-1">
+                        <h6 class="stats-small__value text-uppercase text-white">Annual IPU Report</h6>
+                        <div class="icon pull-right mt-4">
+                            <i class="fas fa-file dash-icons"></i></i>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center dash-footer p-1">
+                        <div class="more-info text-white"></div>
+                        <span class="text-center">Download</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <?php } ?>
+  </div>
+</div>
+
+
+<!-- Admission Enquiry export modal -->
+<div class="modal fade" id="downloadAdmissionEnquiryReport">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title">Admission Enquiry</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-2">
+                <form id="downloadAdmissionEnquiryForm" action="<?php echo base_url() ?>downloadAdmissionEnquiryExcelReport" method="POST">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group mt-1">
+                           
+                                <select class="form-control input-sm" id="term_name" name="term_name" required>
+                                <option value="">Select Term</option>
+                                <option value="PU1">PU1</option>
+                                <option value="PU2">PU2</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button id="downloadReportExcel" type="submit" class="btn btn-md btn-primary float-right"><i
+                        class="fa fa-download"></i> Download</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- fee structure -->
+<div class="modal" id="downloadFeeStructure">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header p-2">
+                <h6 class="modal-title">Download Fee Report</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-2">
+                <form id="downloadFeeStructureForm" method="POST" action="<?php echo base_url().'download_fee_structure_excel'?>">
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Select Term</label>
+                                <select class="form-control" name="term_name_select" id="term_name_select" required>
+                                    <option value="I PUC">I PUC</option>
+                                    <option value="II PUC">II PUC</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Select Year</label>
+                                <select class="form-control" name="year" id="year" required>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer" style="padding:5px;">
+                        <div class="row">
+                            <div class="col-lg-12 col-12">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success"><i class="fa fa-download"
+                                        aria-hidden="true"></i> Download</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- fee structure -->
+<div class="modal" id="downloadFeeStructure2020">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header p-2">
+                <h6 class="modal-title">Download Fee Report</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-2">
+                <form id="downloadFeeStructureForm" method="POST" action="<?php echo base_url().'download_fee_structure_excel_2020'?>">
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Select Term</label>
+                                <select class="form-control" name="term_name_select" id="term_name_select" required>
+                                    <option value="I PUC">I PUC</option>
+                                    <option value="II PUC">II PUC</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Modal footer -->
+                    <div class="modal-footer" style="padding:5px;">
+                        <div class="row">
+                            <div class="col-lg-12 col-12">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success"><i class="fa fa-download"
+                                        aria-hidden="true"></i> Download</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- fee structure -->
+<div class="modal" id="downloadDayWiseFeeReport">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header p-2">
+                <h6 class="modal-title">Download Day-wise Fee Report</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-2">
+                <form id="downloadDayWiseFeeReport" method="POST" action="<?php echo base_url().'downloadDayWiseFeeReport'?>">
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Select Term</label>
+                                <select class="form-control" name="term_name_select" id="term_name_select" required>
+                                    <option value="I PUC">I PUC</option>
+                                    <option value="II PUC">II PUC</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="account_type">Date From</label>
+                                <input type="text" class="form-control" id="date_from_fee" name="date_from"
+                                    placeholder="Select Date From" autocomplete="off" >
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="account_type">Date To</label>
+                                <input type="text" class="form-control" id="date_to_fee" name="date_to"
+                                    placeholder="Select Date To" autocomplete="off" >
+                            </div>
+                        </div>
+
+
+                        </div>
+                        <div class="row">
+                        <div class="col-lg-12">
+                            <label>By Stream</label>
+                            <select class="form-control input-md required" id="" name="preference">
+                                <option value="">ALL</option>
+                                <option value="">Select One Preference</option>
+                                <option value="PCMB">PCMB</option>
+                                <option value="PCMC">PCMC</option>
+                                <option value="PCME">PCME</option>
+                                <option value="PCMS" >PCMS</option>
+                                <option value="CEBA">CEBA</option>
+                                <option value="CSBA">CSBA</option>
+                                <option value="MEBA">MEBA</option>
+                                <option value="MSBA">MSBA</option>
+                                <option value="PEBA">PEBA</option>
+                                <option value="SEBA">SEBA</option>
+                                <option value="HEPS">HEPS</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer" style="padding:5px;">
+                        <div class="row">
+                            <div class="col-lg-12 col-12">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success"><i class="fa fa-download"
+                                        aria-hidden="true"></i> Download</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- The Modal for bank settlement-->
+<div class="modal" id="applicationStackReport">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="padding: 10px;">
+                <h6 class="modal-title">Application Report Filter</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" style="padding: 10px;">
+                <form method="POST" id="addBankSettlementSubmit" action="<?php echo base_url(); ?>downloadApplicationStack">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Percentage FROM</label>
+                            <input maxlength="5" onkeypress="return isNumberKey(event)" type="text" class="form-control"
+                                id="inputEmail4" name="percentage_from" placeholder="SSLC Percentage From">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">Percentage TO</label>
+                            <input maxlength="5" onkeypress="return isNumberKey(event)" name="percentage_to" type="text"
+                                class="form-control" id="inputPassword4" placeholder="SSLC Percentage To">
+                        </div>
+                    </div>
+                    <input type="hidden" value="APPLICATION_STACK" name="report_type" />
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label>By SSLC Board</label>
+                            <select class="form-control input-md required" id="" name="by_board">
+                                <option value="">ALL</option>
+                                <option value="CBSE">CBSE</option>
+                                <option value="ICSE">ICSE</option>
+                                <option value="KARNATAKA STATE BOARD">KARNATAKA STATE BOARD</option>
+                            </select>
+                        </div>
+                    </div>
+                   
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label>By Elective Language</label>
+                            <select class="form-control input-md required" id="" name="elective_sub">
+                                <option value="">ALL</option>
+                                <option value="KANNADA">KANNADA</option>
+                                <option value="HINDI">HINDI</option>
+                                <option value="FRENCH">FRENCH</option>
+                            </select>
+                        </div>
+                    </div>
+ 
+ 
+ 
+                    <!-- Modal footer -->
+                    <div class="modal-footer" style="padding:5px;">
+                        <div class="row">
+                            <div class="col-lg-12 col-12">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                <button type="submit" id="addBankSettlementSubmit"
+                                    class="btn btn-success">Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- The Modal for  applicationApprovedReport-->
+<div class="modal" id="applicationApprovedReport">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="padding: 10px;">
+                <h6 class="modal-title">Application Approved Report Filter</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" style="padding: 10px;">
+                <form method="POST" id="applicationApprovedReport" action="<?php echo base_url(); ?>downloadApplicationStack">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Percentage FROM</label>
+                            <input maxlength="5" onkeypress="return isNumberKey(event)" type="text" class="form-control"
+                                id="inputEmail4" name="percentage_from" placeholder="SSLC Percentage From">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">Percentage TO</label>
+                            <input maxlength="5" onkeypress="return isNumberKey(event)" name="percentage_to" type="text"
+                                class="form-control" id="inputPassword4" placeholder="SSLC Percentage To">
+                        </div>
+                        <div class="form-group col-md-6">
+                                     <label>By Admission Year</label>
+
+                                        <select class="form-control input-md" name="admission_year" id="admission_year">
+                                         <option value="<?php echo CURRENT_YEAR?>"><?php echo CURRENT_YEAR?></option>
+                                        <option value="2021">2021</option>
+                                            
+                                        </select>
+                                       
+                            </div>
+                    </div>
+                    <input type="hidden" value="APPLICATION_APPROVED" name="report_type" />
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label>By SSLC Board</label>
+                            <select class="form-control input-md required" id="" name="by_board">
+                                <option value="">ALL</option>
+                               
+                                <option value="CBSE">CBSE</option>
+                                <option value="ICSE">ICSE</option>
+                                <option value="KARNATAKA STATE BOARD">KARNATAKA STATE BOARD</option>
+                                <option value="OTHER">OTHER</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label>By Stream</label>
+                            <select class="form-control input-md required" id="" name="preference">
+                                <option value="">ALL</option>
+                                <option value="">Select One Preference</option>
+                                <option value="PCMB">PCMB</option>
+                                <option value="PCMC">PCMC</option>
+                                <option value="PCME">PCME</option>
+                                <option value="PCMS" >PCMS</option>
+                                <option value="CEBA">CEBA</option>
+                                <option value="CSBA">CSBA</option>
+                                <option value="MEBA">MEBA</option>
+                                <option value="MSBA">MSBA</option>
+                                <option value="PEBA">PEBA</option>
+                                <option value="SEBA">SEBA</option>
+                                <option value="HEPS">HEPS</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer" style="padding:5px;">
+                        <div class="row">
+                            <div class="col-lg-12 col-12">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                <button type="submit" id="applicationApprovedReport"
+                                    class="btn btn-success">Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="applicationRejectedReport">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="padding: 10px;">
+                <h6 class="modal-title">Application Rejected Report Filter</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" style="padding: 10px;">
+                <form method="POST" id="applicationRejectedReport" action="<?php echo base_url(); ?>downloadApplicationStack">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Percentage FROM</label>
+                            <input maxlength="5" onkeypress="return isNumberKey(event)" type="text" class="form-control"
+                                id="inputEmail4" name="percentage_from" placeholder="SSLC Percentage From">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">Percentage TO</label>
+                            <input maxlength="5" onkeypress="return isNumberKey(event)" name="percentage_to" type="text"
+                                class="form-control" id="inputPassword4" placeholder="SSLC Percentage To">
+                        </div>
+                        <div class="form-group col-md-6">
+                                     <label>By Admission Year</label>
+
+                                        <select class="form-control input-md" name="admission_year" id="admission_year">
+                                         <option value="<?php echo CURRENT_YEAR?>"><?php echo CURRENT_YEAR?></option>
+                                        <option value="2021">2021</option>
+                                            
+                                        </select>
+                                       
+                            </div>
+                    </div>
+                    <input type="hidden" value="APPLICATION_REJECTED" name="report_type" />
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label>By SSLC Board</label>
+                            <select class="form-control input-md required" id="" name="by_board">
+                                <option value="">ALL</option>
+                                <option value="CBSE">CBSE</option>
+                                <option value="ICSE">ICSE</option>
+                                <option value="KARNATAKA STATE BOARD">KARNATAKA STATE BOARD</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label>By Elective Language</label>
+                            <select class="form-control input-md required" id="" name="elective_sub">
+                                <option value="">ALL</option>
+                                <option value="KANNADA">KANNADA</option>
+                                <option value="HINDI">HINDI</option>
+                                <option value="FRENCH">FRENCH</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer" style="padding:5px;">
+                        <div class="row">
+                            <div class="col-lg-12 col-12">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                <button type="submit" id="applicationApprovedReport"
+                                    class="btn btn-success">Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Admission Enquiry export modal -->
+<div class="modal fade" id="admissionApplicationFeePayment">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header bg-primary">
+                <h4 class="modal-title">Application Fee Payment</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-2">
+                <form id="downloadAdmissionEnquiryForm" action="<?php echo base_url() ?>downloadApplicationFee" method="POST">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group mt-1">
+                           
+                                <select class="form-control input-sm" id="paid_status" name="paid_status" required>
+                                <option value="PAID">PAID</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button id="downloadReportExcel" type="submit" class="btn btn-md btn-primary float-right"><i
+                        class="fa fa-download"></i> Download</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="admissionRegisteredStudent">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="padding: 10px;">
+                <h6 class="modal-title">ADMITTED Student Report Filter</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" style="padding: 10px;">
+                <form method="POST" id="admissionRegisteredStudent" action="<?php echo base_url(); ?>downloadAdmittedStudentInfo">
+                    <!-- <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail4">Percentage FROM</label>
+                            <input maxlength="5" onkeypress="return isNumberKey(event)" type="text" class="form-control"
+                                id="inputEmail4" name="percentage_from" placeholder="SSLC Percentage From">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword4">Percentage TO</label>
+                            <input maxlength="5" onkeypress="return isNumberKey(event)" name="percentage_to" type="text"
+                                class="form-control" id="inputPassword4" placeholder="SSLC Percentage To">
+                        </div>
+                    </div> -->
+                    <input type="hidden" value="ADMISSION_COMPLETED" name="report_type" />
+                    <!-- <div class="row">
+                        <div class="col-lg-12">
+                            <label>By SSLC Board</label>
+                            <select class="form-control input-md required" id="" name="by_board">
+                                <option value="">ALL</option>
+                                <option value="CBSE">CBSE</option>
+                                <option value="ICSE">ICSE</option>
+                                <option value="KARNATAKA STATE BOARD">KARNATAKA STATE BOARD</option>
+                            </select>
+                        </div>
+                    </div> -->
+                    <div class = "row">
+                    <div class="col-6">
+                            <label for="role">Stream</label>
+                            <select class="form-control input-sm" id="stream" name="stream_name" required>
+                                <option value="">By Stream</option>
+                                <?php if(!empty($streamInfo)){
+                                    foreach($streamInfo as $stream){ ?>
+                                        <option value="<?php echo $stream->stream_name; ?>"><?php echo $stream->stream_name; ?></option>
+                                <?php } } ?>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                                     <label>By Admission Year</label>
+
+                                        <select class="form-control input-md" name="admission_year" id="admission_year">
+                                         <option value="<?php echo CURRENT_YEAR?>"><?php echo CURRENT_YEAR?></option>
+                                        <option value="2021">2021</option>
+                                            
+                                        </select>
+                                       
+                            </div>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer" style="padding:5px;">
+                        <div class="row">
+                            <div class="col-lg-12 col-12">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                <button type="submit" id="applicationApprovedReport"
+                                    class="btn btn-success">Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- donload fee Structure report filter modal -->
+<div class="modal" id="dayWiseStructureFeePayment">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Download Detailed Fee Report</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-2">
+
+                <form role="form" data-download_form="true" id="downloadReportStructure" action="<?php echo base_url() ?>dayWiseStructureFeePayment"
+                    method="post" role="form">
+
+                    <div class="row form-contents">
+                        <!-- <div class="col-4">
+                            <div class="form-group mb-0">
+                                <label for="term_name_select">Term Name</label>
+                                <select class="form-control" name="term_name" id="term_name_select" required>
+                                     <option value="">Select Term</option>
+                                    <option value="I PUC">I PUC</option> 
+                                    <option value="II PUC" selected>II PUC</option>
+                                </select>
+                            </div>
+                        </div> -->
+                        <!-- <div class="col-4">
+                            <div class="form-group">
+                                <label for="account_type">By Student</label>
+                                <select class="form-control selectpicker" name="by_student" id="by_student"
+                                    data-live-search="true" required>
+                                    <option value="ALL" selected>ALL</option>
+                                    <?php if(!empty($feePaidStdInfo)){ 
+                                    foreach($feePaidStdInfo as $std){ ?>
+                                    <option value="<?php echo $std->application_no; ?>">
+                                        <?php echo $std->student_name; ?></option>
+                                    <?php } } ?>
+                                </select>
+                            </div>
+                        </div> -->
+
+                        <!-- <div class="col-4">
+                            <div class="form-group">
+                                <label for="account_type">By Bank Account</label>
+                                <select class="form-control selectpicker" name="bank_account" id="bank_account"
+                                    data-live-search="true" required>
+                                    <option value="">Select Fee Account Type</option>
+                                 
+                                    <?php if(!empty($bankAccInfo)){ 
+                                    foreach($bankAccInfo as $acc){ ?>
+                                    <option value="<?php echo $acc->row_id; ?>">
+                                        <?php echo $acc->account_no; ?></option>
+                                    <?php } } ?>
+                                </select>
+                            </div>
+                        </div> -->
+                        <!-- <div class="col-4">
+                            <div class="form-group">
+                                <label for="account_type">Report Type</label>
+                                <select class="form-control selectpicker" name="report_type" id="report_type_structure"
+                                    data-live-search="true" required>
+                                    <option value="">Select Report Type</option>
+                                     <option value="BYSTUDENT">By Day Wise</option>
+                                    <option value="MONTHWISE">By Year Wise</option>
+                                    <option value="DATEWISE">By Date Wise</option>
+                                   
+                                </select>
+                            </div>
+                        </div> -->
+                        <!-- <div class="col-4">
+                            <div class="form-group">
+                                <label for="account_type">Report Format</label><br/>
+                                <div class="form-check-inline">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="reportFormat" value="PDF" checked>PDF
+                                    </label>
+                                </div>
+                                <div class="form-check-inline">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" name="reportFormat" value="EXCEL">EXCEL
+                                    </label>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                    <div class="row mt-3">
+
+                    
+                        
+                        <!-- <div class="col-6">
+                            <div class="form-group">
+                                <label for="account_type">Bank Settlement</label>
+                                <select class="form-control" name="bank_settlement" id="bank_settlement"
+                                    data-live-search="true" required>
+                                    <option value="ALL">ALL</option>
+                                   
+                                    <option value="SETTLED">Only Settled</option> 
+                                    <option value="NOT_SETTLED">Not Settled</option> 
+                                </select>
+                            </div>
+                        </div> -->
+                    </div>
+                    <div class="row mt-3 dateSearchShowStructure">
+
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="account_type">Date From</label>
+                                <input type="text" class="form-control" id="date_from" name="date_from"
+                                    placeholder="Select Date From" autocomplete="off" >
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="account_type">Date To</label>
+                                <input type="text" class="form-control" id="date_to" name="date_to"
+                                    placeholder="Select Date To" autocomplete="off" >
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <!-- <div class="row mt-3 dayWiseDate">
+
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="account_type">Date</label>
+                            <input type="text" class="form-control" id="date_day" name="date_day"
+                                placeholder="Select Date From" autocomplete="off" >
+                        </div>
+                    </div>
+                    
+
+                    </div> -->
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <input type="submit"  form="downloadReportStructure" class="btn btn-success float-right" value="Download" />
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- I PUC MARK SHEET -->
+<div class="modal" id="IpucMarkSheetSubjectWise">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="padding: 10px;">
+                <h6 class="modal-title">Exam Mark Sheet - Subject</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" style="padding: 10px;">
+                <form method="POST" data-download_form="true" id="" action="<?php echo base_url(); ?>downloadExamMarkSheet">
+                  
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="role">Term</label>
+                                <select class="form-control input-sm" id="term" name="term_name" required>
+                                    <!-- <option value="" >Select Term</option> -->
+                                    <option value="I PUC">I PUC</option>
+                                    <option value="II PUC">II PUC</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label for="role">Stream</label>
+                            <select class="form-control input-sm" id="stream" name="stream_name" required>
+                                <option value="">By Stream</option>
+                                <?php if(!empty($streamInfo)){
+                                    foreach($streamInfo as $stream){ ?>
+                                        <option value="<?php echo $stream->stream_name; ?>"><?php echo $stream->stream_name; ?></option>
+                                <?php } } ?>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <label for="role">Section</label>
+                            <select class="form-control input-sm" id="section" name="section_name" autocomplete="off">
+                                <!-- <option value="">Select Section</option> -->
+                                <option value="">ALL</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
+                                <option value="F">F</option>
+                                <option value="G">G</option>
+                                <option value="H">H</option>
+                                <option value="I">I</option>
+                                <option value="J">J</option>
+                                <option value="K">K</option>
+                                <option value="L">L</option>
+                                <option value="M">M</option>
+                                <option value="N">N</option>
+                                <option value="O">O</option>
+                                <option value="P">P</option>
+                                <option value="Q">Q</option>
+                                <option value="R">R</option>
+                                <option value="S">S</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label for="role">Subject</label>
+                            <select class="form-control input-sm" id="subject" name="subject_code" required>
+                                <option value="">By Subject</option>
+                                <?php if(!empty($subjectInfo)){
+                                    foreach($subjectInfo as $sub){ ?>
+                                        <option value="<?php echo $sub->subject_code; ?>"><?php echo $sub->sub_name; ?></option>
+                                <?php } } ?>
+                            </select>
+                        </div>
+                       
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer" style="padding:5px;">
+                        <div class="row">
+                            <div class="col-lg-12 col-12">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                <button type="submit" id=subjectWiseAttendanceReport
+                                    class="btn btn-success">Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Assignment Mark Report - all subject -->
+<div class="modal" id="assignmentConsolidatedMarkReport">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="padding: 10px;">
+                <h6 class="modal-title">Exam Mark Sheet</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" style="padding: 10px;">
+                <form method="POST" data-download_form="true" id="" action="<?php echo base_url(); ?>downloadAssignmentExamMarkReport">
+                  
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="role">Term</label>
+                                <select class="form-control input-sm" id="term" name="term_name" required>
+                                    <option value="" >Select Term</option>
+                                    <option value="I PUC">I PUC</option>
+                                    <option value="II PUC">II PUC</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label for="role">Stream</label>
+                            <select class="form-control input-sm" id="stream" name="stream_name">
+                                <option value="">By Stream</option>
+                                <?php if(!empty($streamInfo)){
+                                    foreach($streamInfo as $stream){ ?>
+                                        <option value="<?php echo $stream->stream_name; ?>"><?php echo $stream->stream_name; ?></option>
+                                <?php } } ?>
+                            </select>
+                        </div>
+                        <!-- <div class="col-6 mb-2">
+                            <label for="role">Section</label>
+                            <select class="form-control input-sm" id="section" name="section_name" autocomplete="off">
+                                <option value="">ALL</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
+                                <option value="F">F</option>
+                                <option value="G">G</option>
+                                <option value="H">H</option>
+                                <option value="I">I</option>
+                            </select>
+                        </div> -->
+                       
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer" style="padding:5px;">
+                        <div class="row">
+                            <div class="col-lg-12 col-12">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                <button type="submit" id=subjectWiseAttendanceReport
+                                    class="btn btn-success">Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- The Modal -->
+<div class="modal" id="downloadMerit">
+    <div class="modal-dialog ">
+        <div class="modal-content ">
+
+            <!-- Modal Header -->
+            <div class="modal-header bg-blue ">
+                <h4 class="modal-title">Download Admission Merit List</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-2">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label>Select Preference</label>
+                            <select class="form-control input-sm" id="preference" name="preference">
+                                <?php if($by_first_preference != ""){ ?>
+                                <option value="<?php echo $by_first_preference; ?>" selected><b>Sorted:
+                                        <?php echo $by_first_preference; ?></b></option>
+                                <option value="">Select One Preference</option>
+                                <option value="PCMB">PCMB</option>
+                                <option value="PCMC">PCMC</option>
+                                <option value="PCME">PCME</option>
+                                <option value="PCMS" >PCMS</option>
+                                <option value="CEBA">CEBA</option>
+                                <option value="CSBA">CSBA</option>
+                                <option value="MEBA">MEBA</option>
+                                <option value="MSBA">MSBA</option>
+                                <option value="PEBA">PEBA</option>
+                                <option value="SEBA">SEBA</option>
+                                <option value="HEPS">HEPS</option>
+                                <?php } else  { ?>
+                                <option value="">Select One Preference</option>
+                                <option value="PCMB">PCMB</option>
+                                <option value="PCMC">PCMC</option>
+                                <option value="PCME">PCME</option>
+                                <option value="PCMS" >PCMS</option>
+                                <option value="CEBA">CEBA</option>
+                                <option value="CSBA">CSBA</option>
+                                <option value="MEBA">MEBA</option>
+                                <option value="MSBA">MSBA</option>
+                                <option value="PEBA">PEBA</option>
+                                <option value="SEBA">SEBA</option>
+                                <option value="HEPS">HEPS</option>
+                                <?php
+                    } ?>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label>Filter SSLC Board Name</label>
+                            <select class="form-control input-md required" id="by_board_name_download"
+                                name="by_board_name_download">
+                                <option value="" selected>Filter By SSLC Board Name</option>
+                                <option value="">ALL</option>
+                                <option value="KARNATAKA STATE BOARD">KARNATAKA STATE BOARD</option>
+                                <option value="CBSE">CBSE</option>
+                                <option value="ICSE">ICSE</option>
+                                <option value="OTHER">OTHER</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <label>By Student Type</label>
+
+                        <select class="form-control input-md required" id="student_type" name="student_type">
+                         
+                            <option value="">ALL</option>
+                            <option value="PH">Physically Challenged</option>
+                            <option value="DYC">Dyslexia Challenged</option>
+                            <option value="SPORTS">SPORTS Quota</option>
+                            <option value="NCC">NCC Quota</option>
+                        </select>
+
+                    </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <label>Percentage Filter</label>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <span class="form-group-addon"><b>FROM</b></span>
+                            <input maxlength="5" onkeypress="return isNumberKey(event)" id="percentage_from_downlaod"
+                                type="text" class="form-control" name="percentage_from_downlaod"
+                                placeholder="Percentage From(%)">
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="form-group">
+                            <span class="form-group-addon"><b>TO</b></span>
+                            <input maxlength="5" onkeypress="return isNumberKey(event)" id="percentage_to_downlaod"
+                                type="text" class="form-control" name="percentage_to_downlaod"
+                                placeholder="Percentage To(%)">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button style="float:right;" id="downloadMeritList" type="button" class="btn btn-md btn-primary"><i
+                        class="fa fa-download"></i> Download</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal" id="downloadIPuReport">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header bg-blue ">
+                <h4 class="modal-title">Download Mark List</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-2">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="role">Select Download Type</label>
+                            <select class="form-control required" id="type" name="type">
+                                <option value="All" >All Students</option>
+                                <option value="Failed" >Only Failed Students</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                            <label for="role">Stream</label>
+                            <select class="form-control input-sm" id="streamName" name="streamName">
+                                <option value="All">ALL</option>
+                                <?php if(!empty($streamInfo)){
+                                    foreach($streamInfo as $stream){ ?>
+                                        <option value="<?php echo $stream->stream_name; ?>"><?php echo $stream->stream_name; ?></option>
+                                <?php } } ?>
+                            </select>
+                        </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <span id="loader"></span>
+                <button type="submit" onclick="downloadExcelSheet();" id="downloadAllMarks" class="btn btn-primary">Download</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- The Modal -->
+<div class="modal" id="downloadShortlistedMerit">
+    <div class="modal-dialog ">
+        <div class="modal-content ">
+
+            <!-- Modal Header -->
+            <div class="modal-header bg-blue ">
+                <h4 class="modal-title">Download Shortlisted List</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-2">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Select Preference</label>
+                            <select class="form-control input-sm" id="stream_name_shortlisted" name="preference">
+                                <?php if($by_first_preference != ""){ ?>
+                                <option value="<?php echo $by_first_preference; ?>" selected><b>Sorted: <?php echo $by_first_preference; ?></b></option>
+                                <option value="ALL" >ALL</option>
+                                <option value="PCMB" >PCMB</option>
+                                <option value="PCMC" >PCMC</option>
+                                <option value="PCME" >PCME</option>
+                                <option value="PCMS" >PCMS</option>
+                                <option value="CEBA" >CEBA</option>
+                                <option value="CSBA" >CSBA</option>
+                                <option value="MEBA" >MEBA</option>
+                                <option value="MSBA" >MSBA</option>
+                                <option value="PEBA" >PEBA</option>
+                                <option value="SEBA" >SEBA</option>
+                                <option value="HEPS" >HEPS</option>
+                                <?php } else  { ?>
+                                <option value="ALL" >ALL</option>
+                                <option value="PCMB" >PCMB</option>
+                                <option value="PCMC" >PCMC</option>
+                                <option value="PCME" >PCME</option>
+                                <option value="CEBA" >CEBA</option>
+                                <option value="PCMS" >PCMS</option>
+                                <option value="CSBA" >CSBA</option>
+                                <option value="MEBA" >MEBA</option>
+                                <option value="MSBA" >MSBA</option>
+                                <option value="PEBA" >PEBA</option>
+                                <option value="SEBA" >SEBA</option>
+                                <option value="HEPS" >HEPS</option>
+                                <?php
+                                } ?>
+                            
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                        <label>Filter SSLC Board Name</label>
+                            <select class="form-control input-md required" id="by_board_name_shortlisted" name="by_board_name_shortlisted">
+                            <option value="" selected>Filter By SSLC Board Name</option>
+                            <option value="" >ALL</option>
+                            <option value="KARNATAKA STATE BOARD">KARNATAKA STATE BOARD</option>
+                                <option value="CBSE">CBSE</option>
+                                <option value="ICSE">ICSE</option>
+                                <option value="OTHER">OTHER</option>
+                            </select>
+                        </div> 
+                    </div>
+                    <div class="form-group col-md-6">
+                                     <label>By Admission Year</label>
+
+                                        <select class="form-control input-md" name="admission_year" id="admission_year">
+                                         <option value="<?php echo CURRENT_YEAR?>"><?php echo CURRENT_YEAR?></option>
+                                        <option value="2021">2021</option>
+                                            
+                                        </select>
+                                       
+                            </div>
+                            <div class="form-group col-md-6">
+                            <label>By Shortlist Number</label>
+                            <select class="form-control input-sm" id="shortlist_number" name="shortlist_number" autocomplete="off">    
+                            <option value="">Select</option>
+                            <option value="" >ALL</option>
+                             <option value="1" >I</option>
+                            <option value="2" >II</option>
+                             <option value="3" >III</option>
+                            <option value="4" >IV</option>
+                        </select>
+                            </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <label>Percentage Filter</label>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <span class="form-group-addon"><b>FROM</b></span>
+                            <input maxlength="5" onkeypress="return isNumberKey(event)"  id="percentage_from_downlaod"  type="text" class="form-control" name="percentage_from_downlaod" placeholder="Percentage From(%)">
+                        </div>
+                    </div>
+                    
+                    <div class="col-6">
+                        <div class="form-group">
+                            <span class="form-group-addon"><b>TO</b></span>
+                            <input maxlength="5" onkeypress="return isNumberKey(event)"  id="percentage_to_downlaod" type="text" class="form-control" name="percentage_to_downlaod" placeholder="Percentage To(%)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+            <div class="modal-footer">
+                <button style="float:right;" id="downloadShortlistedMeritList" type="button" class="btn btn-md btn-primary" ><i class="fa fa-download"></i> Download</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- end of the student report modal -->
+<div class="modal fade" id="downloadStaffReport">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header exportModel">
+                <h4 class="modal-title">Download Staff Details</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body p-2">
+                <form action="<?php echo base_url() ?>downloadStaffExcelReport" method="POST">
+                    <div class="row">
+                        <div class="col-lg-6 col-12">
+                            <div class="form-group">
+                                <label>Select Role</label>
+                                <select class="form-control input-sm selectpicker" id="staff_role" name="staff_role" required>
+                                     <option value="">Select Role</option>
+                                     <option value="ALL">ALL</option>
+                                            <?php   if(!empty($designation))
+                                        {
+                                            foreach ($designation as $rl)
+                                            {
+                                                ?>
+                                                <option value="<?php echo $rl->roleId ?>" <?php if($rl->roleId == set_value('role')) {echo "selected=selected";} ?>><?php echo $rl->role ?></option>
+                                                <?php
+                                            }
+                                        } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-12">
+                            <div class="form-group">
+                                <label>Select Department</label>
+                                <select class="form-control input-sm selectpicker" id="staff_department" name="staff_department" required>
+                                      <option value="">Select Department</option>
+                                      <option value="ALL">ALL</option>
+                                        <?php
+                                            if(!empty($departments))
+                                            {
+                                                foreach ($departments as $rl)
+                                                {
+                                                    ?>
+
+                                            <option value="<?php echo $rl->dept_id ?>" <?php if($rl->id == set_value('role')) {echo "selected=selected";} ?>><?php echo $rl->name; ?></option>
+                                            <?php } } ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <h5>Select Required Fields</h5>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <input type="hidden" name="fields[]" class="staff_id" value="staff_id" checked /><span style="font-size: 18px;"> </span>
+
+                            <input type="checkbox" class="staff_id disabled" value="" checked disabled /><span style="font-size: 18px;"> &nbsp;&nbsp;Staff Id</span>
+                        </div>
+                        <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="name" value="name" /><span style="font-size: 18px;"> &nbsp;&nbsp;Staff Name</span>
+                        </div>
+                           <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="dob" value="dob" /><span style="font-size: 18px;"> &nbsp;&nbsp;Date Of Birth</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                          <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="doj" value="doj" /><span style="font-size: 18px;"> &nbsp;&nbsp;Date of Join</span>
+                        </div>
+                        <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="gender" value="gender" /><span style="font-size: 18px;"> &nbsp;&nbsp;Gender</span>
+                        </div> 
+                        <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="present_address" value="present_address" /><span style="font-size: 18px;"> &nbsp;&nbsp;Present Address </span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="aadhar_no " value="aadhar_no" /><span style="font-size: 18px;"> &nbsp;&nbsp;Aadhar No.</span>
+                        </div>
+                        <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="voter_no" value="voter_no" /><span style="font-size: 18px;"> &nbsp;&nbsp;Voter No.</span>
+                        </div>
+                        <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="pan_no" value="pan_no" /><span style="font-size: 18px;"> &nbsp;&nbsp;Pan No.</span>
+                        </div>
+                    </div>
+                   <div class="row">
+                      <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="mobile" value="mobile" /><span style="font-size: 18px;"> &nbsp;&nbsp;Contact Number</span>
+                      </div>
+                      <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="email" value="email" /><span style="font-size: 18px;"> &nbsp;&nbsp;Email</span>
+                     </div>
+                      <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="role" value="role" /><span style="font-size: 18px;"> &nbsp;&nbsp;Role</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                       
+                        <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="department" value="department" /><span style="font-size: 18px;"> &nbsp;&nbsp;Department</span>
+                        </div>
+                        <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="blood_group" value="blood_group" /><span style="font-size: 18px;"> &nbsp;&nbsp;Blood Group</span>
+                        </div>
+                        <!-- <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="religion" value="religion" /><span style="font-size: 18px;"> &nbsp;&nbsp;Blood Group</span>
+                        </div>
+                        <div class="col-lg-4">
+                            <input type="checkbox" name="fields[]" class="blood_group" value="blood_group" /><span style="font-size: 18px;"> &nbsp;&nbsp;Blood Group</span>
+                        </div> -->
+                    </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button id="downloadstaffReportExcel" type="submit" class="btn btn-md btn-primary float-right"><i
+                        class="fa fa-download"></i> Download</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- The Modal for  applicationApprovedReport-->
+<div class="modal" id="downloadMunExternalReport">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header" style="padding: 10px;">
+                <h6 class="modal-title">MUN External</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" style="padding: 10px;">
+                <form method="POST" id="munExternalreport" action="<?php echo base_url(); ?>downloadMunExternalReport">
+                
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label>By Type</label>
+                            <select class="form-control input-md required" id="" name="register_type" required>
+                                <!-- <option value="">By Type</option> -->
+                                <option value="ALL">ALL</option>
+                                <option value="PRIVATE Delegation">PRIVATE Delegation</option>
+                                <option value="INSTITUTION Delegation">INSTITUTION Delegation</option>
+                                <option value="INDIVIDUAL Delegation">INDIVIDUAL Delegation</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-12 mt-2">
+                            <label>By Payment Status</label>
+                            <select class="form-control input-md required" id="" name="status">
+                                <!-- <option value="">ALL</option> -->
+                                <option value="Paid">Paid</option>
+                                <option value="Not_paid">Not Paid</option>
+                            </select>
+                        </div>
+
+
+                        
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer" style="padding:5px;">
+                        <div class="row">
+                            <div class="col-lg-12 col-12">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                <button type="submit" id="munExternalreport"
+                                    class="btn btn-success">Download</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+const checkDownloadStatus = ()=>{
+    const downloadIntervalID = setInterval(() => {
+        if( $.cookie('isDownLoaded')==1 ){
+            hideLoader();
+            clearInterval(downloadIntervalID);
+        }
+    }, 1000);
+}
+
+ //after load student details update student marks entered or not
+ function downloadExcelSheet(){
+        var loader = '<img height="30" src="<?php echo base_url(); ?>/assets/images/loader.gif"/>';
+        var right_mark = '<img src="<?php echo base_url(); ?>/assets/images/right_symbol.png"/>';
+        var type = $('#type :selected').val();
+        var streamName = $('#streamName :selected').val();
+      //  var section_name = $('#section_name :selected').val();
+        
+   $.ajax({
+           url: '<?php echo base_url(); ?>/getFullMarksOfStudent',
+           type: 'POST',
+           dataType:'json',
+           data: {
+            type : type,
+            streamName : streamName,
+           },
+
+           success: function(data) {
+            $("#downloadAllMarks").prop('disabled', false);
+            $("#loader").html(right_mark + "<span style='color:green'><b>Downloded</b></span>");
+              // var studentObj = JSON.parse(data)
+              var $a = $("<a>");
+                $a.attr("href",data.file);
+                $("body").append($a);
+                $a.attr("download","Annual_Result_I_PUC__file.xls");
+                $a[0].click();
+                $a.remove();
+           },
+           error: function(result)
+               {
+                $("#downloadAllMarks").prop('disabled', false);
+                  alert("Mark is not added selected section");
+                  $("#loader").html("<span style='color:red'>Selected class section not found in mark list!!</span>");
+               },
+               fail:(function(status) {
+                $("#downloadAllMarks").prop('disabled', false);
+                alert("Server Error!!  Failed");
+               }),
+               beforeSend:function(d){
+                $("#downloadAllMarks").prop('disabled', true);
+                $("#loader").html(loader);
+               }
+       });
+}
+
+jQuery(document).ready(function() {
+    $("form").on('submit',()=>{
+        $.cookie('isDownLoaded',0);
+        checkDownloadStatus();
+    });
+    $('.pending_future_date').hide();
+ //oncahnge active status
+    $("#pendingStatus").on('change',function(){
+        if(this.value == "Pending"){
+
+            $('.pending_future_date').show();
+
+        }else{
+
+            $('.pending_future_date').hide();
+            $('#pendingFutureDate').val('');  
+        }
+    });
+
+      jQuery('.datepicker, .dateSearch').datepicker({
+        autoclose: true,
+        orientation: "bottom",
+        format: "dd-mm-yyyy"
+
+    });
+    jQuery('#date_select, #date_day, .dateSearch, #date_from, #date_to, #settle_date_bank, .bank_date_search, #date_from_fee, #date_to_fee').datepicker({
+        autoclose: true,
+        orientation: "bottom",
+        format: "dd-mm-yyyy"
+
+    });
+       $('#downloadAttendanceReport').click(function(){
+        var term_name = $('.termValue').val();
+        var section_name = $('#section_name').val();
+        var date_from = $('#date_from').val();
+        var date_to = $('#date_to').val();
+        var percentage_sort = $('#percentage_sort').val();
+        if(section_name == ''){
+            var section = 'ALL';
+        }else{
+            var section = section_name;
+        }
+        if(term_name == ""){
+            alert("Term is Empty!!");
+        // }else if(stream_name == ""){
+        //     alert("Stream is Empty!!");
+        }else{
+            
+            $.ajax({
+                url: '<?php echo base_url(); ?>/downloadAbsentedStudentInfo',
+                type: 'POST',
+                dataType:'json',
+                data: {
+                    date_from : date_from,
+                    date_to : date_to,
+                    term_name : term_name,
+                    section_name : section_name
+                },
+                success: function(data) {
+                    $('#loader').html('');
+                    $("#downloadAttendanceReport").prop('disabled', false);
+                    // $("#downloadAttReport").hide();
+                    var $a = $("<a>");
+                    $a.attr("href",data.file);
+                    $("body").append($a);
+                    $a.attr("download",term_name+"_"+section+"_ATTENDANCE_REPORT.xls");
+                    $a[0].click();
+                    $a.remove();
+                },
+                error: function(result) { 
+                    $('#loader').html('');
+                    $("#downloadAttendanceReport").prop('disabled', false);
+                    alert("Network Server Error!!  Failed");
+                },
+                fail:(function(status) {
+                    $('#loader').html('');
+                    $("#downloadAttendanceReport").prop('disabled', false);
+                    alert("Server Error!!  Failed");
+                }),
+                beforeSend:function(d){
+                    $('#loader').html(loader);
+                    $("#downloadAttendanceReport").prop('disabled', true);
+                }
+            });
+        }
+    });
+
+
+    
+    $('#downloadMeritList').click(function() {
+
+        //  var by_category = $("#by_category_name_download").val();
+        var preference = $("#preference").val();
+        var board_name = $("#by_board_name_download").val();
+        var percentage_from = $("#percentage_from_downlaod").val();
+        var percentage_to = $("#percentage_to_downlaod").val();
+        var student_type = $("#student_type").val();
+        if (preference == "") {
+            alert("Sorry! Select atlest one preference");
+        } else {
+            $.ajax({
+                url: '<?php echo base_url(); ?>/getAllMeritListByApproved',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    student_type : student_type,
+                    preference: preference,
+                    board_name: board_name,
+                    percentage_from: percentage_from,
+                    percentage_to: percentage_to,
+                    type: 'ALL',
+                },
+
+                success: function(data) {
+                    $("#downloadMeritList").prop('disabled', false);
+                    // $("#loader").html(right_mark + "<span style='color:green'><b>Downloded</b></span>");
+                    // var studentObj = JSON.parse(data)
+                    var $a = $("<a>");
+                    $a.attr("href", data.file);
+                    $("body").append($a);
+                    $a.attr("download", preference + "_MERIT-LIST_2019.xls");
+                    $a[0].click();
+                    $a.remove();
+                },
+                error: function(result) {
+                    alert("Server Error!!  Failed");
+                    // $("#downloadAllMarks").prop('disabled', false);
+                    //   alert("Mark is not added selected section");
+                    //   $("#loader").html("<span style='color:red'>Selected class section not found in mark list!!</span>");
+                },
+                fail: (function(status) {
+                    // $("#downloadAllMarks").prop('disabled', false);
+                    alert("Server Error!!  Failed");
+                }),
+                beforeSend: function(d) {
+                    //$("#loaderDiv").html(loader);
+                    $("#downloadMeritList").prop('disabled', true);
+                    // $("#loader").html(loader);
+                }
+            });
+        }
+    });
+
+    
+    $('#downloadShortlistedMeritList').click(function(){
+        var preference = $("#stream_name_shortlisted").val();
+        var board_name = $("#by_board_name_shortlisted").val();
+        var percentage_from = $("#percentage_from_downlaod").val();
+        var percentage_to = $("#percentage_to_downlaod").val();
+        var admission_year = $("#admission_year").val();
+        var shortlist_number = $("#shortlist_number").val();
+
+
+        if(preference == ""){
+            alert("Sorry! Select atlest one preference");
+        }else{
+            $.ajax({
+            url: '<?php echo base_url(); ?>/getAllShortlistedList',
+            type: 'POST',
+            dataType:'json',
+            data: {
+                preference : preference,
+                board_name : board_name,
+                percentage_from : percentage_from,
+                percentage_to : percentage_to,
+                admission_year : admission_year,
+                shortlist_number:shortlist_number,
+                type : 'NOT',
+            },
+
+            success: function(data) {
+                $("#downloadMeritList").prop('disabled', false);
+                // $("#loader").html(right_mark + "<span style='color:green'><b>Downloded</b></span>");
+                // var studentObj = JSON.parse(data)
+                var $a = $("<a>");
+                    $a.attr("href",data.file);
+                    $("body").append($a);
+                    $a.attr("download",preference+"_SHORTLISTED-LIST_2021.xls");
+                    $a[0].click();
+                    $a.remove();
+            },
+            error: function(result)
+                {
+                    alert("Server Error!!  Failed");
+                    // $("#downloadAllMarks").prop('disabled', false);
+                    //   alert("Mark is not added selected section");
+                    //   $("#loader").html("<span style='color:red'>Selected class section not found in mark list!!</span>");
+                },
+                fail:(function(status) {
+                    // $("#downloadAllMarks").prop('disabled', false);
+                    alert("Server Error!!  Failed");
+                }),
+                beforeSend:function(d){
+                    //$("#loaderDiv").html(loader);
+                    $("#downloadMeritList").prop('disabled', true);
+                    // $("#loader").html(loader);
+                }
+        });
+        }
+ 
+      });
+
+
+    function isNumberKey(evt){
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31 
+        && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+});
+</script>
