@@ -819,38 +819,72 @@ class Settings extends BaseController {
         $app_no = array();
         // $highestRow
 
-        for($i=3;$i<=$highestRow;$i++){
+        for($i=5;$i<=$highestRow;$i++){
             $student_id = $objWorksheet->getCellByColumnAndRow(1,$i)->getFormattedValue();
             $student_name = $objWorksheet->getCellByColumnAndRow(2,$i)->getFormattedValue();
             $term_name = $objWorksheet->getCellByColumnAndRow(3,$i)->getFormattedValue();
             $program_name = $objWorksheet->getCellByColumnAndRow(4,$i)->getFormattedValue();
             $stream_name = $objWorksheet->getCellByColumnAndRow(5,$i)->getFormattedValue();
-            $elective_sub = $objWorksheet->getCellByColumnAndRow(6,$i)->getFormattedValue();
-            $admission_no = $objWorksheet->getCellByColumnAndRow(7,$i)->getFormattedValue();
-            $date_of_admission = $objWorksheet->getCellByColumnAndRow(8,$i)->getFormattedValue();
-            $sat_number  = $objWorksheet->getCellByColumnAndRow(9,$i)->getFormattedValue();
-            $dob = $objWorksheet->getCellByColumnAndRow(10,$i)->getFormattedValue();
-            $gender = $objWorksheet->getCellByColumnAndRow(11,$i)->getFormattedValue();
-            $blood_group = $objWorksheet->getCellByColumnAndRow(12,$i)->getFormattedValue();
-            $state = $objWorksheet->getCellByColumnAndRow(13,$i)->getFormattedValue();
-            $district = $objWorksheet->getCellByColumnAndRow(14,$i)->getFormattedValue();
-            $taluk = $objWorksheet->getCellByColumnAndRow(15,$i)->getFormattedValue();
-            $pincode = $objWorksheet->getCellByColumnAndRow(16,$i)->getFormattedValue();
-            $place_of_birth = $objWorksheet->getCellByColumnAndRow(17,$i)->getFormattedValue();
-            $religion = $objWorksheet->getCellByColumnAndRow(18,$i)->getFormattedValue();
-            $caste = $objWorksheet->getCellByColumnAndRow(19,$i)->getFormattedValue();
-            $category = $objWorksheet->getCellByColumnAndRow(20,$i)->getFormattedValue();
-            $mother_tongue = $objWorksheet->getCellByColumnAndRow(21,$i)->getFormattedValue();
-            $aadhar_no  = $objWorksheet->getCellByColumnAndRow(22,$i)->getFormattedValue();
-            $father_name = $objWorksheet->getCellByColumnAndRow(23,$i)->getFormattedValue();
-            $father_mobile = $objWorksheet->getCellByColumnAndRow(24,$i)->getFormattedValue();
-            $mother_name = $objWorksheet->getCellByColumnAndRow(25,$i)->getFormattedValue();
-            $mother_mobile = $objWorksheet->getCellByColumnAndRow(26,$i)->getFormattedValue();
-            $present_address = $objWorksheet->getCellByColumnAndRow(27,$i)->getFormattedValue();
-            $permanent_address = $objWorksheet->getCellByColumnAndRow(28,$i)->getFormattedValue();
 
-            $dobs = str_replace("/", "-", $dob); 
-            $doa = str_replace("/", "-", $date_of_admission); 
+            $section = $objWorksheet->getCellByColumnAndRow(6,$i)->getFormattedValue();
+
+            $elective_sub = $objWorksheet->getCellByColumnAndRow(7,$i)->getFormattedValue();
+
+            $application_no = $objWorksheet->getCellByColumnAndRow(8,$i)->getFormattedValue();
+
+            $admission_no = $objWorksheet->getCellByColumnAndRow(9,$i)->getFormattedValue();
+            $date_of_admission = $objWorksheet->getCellByColumnAndRow(10,$i)->getFormattedValue();
+            $sat_number  = $objWorksheet->getCellByColumnAndRow(11,$i)->getFormattedValue();
+            $dob = $objWorksheet->getCellByColumnAndRow(12,$i)->getFormattedValue();
+            $gender = $objWorksheet->getCellByColumnAndRow(13,$i)->getFormattedValue();
+            $blood_group = $objWorksheet->getCellByColumnAndRow(14,$i)->getFormattedValue();
+            $state = $objWorksheet->getCellByColumnAndRow(15,$i)->getFormattedValue();
+            $district = $objWorksheet->getCellByColumnAndRow(16,$i)->getFormattedValue();
+            $taluk = $objWorksheet->getCellByColumnAndRow(17,$i)->getFormattedValue();
+            $pincode = $objWorksheet->getCellByColumnAndRow(18,$i)->getFormattedValue();
+            $place_of_birth = $objWorksheet->getCellByColumnAndRow(19,$i)->getFormattedValue();
+            $religion = $objWorksheet->getCellByColumnAndRow(20,$i)->getFormattedValue();
+            $caste = $objWorksheet->getCellByColumnAndRow(21,$i)->getFormattedValue();
+            $category = $objWorksheet->getCellByColumnAndRow(22,$i)->getFormattedValue();
+            $mother_tongue = $objWorksheet->getCellByColumnAndRow(23,$i)->getFormattedValue();
+            $aadhar_no  = $objWorksheet->getCellByColumnAndRow(24,$i)->getFormattedValue();
+            $father_name = $objWorksheet->getCellByColumnAndRow(25,$i)->getFormattedValue();
+            $father_mobile = $objWorksheet->getCellByColumnAndRow(26,$i)->getFormattedValue();
+
+            $father_email = $objWorksheet->getCellByColumnAndRow(27,$i)->getFormattedValue();
+            
+            $mother_name = $objWorksheet->getCellByColumnAndRow(28,$i)->getFormattedValue();
+            $mother_mobile = $objWorksheet->getCellByColumnAndRow(29,$i)->getFormattedValue();
+
+            $mother_email = $objWorksheet->getCellByColumnAndRow(30,$i)->getFormattedValue();
+
+            $present_address = $objWorksheet->getCellByColumnAndRow(31,$i)->getFormattedValue();
+            $permanent_address = $objWorksheet->getCellByColumnAndRow(32,$i)->getFormattedValue();
+
+            $guardian_name = $objWorksheet->getCellByColumnAndRow(33,$i)->getFormattedValue();
+            $guardian_mobile = $objWorksheet->getCellByColumnAndRow(34,$i)->getFormattedValue();
+            $guardian_email = $objWorksheet->getCellByColumnAndRow(35,$i)->getFormattedValue();
+            $guardian_address = $objWorksheet->getCellByColumnAndRow(36,$i)->getFormattedValue();
+
+
+            // $dobs = str_replace("/", "-", $dob); 
+            // $doa = str_replace("/", "-", $date_of_admission); 
+            $dobs = $dob;
+            $doa = $date_of_admission;
+
+            if($gender == 'M' || $gender == 'm'){
+                $gender = 'MALE';
+            }else if($gender == 'F' || $gender == 'f'){ 
+                $gender = 'FEMALE';
+            }
+
+            if($religion == 'H' || $religion == 'h'){
+                $religion = 'HINDU';
+            }else if($religion == 'I' || $religion == 'i'){ 
+                $religion = 'ISLAM';
+            }else if($religion == 'C' || $religion == 'c'){ 
+                $religion = 'CHRISTIAN';
+            }
 
             if(!empty($student_id)){
                     $student_info = array(
@@ -859,6 +893,8 @@ class Settings extends BaseController {
                     'term_name' => trim($term_name),
                     'program_name' => trim($program_name),
                     'stream_name'=>trim($stream_name),
+                    'section_name' => trim($section),
+                    'application_no' => trim($application_no),
                     'admission_no'=> trim($admission_no),
                     'date_of_admission'=>date('Y-m-d',strtotime($doa)),
                     'sat_number'=> trim($sat_number),
@@ -878,12 +914,18 @@ class Settings extends BaseController {
                     'aadhar_no' => trim($aadhar_no),
                     'father_name'=> trim($father_name), 
                     'father_mobile'=> trim($father_mobile),
+                    'father_email' => trim($father_email),
                     'mother_name'=> trim($mother_name),
                     'mother_mobile' => trim($mother_mobile),
+                    'mother_email' => trim($mother_email),
                     'present_address' => $present_address,
                     'permanent_address' => $present_address,
-                    'intake_year'=> II_PUC_INTAKE_YEAR, 
-                    'intake_year_id'=> II_PUC_INTAKE_ID, 
+                    'guardian_name' => trim($guardian_name),
+                    'guardian_mobile' => trim($guardian_mobile),
+                    'guardian_email' => trim($guardian_email),
+                    'guardian_address' => trim($guardian_address),
+                    'intake_year'=> ADMISSION_INTAKE, 
+                    'intake_year_id'=> INTAKE_YEAR, 
                     'is_active' => 1,
                     'created_by'=>$this->staff_id,
                     'created_date_time'=>date('Y-m-d H:i:s'));
@@ -899,6 +941,7 @@ class Settings extends BaseController {
                         'term_name' => trim($term_name),
                         'program_name' => trim($program_name),
                         'stream_name'=>trim($stream_name),
+                        'section_name' => trim($section),
                         'elective_sub' => $elective_sub,
                         'admission_no'=> trim($admission_no),
                         'date_of_admission'=>date('Y-m-d',strtotime($doa)),
@@ -914,6 +957,7 @@ class Settings extends BaseController {
                         'stud_row_id' => $return_1,
                         'class' => trim($term_name),
                         'stream'=>trim($stream_name),
+                        'section' => trim($section),
                         'intake_year'=> INTAKE_YEAR, 
                         'created_by'=>$this->staff_id,
                         'created_date_time'=>date('Y-m-d H:i:s'));
@@ -1161,68 +1205,74 @@ class Settings extends BaseController {
     
     
         for($i=2;$i<=$highestRow;$i++){
-            $staff_id = $objWorksheet->getCellByColumnAndRow(1,$i)->getFormattedValue();
-            $name = $objWorksheet->getCellByColumnAndRow(2,$i)->getFormattedValue();
-            $doj = $objWorksheet->getCellByColumnAndRow(3,$i)->getFormattedValue();
-            $gender = $objWorksheet->getCellByColumnAndRow(4,$i)->getFormattedValue();
-            $mobile_no = $objWorksheet->getCellByColumnAndRow(5,$i)->getFormattedValue();
-            $role = $objWorksheet->getCellByColumnAndRow(6,$i)->getFormattedValue();
-            $aadhar_no = $objWorksheet->getCellByColumnAndRow(7,$i)->getFormattedValue();
-            $pan_no = $objWorksheet->getCellByColumnAndRow(8,$i)->getFormattedValue();
-            $pf_number = $objWorksheet->getCellByColumnAndRow(10,$i)->getFormattedValue();
-            $esi_code = $objWorksheet->getCellByColumnAndRow(11,$i)->getFormattedValue();
-            if ($esi_code == '-') {
-                $esi_code = '';
-            }
+            $employee_id = $objWorksheet->getCellByColumnAndRow(0,$i)->getFormattedValue();
+            $name = $objWorksheet->getCellByColumnAndRow(1,$i)->getFormattedValue();
+            $role = $objWorksheet->getCellByColumnAndRow(2,$i)->getFormattedValue();
+            $dept = $objWorksheet->getCellByColumnAndRow(3,$i)->getFormattedValue();
+            $mobile_no = $objWorksheet->getCellByColumnAndRow(4,$i)->getFormattedValue();
 
-            $uan_no = $objWorksheet->getCellByColumnAndRow(9,$i)->getFormattedValue();
-            $bank_name = $objWorksheet->getCellByColumnAndRow(12,$i)->getFormattedValue();
-            $branch_name = $objWorksheet->getCellByColumnAndRow(13,$i)->getFormattedValue();
-            $ifsc_code = $objWorksheet->getCellByColumnAndRow(14,$i)->getFormattedValue();
-            $account_no = $objWorksheet->getCellByColumnAndRow(15,$i)->getFormattedValue();
+            $email = $objWorksheet->getCellByColumnAndRow(5,$i)->getFormattedValue();
+            $address = $objWorksheet->getCellByColumnAndRow(6,$i)->getFormattedValue();
+            $dob = $objWorksheet->getCellByColumnAndRow(7,$i)->getFormattedValue();
+
+            $doj = $objWorksheet->getCellByColumnAndRow(8,$i)->getFormattedValue();
+            $gender = $objWorksheet->getCellByColumnAndRow(9,$i)->getFormattedValue();
+            $aadhar_no = $objWorksheet->getCellByColumnAndRow(10,$i)->getFormattedValue();
+            // $pan_no = $objWorksheet->getCellByColumnAndRow(8,$i)->getFormattedValue();
+            // $pf_number = $objWorksheet->getCellByColumnAndRow(10,$i)->getFormattedValue();
+            // $esi_code = $objWorksheet->getCellByColumnAndRow(11,$i)->getFormattedValue();
+            // if ($esi_code == '-') {
+            //     $esi_code = '';
+            // }
+
+            // $uan_no = $objWorksheet->getCellByColumnAndRow(9,$i)->getFormattedValue();
+            // $bank_name = $objWorksheet->getCellByColumnAndRow(12,$i)->getFormattedValue();
+            // $branch_name = $objWorksheet->getCellByColumnAndRow(13,$i)->getFormattedValue();
+            // $ifsc_code = $objWorksheet->getCellByColumnAndRow(14,$i)->getFormattedValue();
+            // $account_no = $objWorksheet->getCellByColumnAndRow(15,$i)->getFormattedValue();
             
-            $basic_salary = $objWorksheet->getCellByColumnAndRow(16,$i)->getFormattedValue();
-            $da_amount = $objWorksheet->getCellByColumnAndRow(17,$i)->getFormattedValue();
-            $da_amount = str_replace('%', '', $da_amount);
-            if ($da_amount == '-') {
-                $da_amount = '';
-            }
-            $hra_amount = $objWorksheet->getCellByColumnAndRow(18,$i)->getFormattedValue();
-            $hra_amount = str_replace('%', '', $hra_amount);
-            if ($hra_amount == '-') {
-                $hra_amount = '';
-            }
-            $con = $objWorksheet->getCellByColumnAndRow(19,$i)->getFormattedValue();
-            if ($con == '-') {
-                $con = '';
-            }
-            $pf = $objWorksheet->getCellByColumnAndRow(20,$i)->getFormattedValue();
-            $other_deduction = $objWorksheet->getCellByColumnAndRow(21,$i)->getFormattedValue();
-            if ($other_deduction == '-') {
-                $other_deduction = '';
-            }
-            $pt_amount = $objWorksheet->getCellByColumnAndRow(22,$i)->getFormattedValue();
-            $esi = $objWorksheet->getCellByColumnAndRow(23,$i)->getFormattedValue();
-            if ($esi == '-') {
-                $esi = '';
-            }
-            if(!empty($esi)){
-            $esi = 0.75;
-                //$management_esi = 3.25;
-            }else{
-                $esi = 0;
-                //$management_esi = 0;
-            }
-            $cca = $objWorksheet->getCellByColumnAndRow(24,$i)->getFormattedValue();
-            if ($cca == '-') {
-                $cca = '';
-            }
-            $other_earnings = $objWorksheet->getCellByColumnAndRow(25,$i)->getFormattedValue();
-            if ($other_earnings == '-') {
-                $other_earnings = '';
-            }
-            $management_pf = $objWorksheet->getCellByColumnAndRow(26,$i)->getFormattedValue();
-            $management_esi = 0;
+            // $basic_salary = $objWorksheet->getCellByColumnAndRow(16,$i)->getFormattedValue();
+            // $da_amount = $objWorksheet->getCellByColumnAndRow(17,$i)->getFormattedValue();
+            // $da_amount = str_replace('%', '', $da_amount);
+            // if ($da_amount == '-') {
+            //     $da_amount = '';
+            // }
+            // $hra_amount = $objWorksheet->getCellByColumnAndRow(18,$i)->getFormattedValue();
+            // $hra_amount = str_replace('%', '', $hra_amount);
+            // if ($hra_amount == '-') {
+            //     $hra_amount = '';
+            // }
+            // $con = $objWorksheet->getCellByColumnAndRow(19,$i)->getFormattedValue();
+            // if ($con == '-') {
+            //     $con = '';
+            // }
+            // $pf = $objWorksheet->getCellByColumnAndRow(20,$i)->getFormattedValue();
+            // $other_deduction = $objWorksheet->getCellByColumnAndRow(21,$i)->getFormattedValue();
+            // if ($other_deduction == '-') {
+            //     $other_deduction = '';
+            // }
+            // $pt_amount = $objWorksheet->getCellByColumnAndRow(22,$i)->getFormattedValue();
+            // $esi = $objWorksheet->getCellByColumnAndRow(23,$i)->getFormattedValue();
+            // if ($esi == '-') {
+            //     $esi = '';
+            // }
+            // if(!empty($esi)){
+            // $esi = 0.75;
+            //     //$management_esi = 3.25;
+            // }else{
+            //     $esi = 0;
+            //     //$management_esi = 0;
+            // }
+            // $cca = $objWorksheet->getCellByColumnAndRow(24,$i)->getFormattedValue();
+            // if ($cca == '-') {
+            //     $cca = '';
+            // }
+            // $other_earnings = $objWorksheet->getCellByColumnAndRow(25,$i)->getFormattedValue();
+            // if ($other_earnings == '-') {
+            //     $other_earnings = '';
+            // }
+            // $management_pf = $objWorksheet->getCellByColumnAndRow(26,$i)->getFormattedValue();
+            // $management_esi = 0;
 
             // $department = $objWorksheet->getCellByColumnAndRow(3,$i)->getFormattedValue();
             
@@ -1265,7 +1315,7 @@ class Settings extends BaseController {
             //     $role_id = 2;
             //     $dept_id = 4;
             // }
-            $dept ="Teaching";
+            // $dept ="Teaching";
             // $dept = trim($department);
             $departmentInfo = $this->settings->getStaffDepartmentInfo(strtoupper($dept));
 
@@ -1276,7 +1326,7 @@ class Settings extends BaseController {
             if(!empty($roleInfo)){
                 $role_id = $roleInfo->roleId;
             }else{
-                $role_id = '2';
+                $role_id = '';
             }
 
             if(!empty($departmentInfo)){
@@ -1291,24 +1341,27 @@ class Settings extends BaseController {
 
            
     
-            // if($email == ''){
-            //     $Email = '';
-            // }else{
-            //     $Email = $email;
-            // }
+            if($email == ''){
+                $Email = '';
+            }else{
+                $Email = $email;
+            }
             if($mobile_no == ''){
                 $Mobile_no = '';
             }else{
                 $Mobile_no = trim($mobile_no);
             }
             //  $dateOfBirth = str_replace("/", "-", $dob);
-             $dateOfJoin = str_replace("/", "-", $doj);
+            //  $dateOfJoin = str_replace("/", "-", $doj);
 
-            //  if($dateOfBirth == ''){
-            //     $DateOfBirth = '';
-            //  }else{
-            //     $DateOfBirth = date('Y-m-d',strtotime($dateOfBirth));
-            //  }
+             $dateOfBirth = $dob;
+             $dateOfJoin = $doj;
+
+             if($dateOfBirth == ''){
+                $DateOfBirth = '';
+             }else{
+                $DateOfBirth = date('Y-m-d',strtotime($dateOfBirth));
+             }
 
              if($dateOfJoin == ''){
                 $DateOfJoin = '';
@@ -1316,29 +1369,29 @@ class Settings extends BaseController {
                 $DateOfJoin = date('Y-m-d',strtotime($dateOfJoin));
              }
     
-            //$username = 'LPUVJ'.''.$staff_Id;
-          
+            $user_id = 1000 + $count;
+            $staff_id = 'MILP'.''.$user_id;
+
             if(!empty($name)){
                 $staffInfo = array(
                     'staff_id' => trim($staff_id),
+                    'employee_id' => trim($employee_id),
                     'name' => strtoupper($name),
                     'doj' => $DateOfJoin,
                     'gender' => strtoupper($gender),
                     'mobile' => $Mobile_no,
                     'role' => $role_id,
                     'aadhar_no' => $aadhar_no,
-                    'pan_no' => $pan_no,
-                    'pf_number' => $pf_number,
-                    'esi_code' => $esi_code,
+                    // 'pan_no' => $pan_no,
+                    // 'pf_number' => $pf_number,
+                    // 'esi_code' => $esi_code,
                     'role_name' => $role,
-                    'uan_no' => $uan_no,
+                    // 'uan_no' => $uan_no,
                     //'user_name' => $username,
-                    //'dob' => $DateOfBirth,
+                    'dob' => $DateOfBirth,
                     // 'father_name' => $father_name,
-                    
-                    //'address' => $address,
-                    
-                    //'email' => $Email,
+                    'address' => $address,
+                    'email' => $Email,
                     // 'qualification' => $qualification,
                     // 'designation' => $designation,
                     
@@ -1362,103 +1415,103 @@ class Settings extends BaseController {
                     $count++;
                     // $staff_id++;
             }
-            if(!empty($staff_id)){ 
+            // if(!empty($staff_id)){ 
             
 
-                $bankInfoAdd = array( 
-                    'staff_id' => trim($staff_id), 
-                    'bank_name' => trim($bank_name), 
-                    'branch_name' => trim($branch_name), 
-                    'ifsc_code' => trim($ifsc_code),
-                    'account_no' => trim($account_no),
-                    'created_by'=>$this->staff_id,
-                    'created_date_time'=>date('Y-m-d H:i:s'));
+            //     $bankInfoAdd = array( 
+            //         'staff_id' => trim($staff_id), 
+            //         'bank_name' => trim($bank_name), 
+            //         'branch_name' => trim($branch_name), 
+            //         'ifsc_code' => trim($ifsc_code),
+            //         'account_no' => trim($account_no),
+            //         'created_by'=>$this->staff_id,
+            //         'created_date_time'=>date('Y-m-d H:i:s'));
 
-                $bankInfoUpdate = array( 
-                    'bank_name' => trim($bank_name), 
-                    'branch_name' => trim($branch_name), 
-                    'ifsc_code' => trim($ifsc_code),
-                    'account_no' => trim($account_no),
-                    'updated_by'=>$this->staff_id,
-                    'updated_date_time'=>date('Y-m-d H:i:s'));
+            //     $bankInfoUpdate = array( 
+            //         'bank_name' => trim($bank_name), 
+            //         'branch_name' => trim($branch_name), 
+            //         'ifsc_code' => trim($ifsc_code),
+            //         'account_no' => trim($account_no),
+            //         'updated_by'=>$this->staff_id,
+            //         'updated_date_time'=>date('Y-m-d H:i:s'));
                     
-                $salary_typeEarnings = array('BASIC','DA','HRA','OTHERS','CON','CCA');
-                $calculate_typeEarnings = array('AMOUNT','PERCENTAGE','PERCENTAGE','AMOUNT','AMOUNT','AMOUNT');
-                $value_typeEarnings = array(trim($basic_salary),trim($da_amount),trim($hra_amount),trim($other_earnings),trim($con),trim($cca));
+            //     $salary_typeEarnings = array('BASIC','DA','HRA','OTHERS','CON','CCA');
+            //     $calculate_typeEarnings = array('AMOUNT','PERCENTAGE','PERCENTAGE','AMOUNT','AMOUNT','AMOUNT');
+            //     $value_typeEarnings = array(trim($basic_salary),trim($da_amount),trim($hra_amount),trim($other_earnings),trim($con),trim($cca));
                 
-                $salary_typeDeduction = array('PF','EMPLOYER PF','ESI','EMPLOYER ESI','PT','OTHERS');
-                $calculate_typeDeduction = array('PERCENTAGE','PERCENTAGE','PERCENTAGE','PERCENTAGE','AMOUNT','AMOUNT');
-                $value_typeDeduction = array(trim($pf),trim($management_pf),trim($esi),trim($management_esi),trim($pt_amount),trim($other_deduction));
+            //     $salary_typeDeduction = array('PF','EMPLOYER PF','ESI','EMPLOYER ESI','PT','OTHERS');
+            //     $calculate_typeDeduction = array('PERCENTAGE','PERCENTAGE','PERCENTAGE','PERCENTAGE','AMOUNT','AMOUNT');
+            //     $value_typeDeduction = array(trim($pf),trim($management_pf),trim($esi),trim($management_esi),trim($pt_amount),trim($other_deduction));
 
-                for ($c = 0; $c < count($salary_typeEarnings); $c++) {
-                    $salaryInfoAdd = array( 
-                        'staff_id' => trim($staff_id), 
-                        'salary_type' => $salary_typeEarnings[$c],
-                        'calculate_type' => $calculate_typeEarnings[$c],
-                        'value' => $value_typeEarnings[$c],
-                        'year' => 2025,
-                        'created_by' => $this->staff_id,
-                        'created_date_time' => date('Y-m-d H:i:s')
-                    );
-                    $salaryInfoUpdate = array( 
-                        'staff_id' => trim($staff_id), 
-                        'salary_type' => $salary_typeEarnings[$c],
-                        'calculate_type' => $calculate_typeEarnings[$c],
-                        'value' => $value_typeEarnings[$c],
-                        'year' => 2025,
-                        'updated_by'=>$this->staff_id,
-                        'updated_date_time'=>date('Y-m-d H:i:s')
-                    );
+            //     for ($c = 0; $c < count($salary_typeEarnings); $c++) {
+            //         $salaryInfoAdd = array( 
+            //             'staff_id' => trim($staff_id), 
+            //             'salary_type' => $salary_typeEarnings[$c],
+            //             'calculate_type' => $calculate_typeEarnings[$c],
+            //             'value' => $value_typeEarnings[$c],
+            //             'year' => 2025,
+            //             'created_by' => $this->staff_id,
+            //             'created_date_time' => date('Y-m-d H:i:s')
+            //         );
+            //         $salaryInfoUpdate = array( 
+            //             'staff_id' => trim($staff_id), 
+            //             'salary_type' => $salary_typeEarnings[$c],
+            //             'calculate_type' => $calculate_typeEarnings[$c],
+            //             'value' => $value_typeEarnings[$c],
+            //             'year' => 2025,
+            //             'updated_by'=>$this->staff_id,
+            //             'updated_date_time'=>date('Y-m-d H:i:s')
+            //         );
 
-                    $isSalaryExist = $this->settings->getSalaryDetailsExistEarnings(2025,trim($staff_id),$salary_typeEarnings[$c]);
-                    if(!empty($isSalaryExist)){
-                        $this->settings->updateSalaryEarnings($salaryInfoUpdate,$isSalaryExist->row_id);
-                    }else{
-                        $this->settings->addEarning($salaryInfoAdd);
-                    }
-                }
+            //         $isSalaryExist = $this->settings->getSalaryDetailsExistEarnings(2025,trim($staff_id),$salary_typeEarnings[$c]);
+            //         if(!empty($isSalaryExist)){
+            //             $this->settings->updateSalaryEarnings($salaryInfoUpdate,$isSalaryExist->row_id);
+            //         }else{
+            //             $this->settings->addEarning($salaryInfoAdd);
+            //         }
+            //     }
 
-                for ($j = 0; $j < count($salary_typeDeduction); $j++) {
-                    $salaryInfoAddDeduction = array( 
-                        'staff_id' => trim($staff_id), 
-                        'salary_type' => $salary_typeDeduction[$j],
-                        'calculate_type' => $calculate_typeDeduction[$j],
-                        'value' => $value_typeDeduction[$j],
-                        'year' => 2025,
-                        'created_by' => $this->staff_id,
-                        'created_date_time' => date('Y-m-d H:i:s')
-                    );
-                    $salaryInfoUpdateDeduction = array( 
-                        'staff_id' => trim($staff_id), 
-                        'salary_type' => $salary_typeDeduction[$j],
-                        'calculate_type' => $calculate_typeDeduction[$j],
-                        'value' => $value_typeDeduction[$j],
-                        'year' => 2025,
-                        'updated_by'=>$this->staff_id,
-                        'updated_date_time'=>date('Y-m-d H:i:s')
-                    );
+            //     for ($j = 0; $j < count($salary_typeDeduction); $j++) {
+            //         $salaryInfoAddDeduction = array( 
+            //             'staff_id' => trim($staff_id), 
+            //             'salary_type' => $salary_typeDeduction[$j],
+            //             'calculate_type' => $calculate_typeDeduction[$j],
+            //             'value' => $value_typeDeduction[$j],
+            //             'year' => 2025,
+            //             'created_by' => $this->staff_id,
+            //             'created_date_time' => date('Y-m-d H:i:s')
+            //         );
+            //         $salaryInfoUpdateDeduction = array( 
+            //             'staff_id' => trim($staff_id), 
+            //             'salary_type' => $salary_typeDeduction[$j],
+            //             'calculate_type' => $calculate_typeDeduction[$j],
+            //             'value' => $value_typeDeduction[$j],
+            //             'year' => 2025,
+            //             'updated_by'=>$this->staff_id,
+            //             'updated_date_time'=>date('Y-m-d H:i:s')
+            //         );
 
-                    $isSalaryExistDeduction = $this->settings->getSalaryDetailsExistDeduction(2025,trim($staff_id),$salary_typeDeduction[$j]);
-                    if(!empty($isSalaryExistDeduction)){
-                        $this->settings->updateSalaryDeduction($salaryInfoUpdateDeduction,$isSalaryExistDeduction->row_id);
-                    }else{
-                        $this->settings->addDeduction($salaryInfoAddDeduction);
-                    }
-                }
-
-
-
-                    $result = $this->staff->updateStaffInfoByStaffId($staffInfo,$staff_id);
-
-                    $isBankExist = $this->staff->checkStaffIdExistsInBankUpdate($staff_id);
-                    if(!empty($isBankExist)){
-                        $this->staff->updateBankInfo($bankInfoUpdate,$isBankExist->row_id);
-                    }else{
-                        $this->staff->addBankInfo($bankInfoAdd);
-                    }
+            //         $isSalaryExistDeduction = $this->settings->getSalaryDetailsExistDeduction(2025,trim($staff_id),$salary_typeDeduction[$j]);
+            //         if(!empty($isSalaryExistDeduction)){
+            //             $this->settings->updateSalaryDeduction($salaryInfoUpdateDeduction,$isSalaryExistDeduction->row_id);
+            //         }else{
+            //             $this->settings->addDeduction($salaryInfoAddDeduction);
+            //         }
+            //     }
 
 
-                }
+
+            //         $result = $this->staff->updateStaffInfoByStaffId($staffInfo,$staff_id);
+
+            //         $isBankExist = $this->staff->checkStaffIdExistsInBankUpdate($staff_id);
+            //         if(!empty($isBankExist)){
+            //             $this->staff->updateBankInfo($bankInfoUpdate,$isBankExist->row_id);
+            //         }else{
+            //             $this->staff->addBankInfo($bankInfoAdd);
+            //         }
+
+
+                // }
             $j++;
                 log_message('debug','Inserted Record=='.print_r($staffInfo,true));
         }
