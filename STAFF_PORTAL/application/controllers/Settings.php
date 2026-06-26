@@ -823,8 +823,8 @@ class Settings extends BaseController {
             $student_id = $objWorksheet->getCellByColumnAndRow(1,$i)->getFormattedValue();
             $student_name = $objWorksheet->getCellByColumnAndRow(2,$i)->getFormattedValue();
             $term_name = $objWorksheet->getCellByColumnAndRow(3,$i)->getFormattedValue();
-            $program_name = $objWorksheet->getCellByColumnAndRow(4,$i)->getFormattedValue();
-            $stream_name = $objWorksheet->getCellByColumnAndRow(5,$i)->getFormattedValue();
+            $stream_name = $objWorksheet->getCellByColumnAndRow(4,$i)->getFormattedValue();
+            $program_name = $objWorksheet->getCellByColumnAndRow(5,$i)->getFormattedValue();
 
             $section = $objWorksheet->getCellByColumnAndRow(6,$i)->getFormattedValue();
 
