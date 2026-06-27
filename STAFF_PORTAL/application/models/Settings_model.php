@@ -797,6 +797,23 @@ class Settings_model extends CI_Model{
         $this->db->update('tbl_staff_shift_info', $timingInfo);
         return TRUE;
     }
+
+    public function addStaffShiftinfo($shiftInfo){
+        $this->db->trans_start();
+        $this->db->insert('tbl_staff_shift_info', $shiftInfo);
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+        return $insert_id;
+    }
+
+    public function checkStaffShiftExists($shift_code){
+        $this->db->from('tbl_staff_shift_info as shift');
+        $this->db->where('shift.shift_code', $shift_code);
+        $this->db->where('shift.is_deleted', 0);
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
     public function updateshiftinfo($salaryTypeInfo, $row_id) {   
         $this->db->where('row_id', $row_id);
         $this->db->update('tbl_staff_shift_info', $salaryTypeInfo);

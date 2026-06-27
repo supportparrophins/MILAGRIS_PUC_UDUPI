@@ -258,6 +258,11 @@ if ($error) {
                                                     class="fas fa-pencil-alt"></i></a>
                                                  <!-- <a class="btn btn-xs btn-danger inactiveStudent mb-1" href="#" data-row_id="<?php echo $std->row_id; ?>" title="Inactive"><i class="fa fa-times"></i></a> -->
                                              <?php } ?>
+                                            <?php if(!empty($accessInfo->can_delete) || !empty($accessInfo->super_access)){ ?>
+                                                <a class="btn btn-xs btn-success restoreStudent mb-1" href="#"
+                                                data-row_id="<?php echo $std->row_id; ?>" title="Restore Student">
+                                                <i class="fas fa-trash-restore"></i></a>
+                                            <?php } ?>
                                             <!-- <?php if($role == ROLE_ADMIN || $role == ROLE_PRIMARY_ADMINISTRATOR){ ?>
                                                 <a class="btn btn-xs btn-danger deleteStudent mb-1"
                                                 data-row_id="<?php echo $std->application_no; ?>" href="#" title="Delete">

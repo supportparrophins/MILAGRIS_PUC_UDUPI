@@ -1958,6 +1958,46 @@ public function importSalaryInfo(){
              redirect('viewSettings');
         }
     }
+
+    public function addStaffShiftinfo(){
+        if($this->isAdmin() == TRUE || $this->isSuperAdmin() != TRUE){
+            $this->loadThis();
+        } else {
+            $shift_code = strtoupper(trim($this->security->xss_clean($this->input->post('shift_code'))));
+            $name = trim($this->security->xss_clean($this->input->post('name')));
+            $start_time = trim($this->security->xss_clean($this->input->post('start_time')));
+            $end_time = trim($this->security->xss_clean($this->input->post('end_time')));
+
+            if(empty($shift_code) || empty($name) || empty($start_time) || empty($end_time)){
+                $this->session->set_flashdata('error', 'Please enter all staff shift details');
+                redirect('viewSettings');
+            }
+
+            $isExist = $this->settings->checkStaffShiftExists($shift_code);
+            if($isExist > 0){
+                $this->session->set_flashdata('warning', 'Staff Shift Code already exists!');
+                redirect('viewSettings');
+            }
+
+            $shiftInfo = array(
+                'shift_code' => $shift_code,
+                'name' => $name,
+                'start_time' => $start_time,
+                'end_time' => $end_time,
+                'created_by' => $this->staff_id,
+                'created_date_time' => date('Y-m-d H:i:s')
+            );
+
+            $result = $this->settings->addStaffShiftinfo($shiftInfo);
+            if($result > 0){
+                $this->session->set_flashdata('success', 'Staff Shift Info added successfully');
+            } else {
+                $this->session->set_flashdata('error', 'Staff Shift Info creation failed');
+            }
+            redirect('viewSettings');
+        }
+    }
+
     public function updateTimingsInfo(){
         if($this->isAdmin() == TRUE){
             $this->loadThis();

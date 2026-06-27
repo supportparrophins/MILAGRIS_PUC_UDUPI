@@ -112,6 +112,36 @@ $(document).ready(function(){
 	
 	});
 
+	jQuery(document).on("click", ".restoreStudent", function(){
+		var row_id = $(this).data("row_id"),
+			hitURL = baseURL + "restoreStudent",
+			currentRow = $(this);
+		
+		var confirmation = confirm("Are you sure to restore this Student ?");
+		
+		if(confirmation)
+		{
+			jQuery.ajax({
+			type : "POST",
+			dataType : "json",
+			url : hitURL,
+			data : { row_id : row_id } 
+			}).done(function(data){
+					
+				if(data.status == true) {
+					currentRow.parents('tr').remove();
+					alert("Student successfully restored");
+					window.location.reload();
+				}
+				else if(data.status == false) { alert("Student restore failed"); }
+				else { alert("Access denied..!"); }
+			});
+		}
+
+
+	
+	});
+
     
 
 

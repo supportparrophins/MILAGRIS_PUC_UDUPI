@@ -244,6 +244,7 @@ $route['updateStudent'] = "students/updateStudent";
 $route['updateStudentAcademicInfo'] = "students/updateStudentAcademicInfo";
 $route['updateStudentFamilyInfo'] = "students/updateStudentFamilyInfo";
 $route['deleteStudent'] = "students/deleteStudent";
+$route['restoreStudent'] = "students/restoreStudent";
 $route['getFamilyInfoByExcel'] = "students/getFamilyInfoByExcel";
 $route['downloadStudentExcelReport'] = 'students/downloadStudentExcelReport';
 $route['promoteStudent'] = "students/promoteStudent";

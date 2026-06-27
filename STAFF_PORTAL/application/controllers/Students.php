@@ -664,6 +664,17 @@ class Students extends BaseController
         } 
     }
 
+    public function restoreStudent(){
+        if($this->isAdmin() == TRUE){
+            $this->loadThis();
+        } else {   
+            $row_id = $this->input->post('row_id');
+            $studentInfo = array('is_deleted' => 0,'updated_by'=>$this->staff_id,'updated_date_time' => date('Y-m-d H:i:s'));
+            $result = $this->student->updateStudentInfo($studentInfo, $row_id);
+            if ($result == true) {echo (json_encode(array('status' => true)));} else {echo (json_encode(array('status' => false)));}
+        } 
+    }
+
       //student Promotion
     public function promoteStudent(){
         if($this->input->server("REQUEST_METHOD") == "POST"){
