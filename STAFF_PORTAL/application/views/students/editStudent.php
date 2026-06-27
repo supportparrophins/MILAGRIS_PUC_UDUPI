@@ -74,6 +74,7 @@ if ($error) {
                                             <form role="form" id="updateStudent" action="<?php echo base_url() ?>updateStudent" method="post" enctype="multipart/form-data">
                                                 <input type="hidden" value="<?php echo $studentInfo->row_id; ?>" id="row_id" name="row_id">
                                                 <input type="hidden" value="<?php echo $studentInfo->application_no; ?>" id="application_no" name="application_no">
+                                                <input type="hidden" value="<?php echo $studentInfo->admission_no; ?>" id="admission_no" name="admission_no">
                                                 <div class="table-responsive-sm table-responsive-md table-responsive-xs">
                                                     <table class="table table-bordered table-striped table_edit_student">
                                                          <tr>
@@ -91,7 +92,8 @@ if ($error) {
                                                                         class="img-thumbnail" id="uploadedImage"
                                                                         name="userfile" alt="Profile default">
                                                                     <?php } ?> -->
-                                                                    <?php
+
+                                                                    <!-- <?php
                                                                         $profileImg = $studentInfo->photo_url;
                                                                         if (!empty($profileImg)) { ?>
                                                                             <img src="<?php echo $profileImg; ?>" class="img-thumbnail"
@@ -106,6 +108,57 @@ if ($error) {
                                                                         Change Photo
                                                                         <input type="file" class="form-control-sm"
                                                                             id="vImg" name="userfile">
+                                                                    </div> -->
+                                                                    <!-- <?php
+                                                                        // $student_id = $studentInfo->admission_no; // or application_no, whichever is your student ID
+                                                                        // $image_path = '';
+                                                                        // $extensions = ['jpg', 'jpeg', 'png'];
+                                                                        // foreach ($extensions as $ext) {
+                                                                        //     $file = FCPATH . 'upload/student_photo/' . $student_id . '.' . $ext;
+                                                                        //     if (file_exists($file)) {
+                                                                        //         $image_path = base_url('upload/student_photo/' . $student_id . '.' . $ext) . '?v=' . time();
+                                                                        //         break;
+                                                                        //     }
+                                                                        // }
+                                                                    ?> -->
+                                                                    <?php
+                                                                        $student_id = $studentInfo->admission_no;
+                                                                        $image_path = '';
+                                                                        $extensions = ['jpg', 'jpeg', 'png'];
+                                                                        
+                                                                        foreach ($extensions as $ext) {
+                                                                            // Match exact: 12344.jpg
+                                                                            $exact_file = FCPATH . 'upload/student_photo/' . $student_id . '.' . $ext;
+                                                                            // Match old format: 12344 name.jpg (anything after space)
+                                                                            $pattern = FCPATH . 'upload/student_photo/' . $student_id . ' *.' . $ext;
+                                                                            
+                                                                            if (file_exists($exact_file)) {
+                                                                                $image_path = base_url('upload/student_photo/' . $student_id . '.' . $ext) . '?v=' . time();
+                                                                                break;
+                                                                            } else {
+                                                                                $matches = glob($pattern);
+                                                                                if (!empty($matches)) {
+                                                                                    $filename = basename($matches[0]);
+                                                                                    $image_path = base_url('upload/student_photo/' . $filename) . '?v=' . time();
+                                                                                    break;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    ?>
+
+                                                                    <div class="profile-img">
+                                                                        <?php if (!empty($image_path)) { ?>
+                                                                            <img src="<?php echo $image_path; ?>" class="img-thumbnail"
+                                                                                alt="Profile Image" id="uploadedImage">
+                                                                        <?php } else { ?>
+                                                                            <img src="<?php echo base_url(); ?>assets/dist/img/user.png"
+                                                                                class="img-thumbnail" id="uploadedImage" alt="Profile default">
+                                                                        <?php } ?>
+
+                                                                        <div class="file btn btn-sm btn-primary">
+                                                                            Change Photo
+                                                                            <input type="file" class="form-control-sm" id="vImg" name="userfile">
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </td>

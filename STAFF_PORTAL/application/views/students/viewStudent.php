@@ -109,7 +109,7 @@
                                             <div class="table-responsive-sm table-responsive-md table-responsive-xs">
                                                 <table class="table table-bordered">
                                                     <tr>
-                                                        <td style="background:white" width="160" rowspan="11"
+                                                        <!-- <td style="background:white" width="160" rowspan="11"
                                                             class="p-0">
                                                             <div class="profile-img">
                                                                 <?php  $image_path = $studentInfo->photo_url;
@@ -121,6 +121,41 @@
                                                                 <img src="<?php echo base_url(); ?>assets/dist/img/user.png"
                                                                     class="avatar img-thumbnail" id="uploadedImage"
                                                                     alt="Profile default">
+                                                                <?php } ?>
+                                                            </div>
+                                                        </td> -->
+                                                        <td style="background:white" width="160" rowspan="11" class="p-0">
+                                                            <div class="profile-img">
+                                                                <?php
+                                                                $student_id = $studentInfo->admission_no;
+                                                                $image_path = '';
+                                                                $extensions = ['jpg', 'jpeg', 'png'];
+
+                                                                foreach ($extensions as $ext) {
+
+                                                                    // Exact file: 12345.jpg
+                                                                    $exact_file = FCPATH . 'upload/student_photo/' . $student_id . '.' . $ext;
+
+                                                                    // Old format: 12345 Name.jpg
+                                                                    $pattern = FCPATH . 'upload/student_photo/' . $student_id . ' *.' . $ext;
+
+                                                                    if (file_exists($exact_file)) {
+                                                                        $image_path = base_url('upload/student_photo/' . $student_id . '.' . $ext) . '?v=' . time();
+                                                                        break;
+                                                                    } else {
+                                                                        $matches = glob($pattern);
+                                                                        if (!empty($matches)) {
+                                                                            $filename = basename($matches[0]);
+                                                                            $image_path = base_url('upload/student_photo/' . $filename) . '?v=' . time();
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                                if (!empty($image_path)) {?>
+                                                                    <img src="<?php echo $image_path; ?>" class="avatar img-thumbnail" alt="Profile Image" id="uploadedImage">
+                                                                <?php } else { ?>
+                                                                    <img src="<?php echo base_url('assets/dist/img/user.png'); ?>" class="avatar img-thumbnail" id="uploadedImage" alt="Profile default">
                                                                 <?php } ?>
                                                             </div>
                                                         </td>

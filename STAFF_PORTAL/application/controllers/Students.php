@@ -393,28 +393,61 @@ class Students extends BaseController
             //         $post['image_path'] = $image_path;
             //         $imgdata = file_get_contents($image_path);
             //     }
-             $image_path = '';
+
+
+            //  $image_path = '';
+            // $config = [
+            //     'upload_path' => './upload/',
+            //     'allowed_types' => 'jpg|png|jpeg',
+            //     'max_size' => '5120',
+            //     'overwrite' => TRUE,
+            //     'file_ext_tolower' => TRUE
+            // ];
+
+            // $this->load->library('upload', $config);
+
+            // if ($this->upload->do_upload('userfile')) {
+            //     $data = $this->upload->data();
+            //     $image_path = base_url("upload/" . $data['raw_name'] . $data['file_ext']);
+            // } else {
+            //     // Use existing image if new one is not uploaded
+            //     $image_path = $this->input->post('existing_image');
+            // }
+            //     // $post = $this->input->post();
+            //     $post['photo_url'] = $image_path;
+
+           $image_path = '';
+            $student_id = $this->input->post('admission_no'); // or your student_id field
+
+            if (!is_dir('./upload/student_photo/')) {
+                mkdir('./upload/student_photo/', 0755, TRUE);
+            }
+
             $config = [
-                'upload_path' => './upload/',
-                'allowed_types' => 'jpg|png|jpeg',
-                'max_size' => '5120',
-                'overwrite' => TRUE,
-                'file_ext_tolower' => TRUE
+                'upload_path'       => './upload/student_photo/',
+                'allowed_types'     => 'jpg|png|jpeg',
+                'max_size'          => '5120',
+                'overwrite'         => TRUE,
+                'file_ext_tolower'  => TRUE,
+                'file_name'         => $student_id  // renames file to student_id
             ];
 
             $this->load->library('upload', $config);
 
             if ($this->upload->do_upload('userfile')) {
                 $data = $this->upload->data();
-                $image_path = base_url("upload/" . $data['raw_name'] . $data['file_ext']);
+                $image_path = base_url("upload/student_photo/" . $data['raw_name'] . $data['file_ext']);
             } else {
-                // Use existing image if new one is not uploaded
-                $image_path = $this->input->post('existing_image');
+                // Try to find existing photo by student_id in folder
+                $extensions = ['jpg', 'jpeg', 'png'];
+                foreach ($extensions as $ext) {
+                    $file = './upload/student_photo/' . $student_id . '.' . $ext;
+                    if (file_exists($file)) {
+                        $image_path = base_url("upload/student_photo/" . $student_id . '.' . $ext);
+                        break;
+                    }
+                }
             }
-                // $post = $this->input->post();
-                $post['photo_url'] = $image_path;
-
-           
 
                 $student_name = ucwords(strtolower($this->security->xss_clean($this->input->post('student_name'))));
                $application_no = $this->security->xss_clean($this->input->post('application_no'));
@@ -518,9 +551,9 @@ class Students extends BaseController
                     'photo_url' => $image_path
                 );
 
-                if(!empty($application_no)){
-                    $studentInfo['student_id'] = $application_no;
-                }
+                // if(!empty($application_no)){
+                //     $studentInfo['student_id'] = $application_no;
+                // }
                     // if(!empty($image_path)){
                     //     $studentInfo['photo_url'] = $image_path;
     
