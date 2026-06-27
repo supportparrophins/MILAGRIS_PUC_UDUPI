@@ -1789,7 +1789,7 @@ public function downloadStaffAttendanceMonthlyReportPdf(){
             $data['holiday_model'] = $this->holiday;
     
             define('_MPDF_TTFONTPATH', __DIR__ . '/fonts');
-            $mpdf = new \Mpdf\Mpdf(['tempDir' => sys_get_temp_dir().DIRECTORY_SEPARATOR.'mpdf', 'format' => 'A4-L']);
+            $mpdf = new \Mpdf\Mpdf(['format' => 'A4-L']);
             $mpdf->AddPage('P','','','','',10,10,8,8,8,8);
             $mpdf->SetTitle('Staff Monthly Attendance');
             $html = $this->load->view('reports/printStaffMonthlyAttendance', $data, true);

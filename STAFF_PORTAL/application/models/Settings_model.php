@@ -929,4 +929,13 @@ class Settings_model extends CI_Model{
         $query = $this->db->get();
         return $query->result();
     }
+
+    public function getStudentAllYearInfo()
+    {
+        $this->db->from('tbl_year_info as year');
+        $this->db->where('year.is_deleted', 0);
+        $this->db->order_by('year.year','desc');
+        $query = $this->db->get();
+        return $query->result();
+    }
 }

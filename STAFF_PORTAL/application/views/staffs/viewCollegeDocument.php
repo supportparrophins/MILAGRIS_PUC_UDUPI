@@ -184,7 +184,10 @@
                                         <?php } ?>
 
                                         <option value="">By Year</option>
-                                        <option value="2024">2024</option>
+                                        <?php foreach($studentYears as $year){ ?>
+                                            <option value="<?php echo $year->year; ?>"><?php echo $year->year; ?></option>
+                                        <?php } ?>
+                                        <!-- <option value="2024">2024</option> -->
 
                                     </select>
 
@@ -494,8 +497,11 @@
                                 <select class="form-control input-sm" id="document_year" name="document_year" required>
 
                                     <option value="">Select Year</option>
+                                    <?php foreach($studentYears as $year){ ?>
+                                            <option value="<?php echo $year->year; ?>"><?php echo $year->year; ?></option>
+                                        <?php } ?>
 
-                                    <option value="2024">2024</option>
+                                    <!-- <option value="2024">2024</option> -->
                                     <!-- <option value="2023">2023</option>
 
                                     <option value="2022">2022</option> -->

@@ -995,7 +995,7 @@ class Students extends BaseController
             $filter['student_id'] = $student_id;
             $this->global['pageTitle'] = ''.TAB_TITLE.' : Transfer Certificate';
             $data['studentInfo'] = $this->student->getStudentsTcInfoById($filter);
-            $mpdf = new \Mpdf\Mpdf(['tempDir' => sys_get_temp_dir().DIRECTORY_SEPARATOR.'mpdf','default_font' => 'timesnewroman', 'format' => 'A4-L']);
+            $mpdf = new \Mpdf\Mpdf(['default_font' => 'timesnewroman', 'format' => 'A4-L']);
             $mpdf->AddPage('P','','','','',10,10,8,8,8,8);
             $mpdf->SetTitle('Transfer Certificate');
             $html = $this->load->view('students/viewStdTC',$data,true);

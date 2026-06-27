@@ -2365,6 +2365,7 @@ class Staffs extends BaseController
             $data['documentTypeInfo'] = $this->staff->getAllDocumentTypeInfo();
 
             $data['accessInfo'] = $this->getCurrentAccess();
+            $data['studentYears'] = $this->settings->getStudentAllYearInfo();
 
             $this->global['pageTitle'] = '' . TAB_TITLE . ' : Document Details ';
 
