@@ -638,7 +638,7 @@ public function updateCoursePaymentLogByRowId($paymentInfo,$order_id) {
             }
             $this->db->where('notification.is_deleted', 0);
             $this->db->order_by("date_time","DESC");
-            $this->db->limit(50);
+            // $this->db->limit(50);
             $query = $this->db->get(); 
             return $query->result();
         }
@@ -844,7 +844,7 @@ public function updateCoursePaymentLogByRowId($paymentInfo,$order_id) {
         }
 
         public function getabsentDetails($student_id){
-            $this->db->select('attendance.absent_date,sub.name as sub_name,time.start_time,time.end_time');
+            $this->db->select('attendance.absent_date,sub.name,time.start_time,time.end_time');
             $this->db->from('tbl_student_attendance_details as attendance');
             $this->db->join('tbl_subjects as sub','sub.subject_code = attendance.subject_code');
             $this->db->join('tbl_class_timings as time','time.row_id = attendance.time_row_id');

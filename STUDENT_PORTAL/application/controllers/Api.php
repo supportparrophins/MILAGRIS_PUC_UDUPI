@@ -759,10 +759,6 @@ class Api extends BaseController
     public function myNotificationsApi(){
         $json = file_get_contents('php://input'); 
         $obj = json_decode($json,true);
-        $term_name=$obj['term_name'];
-        $section_name=$obj['section_name'];
-        $stream_name = $obj['stream_name'];
-        $student_id = $obj['student_id'];
         $row_id = $obj['row_id'];
 
         // $term_name='KG II';
