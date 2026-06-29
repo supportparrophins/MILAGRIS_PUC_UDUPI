@@ -88,13 +88,13 @@
                   <a class="float-right" style="margin-top: 10px;" href="<?php echo base_url() ?>forgotPassword">Forgot Password</a>
               </div> -->
               <div class="col-lg-6">
-                <a href="https://play.google.com/store/apps/details?id=com.parrophins.loyola_puc_vijapur" style="margin-top:10px;"> 
+                <a href="" style="margin-top:10px;"> 
                   <img src="<?php echo base_url() ?>assets/dist/img/AgnesPlaystore1.jpg" alt="" height="50" width="140" style="margin-top: 10px;">
                 </a>
               </div>
 
               <div class="col-lg-6">
-                <a href="https://apps.apple.com/in/app/loyola-pu-college-vijayapura/id6504006737" >
+                <a href="" >
                   <img src="<?php echo base_url() ?>assets/dist/img/AgnesAppstore2.png" alt="" height="50" width="140"  style="margin-top:10px;">
                 </a>
               </div>
@@ -102,7 +102,7 @@
           </div>
           <div class="card-footer">
             <div class="col-xs-12 text-center">
-              <span class="">&copy;<script>document.write(new Date().getFullYear())</script>-24 <a href="" target="_blank"><span class="title_green">School</span><span class="title_blue">Phins</span></a> The Wings of an Education.</span>
+              <span class="">&copy;<script>document.write(new Date().getFullYear())</script>-27 <a href="" target="_blank"><span class="title_green">School</span><span class="title_blue">Phins</span></a> The Wings of an Education.</span>
             </div>
           </div>
         </div>
