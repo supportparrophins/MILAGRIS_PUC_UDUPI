@@ -1024,7 +1024,7 @@ class ApiStaff extends CI_Controller
         echo $data;
     }
 
-    function webLogin($staff_id,$headShow)
+    function webLogin($staff_id,$headShow,$module_id)
     {
         $result = $this->login_model->loginMe($staff_id, PASSWORD);
 
@@ -1051,6 +1051,8 @@ class ApiStaff extends CI_Controller
                 'lastLogin' => $lastLogin->createdDtm,
 
                 'dept_id' => $result->department_id,
+                'current_module_id' => $module_id,
+
 
                 'isLoggedIn' => true,
             ];
@@ -1082,11 +1084,12 @@ class ApiStaff extends CI_Controller
         }
     }
 
-    function staffAppStudentDetails()
+     function staffAppStudentDetails()
     {
         $staff_id = $_GET['staffId'];
         $headShow='noshow';
-        $this->webLogin($staff_id,$headShow);
+        $module_id = '8';
+        $this->webLogin($staff_id,$headShow,$module_id);
         redirect('studentDetails');
     }
 
@@ -1094,15 +1097,17 @@ class ApiStaff extends CI_Controller
     {
         $staff_id = $_GET['staffId'];
         $headShow='noshow';
-        $this->webLogin($staff_id,$headShow);
-        redirect('staffDetails');
+        $module_id = '2';
+        $this->webLogin($staff_id,$headShow,$module_id);
+        redirect('schoolStaffDetails');
     }
 
     function staffAppTakeAttendance()
     {
         $staff_id = $_GET['staffId'];
         $headShow='noshow';
-        $this->webLogin($staff_id,$headShow);
+        $module_id = '48';
+        $this->webLogin($staff_id,$headShow,$module_id);
         redirect('getAttendanceDetails');
     }
 
@@ -1110,7 +1115,8 @@ class ApiStaff extends CI_Controller
     {
         $staff_id = $_GET['staffId'];
         $headShow='noshow';
-        $this->webLogin($staff_id,$headShow);
+        $module_id = '49';
+        $this->webLogin($staff_id,$headShow,$module_id);
         redirect('viewAttendanceInfo');
     }
 
@@ -1118,7 +1124,8 @@ class ApiStaff extends CI_Controller
     {
         $staff_id = $_GET['staffId'];
         $headShow='noshow';
-        $this->webLogin($staff_id,$headShow);
+        $module_id = '50';
+        $this->webLogin($staff_id,$headShow,$module_id);
         redirect('viewClassCompletedInfo');
     }
 
@@ -1126,15 +1133,17 @@ class ApiStaff extends CI_Controller
     {
         $staff_id = $_GET['staffId'];
         $headShow='noshow';
-        $this->webLogin($staff_id,$headShow);
-        redirect('addInternalMark');
+        $module_id = '53';
+        $this->webLogin($staff_id,$headShow,$module_id);
+        redirect('addUnitTestMark');
     }
 
     function staffAppStudyMaterial()
     {
         $staff_id = $_GET['staffId'];
-        $headShow='show';
-        $this->webLogin($staff_id,$headShow);
+        $headShow='noshow';
+        $module_id = '31';
+        $this->webLogin($staff_id,$headShow,$module_id);
         redirect('viewStudyMaterials');
     }
 
@@ -1152,7 +1161,8 @@ class ApiStaff extends CI_Controller
     {
         $staff_id = $_GET['staffId'];
         $headShow='noshow';
-        $this->webLogin($staff_id,$headShow);
+        $module_id = '39';
+        $this->webLogin($staff_id,$headShow,$module_id);
         redirect('pushNotification');
     }
 
@@ -1162,7 +1172,8 @@ class ApiStaff extends CI_Controller
        // log_message('debug','staff_id-->'.print_r($staff_id,true));
 
         $headShow='noshow';
-        $this->webLogin($staff_id,$headShow);
+        $module_id = '67';
+        $this->webLogin($staff_id,$headShow,$module_id);
         redirect('viewHolidayList');
     }
 
@@ -1172,7 +1183,8 @@ class ApiStaff extends CI_Controller
        // log_message('debug','staff_id-->'.print_r($staff_id,true));
 
         $headShow='noshow';
-        $this->webLogin($staff_id,$headShow);
+         $module_id = '64';
+        $this->webLogin($staff_id,$headShow,$module_id);
         redirect('viewDocumentInfo');
     }
 
@@ -1180,7 +1192,8 @@ class ApiStaff extends CI_Controller
     {
         $staff_id = $_GET['staffId'];
         $headShow='noshow';
-        $this->webLogin($staff_id,$headShow);
+        $module_id = '71';
+        $this->webLogin($staff_id,$headShow,$module_id);
         redirect('calendar');
     }
 
@@ -1188,7 +1201,8 @@ class ApiStaff extends CI_Controller
     {
         $staff_id = $_GET['staffId'];
         $headShow='noshow';
-        $this->webLogin($staff_id,$headShow);
+        $module_id = '13';
+        $this->webLogin($staff_id,$headShow,$module_id);
         redirect('suggestionListing');
     }
 
@@ -1196,7 +1210,8 @@ class ApiStaff extends CI_Controller
     {
         $staff_id = $_GET['staffId'];
         $headShow='show';
-        $this->webLogin($staff_id,$headShow);
+        $module_id = '1';
+        $this->webLogin($staff_id,$headShow,$module_id);
         redirect('dashboard');
     }
 
@@ -1204,26 +1219,32 @@ class ApiStaff extends CI_Controller
     {
         $staff_id = $_GET['staffId'];
         $headShow='noshow';
-        $this->webLogin($staff_id,$headShow);
+        $module_id = '6';
+        $this->webLogin($staff_id,$headShow,$module_id);
         redirect('getStaffAttendanceInfo');
     }
 
-    function staffHomeWorkInfo()
+     function staffHomeWorkInfo()
     {
         $staff_id = $_GET['staffId'];
         $headShow='noshow';
         $this->webLogin($staff_id,$headShow);
-        redirect('getStudentHomework'); 
+        redirect('getStudentHomework');
     }
-     function dynamicRedirect()
+    function dynamicRedirect()
     {
         $staff_id = $_GET['staffId'];
         $function = $_GET['func_name'];
-        $headShow='show';
-        $this->webLogin($staff_id,$headShow);
+        $headShow='noshow';
+        if($function == 'getStudentHomework'){
+            $module_id = '32';
+
+        }else{
+            $module_id = '1';
+        }
+        $this->webLogin($staff_id,$headShow,$module_id);
         redirect($function);
     }
-
     public function approveLeaveList()
     {
         $json = file_get_contents('php://input');
