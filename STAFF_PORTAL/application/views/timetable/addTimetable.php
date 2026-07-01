@@ -107,7 +107,7 @@ if ($error) {
                                                     </div>
                                                     <hr class="mb-1 mt-0">
                                                     <?php } } ?>
-                                                    <?php if($role == ROLE_ADMIN || $role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_OFFICE || $role == ROLE_SUPER_ADMIN) { ?>
+                                                    <?php if($role == ROLE_ADMIN || $role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_OFFICE || $role == ROLE_SUPER_ADMIN || $this->staff_id=='MILP1004') { ?>
                                                         <button type="button" class="btn btn-sm btn-success py-1 px-2 float-right mr-2 btn_add_subject" title="Add" onclick="openModel('<?php echo $class->row_id; ?>','<?php echo $week->week_name; ?>','<?php echo $week->row_id; ?>','<?php echo $class->start_time .'-'. $class->end_time ?>')"><i class="fa fa-plus"></i></button>
                                                     <?php } ?>
                                                 </td>
