@@ -765,7 +765,10 @@ class Api extends BaseController
         // $section_name='C';
         // $student_id = '565464';
         // $row_id = '2';
+            log_message('debug', 'row_id' . print_r($row_id, true));
+
         $student = $this->student_model->getStudentInfoByRowId($row_id);
+            log_message('debug', 'student' . print_r($student, true));
 
        
         $notifications = $this->student_model->getStudentNotifications($student->term_name,$student->section_name,$student->stream_name);
@@ -804,7 +807,7 @@ class Api extends BaseController
             //     }
             //     $db_data[] = $info;
             // }
-            // log_message('debug', 'db_data-->' . print_r($db_data, true));
+            log_message('debug', 'db_data-->' . print_r($db_data, true));
             
             $data = json_encode($db_data);
         echo $data;
@@ -3112,24 +3115,100 @@ public function galleryInfoImages(){
 
 
 
-public function myHomework(){
-    $json = file_get_contents('php://input'); 
-    $obj = json_decode($json,true);
-    $student_id = $obj['student_id'];
-    $student = $this->student_model->getStudentInfoByRowId($student_id);
-    $todayDate = date('Y-m-d');
-    $active_date =  date('Y-m-d', strtotime('-15 days'));
-    $startDate = date('Y-m-d', strtotime('-15 days'));
-    $endDate =  date('Y-m-d', strtotime('+15 days'));
-    $homeworkInfo = $this->push_notification_model->getStudentHomeworkApi($startDate,$endDate,$student->term_name,$student->stream_name,$student->section_name);
-    $db_data = array();
-    foreach($homeworkInfo as $hw){
-        $hw->submission_date = date('d-m-Y h:i A',strtotime($hw->date_time));
-        $db_data[] = $hw;
+// public function myHomework(){
+//     $json = file_get_contents('php://input'); 
+//     $obj = json_decode($json,true);
+//     $student_id = $obj['student_id'];
+//     $student = $this->student_model->getStudentInfoByRowId($student_id);
+//     $todayDate = date('Y-m-d');
+//     $active_date =  date('Y-m-d', strtotime('-15 days'));
+//     $startDate = date('Y-m-d', strtotime('-15 days'));
+//     $endDate =  date('Y-m-d', strtotime('+15 days'));
+//     $homeworkInfo = $this->push_notification_model->getStudentHomeworkApi($startDate,$endDate,$student->term_name,$student->stream_name,$student->section_name);
+//     $db_data = array();
+//     foreach($homeworkInfo as $hw){
+//         $hw->submission_date = date('d-m-Y h:i A',strtotime($hw->date_time));
+//         $db_data[] = $hw;
+//     }
+//     $data = json_encode($db_data);
+//     echo $data;
+// }
+ public function myHomework() {
+        $json = file_get_contents('php://input'); 
+        $obj = json_decode($json, true);
+        $student_id = $obj['row_id'];
+        $student = $this->student_model->getStudentInfoByRowId($student_id);
+        $startDate = date('Y-m-d', strtotime('-15 days'));
+        $endDate = date('Y-m-d', strtotime('+15 days'));
+        
+        $homeworkInfo = $this->push_notification_model->getStudentHomeworkApi($startDate,$endDate,$student->term_name,$student->stream_name,$student->section_name);
+    
+        $db_data = array();
+        foreach ($homeworkInfo as $hw) {
+            // Check homework completion status using model method
+            $completionInfo = $this->student_model->checkHomeworkCompletion($student_id, $hw->row_id);
+    
+            if ($completionInfo) {
+                $hw->status = 'completed';
+                $hw->date_time = $completionInfo->completed_date_time;
+                $hw->submission_date = date('Y-m-d', strtotime($completionInfo->completed_date_time));
+            } else {
+                $hw->status = 'notcompleted';
+            }
+
+            //  if (!empty($hw->filepath) && strpos($hw->filepath, 'staff/') !== 0) {
+            //     $hw->filepath = 'staff/' . $hw->filepath;
+            // }
+            // if (!empty($hw->filepath2) && strpos($hw->filepath2, 'staff/') !== 0) {
+            //     $hw->filepath2 = 'staff/' . $hw->filepath2;
+            // }
+            
+            $db_data[] = $hw;
+        }
+        // log_message('debug', 'db_data-->'.print_r($db_data, true));
+        
+        $data = json_encode($db_data);
+        echo $data;
     }
-    $data = json_encode($db_data);
-    echo $data;
-}
+    
+    
+    
+
+
+    public function completeAction(){
+        $json = file_get_contents('php://input'); 
+        $obj = json_decode($json, true);
+        $row_id = $obj['row_id'];
+        $std_row_id = $obj['std_row_id'];
+        $action = $obj['action'];
+
+        if($action == 'complete'){
+            $info = array(
+                'std_row_id' => $std_row_id,
+                'home_work_id' => $row_id ,
+                'completed_date_time' => date('Y-m-d H:i:s')
+            );
+
+            $result = $this->student_model->addHomeWork($info);   
+
+            if($result>0){
+                $msg='success';
+            }else{
+                $msg='failed';
+            }
+        }else if($action == 'remove'){
+            $result = $this->student_model->deleteHomeWork($row_id,$std_row_id);  
+            $msg='success';
+        }else{
+            $msg='failed';
+        }
+    
+    
+        // log_message('debug', 'mergedInfo-->' . print_r($mergedInfo, true));
+        $data = json_encode($msg);
+        echo $data;
+    }
+
 
     public function viewTransportPaymentInfo(){	
         $json = file_get_contents('php://input'); 

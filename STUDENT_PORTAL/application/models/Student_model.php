@@ -632,9 +632,9 @@ public function updateCoursePaymentLogByRowId($paymentInfo,$order_id) {
                 $this->db->where('notification.stream_name',"ALL");
             }
             if(!empty($section_name)){
-                $this->db->where_in('notification.section_name',array($section_name,"ALL"));
+                $this->db->where_in('notification.section_name',array($section_name,"ALL",''));
             }else{
-                $this->db->where('notification.section_name',"ALL");
+                $this->db->where_in('notification.section_name',array("ALL",""));
             }
             $this->db->where('notification.is_deleted', 0);
             $this->db->order_by("date_time","DESC");
@@ -1079,5 +1079,34 @@ public function updateCoursePaymentLogByRowId($paymentInfo,$order_id) {
         $query = $this->db->get();
         return $query->row();
     }
+     public function addHomeWork($info){
+        $this->db->trans_start();
+        $this->db->insert('tbl_homework_competed_students', $info);
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+        return $insert_id;
+    }
+
+    public function deleteHomeWork($home_work_id,$std_row_id){
+     
+
+        $this->db->where('home_work_id', $home_work_id);
+        $this->db->where('std_row_id', $std_row_id);
+        
+        $this->db->delete('tbl_homework_competed_students');
+        return true;
+    }
+
+
+    public function checkHomeworkCompletion($student_id, $homework_id) {
+        $this->db->select('completed_date_time');
+        $this->db->from('tbl_homework_competed_students');
+        $this->db->where('std_row_id', $student_id);
+        $this->db->where('home_work_id', $homework_id);
+        $query = $this->db->get();
+        
+        return $query->row();  // Returns row object or null if not found
+    }
+
 }
 ?>

@@ -242,6 +242,8 @@ $route['apiappsharedprefsReset'] = 'api/appsharedprefsReset';
 $route['apiswitchprofile'] = 'api/switchprofile';
 
 $route['apimyHomework'] = 'api/myHomework';
+$route['apicompleteAction'] = 'api/completeAction';
+
 
 $route['apiviewTransportPaymentInfo'] = "api/viewTransportPaymentInfo";
 //busfeePaymentReceiptPrint
