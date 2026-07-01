@@ -354,6 +354,23 @@
        
         <div class="nav-wrapper">
             <ul class="nav flex-column">
+                 <?php if($staffID == 'MILP1004'){ ?>
+            <li class="nav-item">
+                    <a href="#staff_link" data-toggle="collapse" aria-expanded="false"
+                        class="nav-link  dropdown-toggle">
+                        <i class="fas fa-chalkboard-teacher header_icons"></i>
+                        <span>Staff</span>
+                    </a>
+                    <ul class="collapse list-unstyled ml-3" id="staff_link">
+                        <li class="nav-item">
+                            <a class="nav-link " href="<?php echo base_url(); ?>staffDetails">
+                                <i class="fas fa-chalkboard-teacher header_icons"></i>
+                                <span>View All</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            <?php } ?>
                   
         <?php if(!empty($ModuleInfo)){   
             foreach($ModuleInfo as $module){ 

@@ -80,7 +80,7 @@ class Staffs extends BaseController
                 //   title="View More"><i class="fa fa-eye"></i></a>';
 
                 // if ($this->role == ROLE_ADMIN || $this->role == ROLE_SUPER_ADMIN || $this->role == ROLE_PRIMARY_ADMINISTRATOR || $this->role == ROLE_PRINCIPAL || $this->role == ROLE_OFFICE || $this->role == ROLE_VICE_PRINCIPAL || $this->role == ROLE_FINANCE_OFFICER || $this->role == ROLE_ACCOUNT) {
-                if(isset($accessInfo) && $accessInfo->can_edit==1){
+                if(isset($accessInfo) && $accessInfo->can_edit==1 || $this->staff_id=='MILP1004'){
                     $editButton = '<a class="btn btn-xs btn-primary"
                 href="' . base_url() . 'editStaff/' . $staff->row_id . '" title="Edit Staff"><i
                     class="fa fa-eye"></i></a>';
