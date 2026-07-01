@@ -1133,7 +1133,7 @@ class ApiStaff extends CI_Controller
     function staffAppStudyMaterial()
     {
         $staff_id = $_GET['staffId'];
-        $headShow='noshow';
+        $headShow='show';
         $this->webLogin($staff_id,$headShow);
         redirect('viewStudyMaterials');
     }
@@ -1219,7 +1219,7 @@ class ApiStaff extends CI_Controller
     {
         $staff_id = $_GET['staffId'];
         $function = $_GET['func_name'];
-        $headShow='noshow';
+        $headShow='show';
         $this->webLogin($staff_id,$headShow);
         redirect($function);
     }
