@@ -75,7 +75,7 @@
                                     <a onclick="showLoader();window.history.back();" class="btn primary_color mobile-btn float-right text-white border_left_radius"
                                     value="Back"><i class="fa fa-arrow-circle-left"></i> Back </a>
                                     <?php // if($role == ROLE_ADMIN || $role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_SUPER_ADMIN){ ?>
-                                  <?php if(isset($accessInfo) && $accessInfo->super_access==1){ ?>
+                                  <?php if(isset($accessInfo) && $accessInfo->super_access==1 || $this->staff_id=='MILP1004'){ ?>
                                 <div class="dropdown mobile-btn float-right">
                                     <button type="button" class="btn btn-success dropdown-toggle border_radius_none" data-toggle="dropdown">
                                         Action
