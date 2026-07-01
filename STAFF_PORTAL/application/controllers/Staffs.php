@@ -172,7 +172,7 @@ class Staffs extends BaseController
                 $data_array_new[] = array(
                     $checkbox,
                     $staff->staff_id,
-                  //  $staff->employee_id,
+                    $staff->row_id,
                     strtoupper($staff_name),
                     strtoupper($staff->department),
                     strtoupper($staff->role),
