@@ -1668,7 +1668,7 @@ public function employeeIdUpdate() {
             $dateOfJoin = str_replace(".", "-", $info->doj);
          
                 $number_part_15++;
-                $unitName = "LPUV";
+                $unitName = "MILP";
                 $number_part_15 = sprintf('%04d',$number_part_15);
                 $employee_id = date('Y',strtotime($dateOfJoin)).$unitName.$number_part_15;
                

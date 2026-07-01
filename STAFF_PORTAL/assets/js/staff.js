@@ -326,4 +326,28 @@
 			}
 		});
 
+		jQuery(document).on("click", ".deleteachievemtInfo", function(){
+			var row_id = $(this).data("row_id"),
+				hitURL = baseURL + "deleteachievemtInfo",
+				currentRow = $(this);
+			
+			var confirmation = confirm("Are you sure to delete this Achievement ?");
+			
+			if(confirmation)
+			{
+				jQuery.ajax({
+				type : "POST",
+				dataType : "json",
+				url : hitURL,
+				data : { row_id : row_id } 
+				}).done(function(data){
+					 
+					currentRow.parents('tr').remove();
+					if(data.status = true) { alert("Achievement successfully deleted"); }
+					else if(data.status = false) { alert("Achievement deletion failed"); }
+					else { alert("Access denied..!"); }
+				});
+			}
+		});
+
 

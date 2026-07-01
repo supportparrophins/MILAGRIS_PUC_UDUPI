@@ -361,24 +361,24 @@ if ($warning) {
     <?php //if($role == ROLE_PRINCIPAL || $role == ROLE_PRIMARY_ADMINISTRATOR || $this->staff_id == '123456' || $role == ROLE_SUPER_ADMIN  || $role == ROLE_AUDITOR) { ?>
     <?php if(isset($accessInfo) && $accessInfo->super_access == '1') { ?>
         <?php if(isset($feeInfo) && $feeInfo->report == 1) { ?>
-        <!-- <div class="col-lg-3 col-6 mb-1 column_padding_card">
+        <div class="col-lg-3 col-6 mb-1 column_padding_card">
             <div class="card card-small dash-card" style="background: linear-gradient(45deg,#90EE90,#90EE90);">
-                <a onclick="showLoader();" href="<?php //echo base_url(); ?>viewFeeDashboard">
+                <a onclick="showLoader();" href="<?php echo base_url(); ?>viewFeeDashboard">
                     <div class="card-body pt-1 pb-1">
                         <span class=" text-uppercase text-black text-center" style="font-size:18px;">Fee Dashboard </span>
-                        <h6 class="stats-small__value count text-transparent"><?php //echo $totalAdmissionCount; ?></h6>
+                        <h6 class="stats-small__value count text-transparent"><?php echo $totalAdmissionCount; ?></h6>
                         <div class="icon pull-right pt-4">
                             <i class="fa fa-file-invoice dash-icons"></i>
                         </div>
                     </div>
 
                     <div class="card-footer text-center dash-footer p-1">
-                        <a class="more-info text-black" href="<?php //echo base_url(); ?>viewFeeDashboard"><span
+                        <a class="more-info text-black" href="<?php echo base_url(); ?>viewFeeDashboard"><span
                                 class="text-center text-black">View Fee</span></a>
                     </div>
                 </a>
             </div>
-        </div> -->
+        </div>
         <?php } ?>
         <?php if(isset($SalaryInfo) && $SalaryInfo->report == 1) { ?>
         <div class="col-lg-3 col-6 mb-1 column_padding_card">

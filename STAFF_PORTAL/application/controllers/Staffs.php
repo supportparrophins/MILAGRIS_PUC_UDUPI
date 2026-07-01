@@ -291,7 +291,7 @@ class Staffs extends BaseController
                         $appNo = substr($largestEmployeeId, 8);
                         $number_part_15 = $appNo + 1;
                      }             
-                        $unitName = "LPUV";
+                        $unitName = "MILP";
                         $number_part_15 = sprintf('%04d',$number_part_15);
                         $employee_id = date('Y',strtotime($dateOfJoin)).$unitName.$number_part_15;              
                   }
@@ -1428,7 +1428,7 @@ class Staffs extends BaseController
                         $appNo = substr($largestEmployeeId, 8);
                         $number_part_15 = $appNo + 1;
                      }             
-                        $unitName = "LPUV";
+                        $unitName = "MILP";
                         $number_part_15 = sprintf('%04d',$number_part_15);
                         $employee_id = date('Y',strtotime($dateOfJoin)).$unitName.$number_part_15;              
                   }
@@ -1438,7 +1438,7 @@ class Staffs extends BaseController
                         $appNo = substr($isExistEmployeeId->employee_id, 8);
                         $number_part_15 = $appNo;
                                  
-                        $unitName = "LPUV";
+                        $unitName = "MILP";
                         $number_part_15 = sprintf('%04d',$number_part_15);
                         $employee_id = date('Y',strtotime($dateOfJoin)).$unitName.$number_part_15;  
                 }
@@ -2804,4 +2804,107 @@ class Staffs extends BaseController
 			echo json_encode(['status' => 'error']);
 		}
 	}
+
+    function staffSAchievemntsDocInfo()
+    {
+        if($this->isAdmin() == TRUE ){
+            $this->loadThis();
+        } else {
+            $filter = array();
+            $date = $this->input->post('date');
+            $title = $this->input->post('title');
+            $description = $this->input->post('description');
+            $file_path = $this->input->post('file_path');
+            
+
+            $data['title'] = $title;
+            $data['description'] = $description;
+          
+   
+
+            $filter['title'] = $title;
+            $filter['description'] = $description;
+           
+
+            if(!empty($date)){
+                $filter['date'] = date('Y-m-d',strtotime($date));
+                $data['date'] = date('d-m-Y',strtotime($date));
+            }else{
+                $data['date'] = '';
+            }
+            
+            if($this->role != ROLE_PRIMARY_ADMINISTRATOR){
+                $filter['staff_id'] = $this->staff_id;
+            }
+            
+            $data['achvemtInfo'] = $this->staff->getAchieventInfo($filter);
+          
+        
+            $this->load->library('pagination');
+            $count = $this->staff->getAchieventInfoCount($filter);
+            $returns = $this->paginationCompress("staffSAchievemntsDocInfo/", $count, 100);
+            $data['totalachCount'] = $count;
+            $filter['page'] = $returns["page"];
+            $filter['segment'] = $returns["segment"];
+            $this->global['pageTitle'] = ''.TAB_TITLE.' : Achievement Details';
+            $this->loadViews("staffs/staffAchievement", $this->global, $data, NULL);
+
+        }
+    }
+    public function addAchievementInfo(){
+        if ($this->isAdmin() == true) {
+            $this->loadThis();
+        } else { 
+                $filter = array();
+                $title = $this->security->xss_clean($this->input->post('title'));
+                $date = $this->security->xss_clean($this->input->post('date'));
+                $description = $this->security->xss_clean($this->input->post('description'));
+               
+                $image_path="";
+                $target_dir="upload/achievements/";
+                if(!file_exists($target_dir)){
+                    mkdir($target_dir,0777);
+                }
+                $config=['upload_path' => $target_dir,
+                'allowed_types' => 'pdf|jpeg|jpg|png','overwrite' => TRUE,'max_size' => '2048',
+                'overwrite' => TRUE,'file_ext_tolower' => TRUE];
+                $this->load->library('upload', $config);
+                if($this->upload->do_upload()) {
+                    $post=$this->input->post();
+                    $data=$this->upload->data();
+                    $image_path=$target_dir.$data['raw_name'].$data['file_ext'];
+                    $post['image_path'] = $image_path;
+                }
+                $achInfo= array(
+                    'title' => $title,
+                    'date' =>date('Y-m-d',strtotime($date)),
+                    'year' => date('Y'),
+                    'file_path' => $image_path,
+                    'description' => $description,
+                    'created_by' => $this->staff_id,
+                    'created_date_time' => date('Y-m-d H:i:s'));
+
+                $return_id = $this->staff->addachieventDocinfo($achInfo);
+                if($return_id > 0){
+                    $this->session->set_flashdata('success', 'Achievement Added Successfully');
+                }else{
+                    $this->session->set_flashdata('error', 'Failed to add ');
+                }
+                redirect('staffSAchievemntsDocInfo');  
+            
+            
+        }
+    }
+    public function deleteachievemtInfo(){
+        if($this->isAdmin() == TRUE){
+            $this->loadThis();
+        } else {   
+            $row_id = $this->input->post('row_id');
+            log_message('error', 'row_id: ' . $row_id);
+          
+            $achInfo = array('is_deleted' => 1,'updated_by'=>$this->staff_id,'updated_date_time' => date('Y-m-d H:i:s'));
+            $result = $this->staff->updateStaffachinfo($achInfo, $row_id);
+            if ($result == true) {echo (json_encode(array('status' => true)));} else {echo (json_encode(array('status' => false)));}
+        } 
+    }
 }

@@ -1565,3 +1565,17 @@ $route['getStreamSectionByTermforNotification'] = "push_Notification/getStreamSe
 $route['getSectionByTermforNotification'] = "push_Notification/getSectionByTermforNotification";
 $route['downloadClassAbsentedStudentInfo'] = "studentAttendance/downloadClassAbsentedStudentInfo";
 $route['downloadClassTeacherClassCompleted'] = "studentAttendance/downloadClassTeacherClassCompleted";
+
+
+//Observation info
+$route['observationListing'] = 'observation/observationListing';
+$route['observationListing/(:any)'] = 'observation/observationListing/$1';
+$route['addObservation'] = 'observation/addObservation';
+$route['deleteObservation'] = 'observation/deleteObservation';
+$route['editObservation/(:any)'] = "observation/editObservation/$1";
+$route['updateStudentObservation'] = 'observation/updateStudentObservation';
+
+//staff achievements
+$route['staffSAchievemntsDocInfo'] = "staffs/staffSAchievemntsDocInfo";
+$route['addAchievementInfo'] = 'staffs/addAchievementInfo';
+$route['deleteachievemtInfo'] = "staffs/deleteachievemtInfo";

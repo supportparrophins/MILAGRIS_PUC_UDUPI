@@ -1938,4 +1938,66 @@ function getStaffDepartmentForAttendance()
         $this->db->update('tbl_user_role_access', $updateData); 
     }
 
+    function addachieventDocinfo($remarkInfo){
+        $this->db->trans_start();
+        $this->db->insert('tbl_staff_achievemt_info', $remarkInfo);
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+        return $insert_id;
+    }
+    public function getAchieventInfo($filter){
+        $this->db->select('ach.date,ach.file_path,ach.year,ach.description,ach.title,
+       ach.row_id,ach.created_by');
+
+        $this->db->from('tbl_staff_achievemt_info as ach');
+        // $this->db->join('tbl_staff staff', 'staff.row_id = ach.staff_id','left');
+
+        if(!empty($filter['date'])){
+            $this->db->where('ach.date', $filter['date']);
+        }
+        if(!empty($filter['title'])){
+            $this->db->where('ach.title', $filter['title']);
+        }
+        if (!empty($filter['description'])) {
+            $likeCriteria = "(ach.description  LIKE '%" . $filter['description'] . "%')";
+            $this->db->where($likeCriteria);
+        }
+        if(!empty($filter['staff_id']) ){
+            $this->db->where('ach.created_by', $filter['staff_id']);
+        }
+        $this->db->where('ach.is_deleted', 0);
+        $this->db->order_by('ach.created_date_time', 'DESC');
+
+        $query = $this->db->get();
+        $result = $query->result();
+        return $result;
+    }
+    public function getAchieventInfoCount($filter){
+       
+       $this->db->from('tbl_staff_achievemt_info as ach');
+       if(!empty($filter['date'])){
+           $this->db->where('ach.date', $filter['date']);
+       }
+       if(!empty($filter['title'])){
+           $this->db->where('ach.title', $filter['title']);
+       }
+       if (!empty($filter['description'])) {
+           $likeCriteria = "(ach.description  LIKE '%" . $filter['description'] . "%')";
+           $this->db->where($likeCriteria);
+       }
+       if(!empty($filter['staff_id']) ){
+           $this->db->where('ach.created_by', $filter['staff_id']);
+       }
+       $this->db->where('ach.is_deleted', 0);
+       $this->db->order_by('ach.created_date_time', 'DESC');
+       $query = $this->db->get();
+       return $query->num_rows();
+   }
+
+   function updateStaffachinfo($staffInfo, $row_id){
+    log_message('error', 'Updating staff achievement info for row_id: ' . $row_id);
+    $this->db->where('row_id', $row_id);
+    $this->db->update('tbl_staff_achievemt_info', $staffInfo);
+    return TRUE;
+}
 }
