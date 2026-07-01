@@ -40,7 +40,7 @@
             <?php echo validation_errors('<div class="alert alert-danger alert-dismissable">', ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button></div>'); ?>
         </div>
     </div>
-    <?php if($_SESSION['loggedIn_type']!='Mobile'){ ?>
+    <?php //if($_SESSION['loggedIn_type']!='Mobile'){ ?>
     <div class="row p-0">
         <div class="col column_padding_card">
             <div class="card card-small card_heading_title p-0 m-b-1">
@@ -55,8 +55,10 @@
                             <b class="text-dark" style="font-size: 20px;">Total Materials: <?php echo $studyRecordsCount; ?></b>
                         </div>
                         <div class="col-lg-4 col-6 col-sm-4">
+                            <?php if($_SESSION['loggedIn_type']!='Mobile'){ ?>
                             <a onclick="showLoader();window.history.back();" class="btn primary_color mobile-btn float-right text-white border_left_radius"
                                     value="Back"><i class="fa fa-arrow-circle-left"></i> Back </a>
+                            <?php } ?>
                             <?php //if($role == ROLE_ADMIN || $role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_TEACHING_STAFF || $role == ROLE_LIBRARY || $role == ROLE_PRINCIPAL || $role == VICE_PRINCIPAL || $role == ROLE_OFFICE || $role == ROLE_SUPER_ADMIN) {
                                if($accessInfo->can_add == 1) {
                                ?>
@@ -73,7 +75,7 @@
             </div>
         </div>
     </div>
-    <?php } ?>
+    <?php //} ?>
     <div class="row form-employee">
         <div class="col-12 column_padding_card">
             <div class="card card-small c-border p-2">
