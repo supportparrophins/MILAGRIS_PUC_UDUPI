@@ -1135,7 +1135,7 @@ class ApiStaff extends CI_Controller
         $headShow='noshow';
         $module_id = '53';
         $this->webLogin($staff_id,$headShow,$module_id);
-        redirect('addUnitTestMark');
+        redirect('addInternalMark');
     }
 
     function staffAppStudyMaterial()
