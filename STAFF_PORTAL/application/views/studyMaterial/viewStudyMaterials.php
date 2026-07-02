@@ -366,7 +366,7 @@
                                         foreach($subjectInfo as $subject){ ?>
                                     <option value="<?php echo $subject->name; ?>"><?php echo $subject->name; ?></option>
                                     <?php } } ?>
-                                    <option value="Hall Ticket">Hall Ticket</option>
+                                    <!-- <option value="Hall Ticket">Hall Ticket</option> -->
                                 </select>
                             </div>
                         </div>
