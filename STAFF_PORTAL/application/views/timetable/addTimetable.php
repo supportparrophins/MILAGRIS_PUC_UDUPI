@@ -99,7 +99,7 @@ if ($error) {
                                                                 <p class="text-center text-dark mb-1 font-weight-bold"><?php echo $time['sub_name']; ?> - <span class="text-success"><?php echo $time['subject_type']; ?></span></p>
                                                             </a>
                                                         </div>
-                                                    <?php if($role == ROLE_ADMIN || $role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_OFFICE || $role == ROLE_SUPER_ADMIN) { ?>
+                                                    <?php if($role == ROLE_ADMIN || $role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_OFFICE || $role == ROLE_SUPER_ADMIN || $this->staff_id=='MILP1004') { ?>
                                                         <div class="col-12 col-sm-12 col-md-4 col-lg-4">
                                                             <a href="#" class="btn btn-sm btn-danger deleteClassInfo py-1 px-2 float-right mb-1" data-row_id="<?php echo $time['row_id']; ?>" title="Delete"><i class="fa fa-trash"></i></a>
                                                         </div>
