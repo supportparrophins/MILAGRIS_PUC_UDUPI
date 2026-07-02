@@ -153,10 +153,10 @@ if ($error) {
                                                 <?php } ?>
                                                 <option value="">By Section</option>
                                                 <option value="ALL">ALL</option>
-                                                <option value="A">A</option>
+                                                <!-- <option value="A">A</option>
                                                 <option value="B">B</option>
                                                 <option value="C">C</option>
-                                                <option value="D">D</option>
+                                                <option value="D">D</option> -->
                                                 <!-- <option value="E">E</option>
                                                 <option value="F">F</option>
                                                 <option value="G">G</option>
@@ -647,22 +647,17 @@ function openModel(student_id){
             $('#caste').val(studentInfo.caste);
             $('#languages').html(studentInfo.elective_sub);
 
-            if(admissionDate != ' ' && admissionDate != '1970-01-01' && admissionDate != '0000-00-00'){
-                $('#admission_date').html(appendLeadingZeroes(new Date(admissionDate).getDate()) 
-                + "-" + appendLeadingZeroes(new Date(admissionDate).getMonth() + 1) 
-                + "-" + appendLeadingZeroes(new Date(admissionDate).getFullYear()));
-                // $('#admission_date').html(studentInfo.date_of_admission);
+           var admission = '';
+            if (admissionDate && admissionDate !== '0000-00-00' && admissionDate !== '0000-00-00 00:00:00') {
+                var dObj = new Date(admissionDate);
+                if (!isNaN(dObj.getTime())) {
+                    admission = appendLeadingZeroes(dObj.getDate())
+                        + "-" + appendLeadingZeroes(dObj.getMonth() + 1)
+                        + "-" + appendLeadingZeroes(dObj.getFullYear());
+                }
             }
-
-            if(admissionDate != ' '){
-                var admission = appendLeadingZeroes(new Date(admissionDate).getDate()) 
-                + "-" + appendLeadingZeroes(new Date(admissionDate).getMonth() + 1) 
-                + "-" + appendLeadingZeroes(new Date(admissionDate).getFullYear());
-
-                $('#date_of_admission').val(admission);
-            }else{
-                $('#date_of_admission').val(admissionDate);
-            }
+            $('#admission_date').html(admission);
+            $('#date_of_admission').val(admission);
 
             $('#instruction_medium').html("English");
             $('#optionals').html(studentInfo.stream_name);

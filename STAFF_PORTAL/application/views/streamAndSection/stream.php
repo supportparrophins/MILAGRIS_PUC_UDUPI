@@ -199,10 +199,11 @@ if ($error) {
                                             <option value="<?php echo $searchSection ?>" selected><b>Selected: <?php echo $searchSection ?></b></option>
                                         <?php } ?>
                                         <option value="">By Section</option>
-                                        <option value="A">A</option>
+                                        <!-- <option value="A">A</option>
                                         <option value="B">B</option>
                                         <option value="C">C</option>
-                                        <option value="D">D</option>
+                                        <option value="D">D</option> -->
+                                        <option value="ALL">ALL</option>
                                         <!-- <option value="E">E</option>
                                         <option value="F">F</option>
                                         <option value="G">G</option>
@@ -354,7 +355,7 @@ if ($error) {
                                         <option value="Q">Q</option>
                                         <option value="R">R</option>
                                         <option value="S">S</option>
-                                        <option value="ALL">ALL (No Section)</option>
+                                        <option value="ALL">ALL</option>
                                     </select>
                                 </div>
                             </div>

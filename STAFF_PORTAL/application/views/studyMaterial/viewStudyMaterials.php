@@ -147,11 +147,11 @@
                                         <?php } ?>
 
                                         <option value="">By Section</option>
-                                        <option value="ALL">ALL(No Section)</option>
-                                        <option value="A">A</option>
+                                        <option value="ALL">ALL</option>
+                                        <!-- <option value="A">A</option>
                                         <option value="B">B</option>
                                         <option value="C">C</option>
-                                        <option value="D">D</option>
+                                        <option value="D">D</option> -->
                                         <!-- <option value="E">E</option>
                                         <option value="F">F</option>
                                         <option value="G">G</option>
@@ -327,11 +327,11 @@
                             <div class="form-group">
                                 <select class="form-control input-sm" id="section_name" name="section_name">
                                     <option value="">Select Section (OPTIONAL)</option>
-                                    <option value="ALL">ALL(No Section)</option>
-                                    <option value="A">A</option>
+                                    <option value="ALL">ALL</option>
+                                    <!-- <option value="A">A</option>
                                     <option value="B">B</option>
                                     <option value="C">C</option>
-                                    <option value="D">D</option>
+                                    <option value="D">D</option> -->
                                     <!-- <option value="E">E</option>
                                     <option value="F">F</option>
                                     <option value="G">G</option>

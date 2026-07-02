@@ -204,7 +204,7 @@ if ($error) {
                                                     <option value="">Select Second Language</option>
                                                     <option value="HINDI">HINDI</option>
                                                     <option value="KANNADA">KANNADA</option>
-                                                    <option value="FRENCH">FRENCH</option>
+                                                    <!-- <option value="FRENCH">FRENCH</option> -->
                                                     <option value="EXEMPTED">EXEMPTED</option>
                                                 </select>
                                             </div>

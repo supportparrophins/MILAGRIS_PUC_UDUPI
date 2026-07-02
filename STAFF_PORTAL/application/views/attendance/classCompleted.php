@@ -186,7 +186,7 @@ if ($error) {
                                                 <?php } ?>
                                                 <option value="">By Section</option>
                                                 <option value="">ALL</option>
-                                                <option value="A">A</option>
+                                                <!-- <option value="A">A</option>
                                                 <option value="B">B</option>
                                                 <option value="C">C</option>
                                                 <option value="D">D</option>
@@ -198,7 +198,7 @@ if ($error) {
                                                 <option value="J">J</option>
                                                 <option value="K">K</option>
                                                 <option value="L">L</option>
-                                                <option value="M">M</option>
+                                                <option value="M">M</option> -->
                                             </select>
                                         </th>
                                         <th style="padding: 1px;" class="text-center">

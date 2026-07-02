@@ -138,7 +138,7 @@
                                                 <option value="Q">Q</option>
                                                 <option value="R">R</option>
                                                 <option value="S">S</option>
-                                                <option value="ALL">ALL (No Section)</option>
+                                                <option value="ALL">ALL</option>
                                             </select>
                                         </div>
                                         <div class="form-group col-md-6">

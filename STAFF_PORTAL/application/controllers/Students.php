@@ -2331,6 +2331,8 @@ class Students extends BaseController
                 // }else{
                 //     $intake_year_id = '2024';
                 // }
+                $programInfo = $this->student->getProgramNameByStream($stream_name);
+                $program_name = $programInfo->program_name;
                 if (!empty($intake_year)) {
                     $parts = explode('-', $intake_year);
                     $intake_year_id = $parts[0];
@@ -2395,7 +2397,7 @@ class Students extends BaseController
                     'is_active' =>1,
                     'intake_year_id' => $intake_year_id,
                     'intake_year' =>$intake_year,
-                    // 'program_name' =>$program_name,
+                    'program_name' =>$program_name,
                     // 'admission_status' =>$admission_status,
                     'elective_sub' =>$elective_sub,
                     'created_by'=>$this->staff_id,
@@ -2404,7 +2406,27 @@ class Students extends BaseController
                         $studentInfo['photo_url'] = $image_path;
                     }  
                 $result = $this->student->addStudentInfo($studentInfo);
+
+
                 if($result > 0){
+                    $academic_info = array(
+                        'rel_student_row_id' => $result,
+                        'student_id'=> $application_no,
+                        'term_name' => $term_name,
+                        'program_name' => $program_name,
+                        'stream_name'=>$stream_name,
+                        // 'section_name' => $section,
+                        'elective_sub' => $elective_sub,
+                        // 'admission_no'=> trim($admission_no),
+                        // 'date_of_admission'=>date('Y-m-d',strtotime($doa)),
+                        'is_active' => 1,
+                        'is_current' => 1,
+                        'created_by'=>$this->staff_id,
+                        'created_date_time'=>date('Y-m-d H:i:s'));
+                    
+                        
+                    $return_1 = $this->student->addAcademicData($academic_info);
+
                     $yearWiseInfo = array(
                         'stud_row_id' => $result,
                         'class' => $term_name,

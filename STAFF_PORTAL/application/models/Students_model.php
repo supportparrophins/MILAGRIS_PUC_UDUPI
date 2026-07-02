@@ -489,6 +489,15 @@ public function getTotalAlumniStudents() {
         $query = $this->db->get();
         return $query->result();
     }
+    public function getProgramNameByStream($stream_name) {
+        $this->db->from('tbl_program_stream_info as stream'); 
+        // $this->db->group_by('stream_name');
+        $this->db->where('stream.is_deleted', 0);
+        $this->db->where('stream.stream_name', $stream_name);
+        $this->db->order_by('stream.row_id');
+        $query = $this->db->get();
+        return $query->row();
+    }
 
     public function getAllSectionName(){
         $this->db->select('section.row_id,section.stream_id,section.term_name,section.section_name');

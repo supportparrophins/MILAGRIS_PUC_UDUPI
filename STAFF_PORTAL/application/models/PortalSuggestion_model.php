@@ -15,7 +15,7 @@ class PortalSuggestion_model extends CI_Model
         // $this->db->distinct('msg.student_id');
         $this->db->from('tbl_student_feedback_for_management as msg'); 
         // $this->db->join('tbl_student_academic_info as academic', 'academic.student_id = msg.student_id','left');
-        $this->db->join('tbl_students_info as std','std.student_id = msg.student_id','left'); 
+        $this->db->join('tbl_students_info as std','std.row_id = msg.student_id','left'); 
         
         if(!empty($filter['searchTextCust'])) {
             $likeCriteria = "(msg.student_id LIKE '%".$filter['searchTextCust']."%')";
@@ -40,13 +40,13 @@ class PortalSuggestion_model extends CI_Model
     function feedbackListing($filter, $page, $segment)
     {
         $this->db->select('msg.row_id,msg.subject,msg.message,msg.msg_from,msg.reply_from,msg.date,msg.management_reply,std.student_name,
-        std.term_name,std.section_name,std.program_name,std.student_id');
+        std.term_name,std.section_name,std.program_name,std.row_id as student_id, std.student_id as stud_id');
         $this->db->select_max('msg.date');
         // $this->db->select_max('msg.row_id');
         // $this->db->select_max('msg.message');
         // $this->db->distinct();
         $this->db->from('tbl_student_feedback_for_management as msg'); 
-        $this->db->join('tbl_students_info as std','std.student_id = msg.student_id','left'); 
+        $this->db->join('tbl_students_info as std','std.row_id = msg.student_id','left'); 
         
         if(!empty($filter['searchTextCust'])) {
             $likeCriteria = "(msg.student_id LIKE '%".$filter['searchTextCust']."%')";

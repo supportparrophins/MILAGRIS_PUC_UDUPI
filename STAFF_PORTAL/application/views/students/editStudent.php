@@ -622,8 +622,8 @@ if ($error) {
                                                                         </option>
                                                                         <option value="Kannada">Kannada</option>
                                                                         <option value="Hindi">Hindi</option>
-                                                                        <option value="French">French</option>
-                                                                        <option value="Urdu">Urdu</option>
+                                                                        <!-- <option value="French">French</option>
+                                                                        <option value="Urdu">Urdu</option> -->
                                                                         <option value="Exempted">Exempted</option>
                                                                     </select>
                                                                 </div>
@@ -668,7 +668,7 @@ if ($error) {
                                                                         </option>
                                                                         <?php } ?>
                                                                         <option value="">Select Section</option>
-                                                                        <option value="A">A</option>
+                                                                        <!-- <option value="A">A</option>
                                                                         <option value="B">B</option>
                                                                         <option value="C">C</option>
                                                                         <option value="D">D</option>
@@ -686,8 +686,8 @@ if ($error) {
                                                                         <option value="P">P</option>
                                                                         <option value="Q">Q</option>
                                                                         <option value="R">R</option>
-                                                                        <option value="S">S</option>
-                                                                        <option value="ALL">ALL (No Section)</option>
+                                                                        <option value="S">S</option> -->
+                                                                        <option value="ALL">ALL</option>
                                                                     </select>
                                                                 </div>
                                                             </th>

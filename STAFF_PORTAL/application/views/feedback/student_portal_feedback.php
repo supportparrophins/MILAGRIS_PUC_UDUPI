@@ -127,7 +127,7 @@ if ($error) {
                                         <div class="row">
                                             <div class="col-lg-2 col-sm-5 col-5">
                                                 <label>ID : <span
-                                                        style="color:#0c07a8;"><?php echo $feedback->student_id ?></span></label>
+                                                        style="color:#0c07a8;"><?php echo $feedback->stud_id ?></span></label>
                                             </div>
                                             <div class="col-lg-4 col-sm-6 col-7">
                                                 <label>Name : <span
@@ -261,7 +261,7 @@ if ($error) {
                         <?php
                             if(!empty($studentInfo)) {
                                 foreach ($studentInfo as $std) { ?>
-                        <option value="<?php echo $std->student_id ?>">
+                        <option value="<?php echo $std->row_id ?>">
                             <?php echo $std->student_id.' - '.strtoupper($std->student_name) ?></option>
                         <?php  } } ?>
                     </select>
@@ -333,7 +333,7 @@ $("#btn-chat").click(function() {
                     newHtml += '<p>'
                     newHtml += '<span id="senderMsg">'+ value.message +'</span>'
                     newHtml += '<span class="chat_message_time"> <span class="text-capitalize" id="response" style="color: red;">'+ value.msg_from +'</span> •  <span id="responseTime">'+ appendLeadingZeroes(new Date(fromDateTime).getDate()) + "-" +  appendLeadingZeroes((new Date(fromDateTime).getMonth() + 1)) 
-                                + "-" + new Date(fromDateTime).getFullYear() + " " + (fromHour) + ":" + new Date(fromDateTime).getMinutes() + " " + ampm +'</span></span>'
+                                + "-" + new Date(fromDateTime).getFullYear() + " " + appendLeadingZeroes(fromHour) + ":" + appendLeadingZeroes(new Date(fromDateTime).getMinutes()) + " " + ampm +'</span></span>'
                     newHtml += '</p>'
                     newHtml += '</li>'
                     newHtml += '</ul>'
@@ -350,7 +350,7 @@ $("#btn-chat").click(function() {
                         newHtml += '<li>'
                         newHtml += '<p id="mngtReply">'+ value.management_reply +'</p>'
                         newHtml += '<span class="chat_message_time"> <span class="text-capitalize" style="color: red;" id="reply">'+ value.reply_from +'</span> • <span id="replyTime">'+ appendLeadingZeroes(new Date(toDateTime).getDate()) + "-" +  appendLeadingZeroes((new Date(toDateTime).getMonth() + 1)) 
-                                    + "-" + new Date(toDateTime).getFullYear() + " " + (toHour) + ":" + new Date(toDateTime).getMinutes() + " " + toampm +'</span> </span>'
+                                    + "-" + new Date(toDateTime).getFullYear() + " " + appendLeadingZeroes(toHour) + ":" + appendLeadingZeroes(new Date(toDateTime).getMinutes()) + " " + toampm +'</span> </span>'
                         // if(value.is_viewed == 1){
                             // let toHour2 = new Date(value.viewed_date_time).getHours();
                             // let toampm2 = "AM";
