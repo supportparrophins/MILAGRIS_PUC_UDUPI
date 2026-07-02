@@ -406,17 +406,17 @@
                 <h6 class="font-weight-bold mb-2">HR Report</h6>
                 <div class="row">
                 <?php if(isset($accessInfo) && $accessInfo->super_access == 1) {
-                    $examInfo = $accessModel->getRoleAccessForReport($role, 'addInternalMark');
-                    $staffInfo = $accessModel->getRoleAccessForReport($role, 'staffDetails');
-                    $staffAttendanceInfo = $accessModel->getRoleAccessForReport($role, 'getStaffAttendanceInfo');
-                    $studentInfo = $accessModel->getRoleAccessForReport($role, 'studentDetails');
-                    $staffSalaryInfo = $accessModel->getRoleAccessForReport($role, 'salarySlipListing');
-                    $leaveInfo = $accessModel->getRoleAccessForReport($role, 'staffLeaveInfo');
-                    $feeInfo = $accessModel->getRoleAccessForReport($role, 'newFeePayNow');
-                    $transportInfo = $accessModel->getRoleAccessForReport($role, 'transFeePayNow');
-                    $registrationInfo = $accessModel->getRoleAccessForReport($role, 'getRegisteredStudentInfo');
-                    $admissionInfo = $accessModel->getRoleAccessForReport($role, 'getAllApplicationInfo');
-                    $scholarshipInfo = $accessModel->getRoleAccessForReport($role, 'scholarshipListing');
+                    $examInfo = $accessModel->getRoleAccessForReport($role, 'addInternalMark', $staffID);
+                    $staffInfo = $accessModel->getRoleAccessForReport($role, 'staffDetails', $staffID);
+                    $staffAttendanceInfo = $accessModel->getRoleAccessForReport($role, 'getStaffAttendanceInfo', $staffID);
+                    $studentInfo = $accessModel->getRoleAccessForReport($role, 'studentDetails', $staffID);
+                    $staffSalaryInfo = $accessModel->getRoleAccessForReport($role, 'salarySlipListing', $staffID);
+                    $leaveInfo = $accessModel->getRoleAccessForReport($role, 'staffLeaveInfo', $staffID);
+                    $feeInfo = $accessModel->getRoleAccessForReport($role, 'newFeePayNow', $staffID);
+                    $transportInfo = $accessModel->getRoleAccessForReport($role, 'transFeePayNow', $staffID);
+                    $registrationInfo = $accessModel->getRoleAccessForReport($role, 'getRegisteredStudentInfo', $staffID);
+                    $admissionInfo = $accessModel->getRoleAccessForReport($role, 'getAllApplicationInfo', $staffID);
+                    $scholarshipInfo = $accessModel->getRoleAccessForReport($role, 'scholarshipListing', $staffID);
                 ?>
                 <?php if($role != ROLE_AUDITOR){ ?>
                     <?php if(isset($staffInfo) && $staffInfo->report == 1) { ?>

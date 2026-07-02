@@ -254,10 +254,11 @@ class BaseController extends CI_Controller {
 	}
 		public function getCurrentAccess()
     {
-		log_message('debug', 'Inside getCurrentAccess()');
+		// log_message('debug', 'Inside getCurrentAccess()');
         $role_id = $this->session->userdata('role');
         $sub_module_id = $this->session->userdata('current_module_id');
-		log_message('debug', 'role_id: '.$role_id.', sub_module_id: '.$sub_module_id);
+		// log_message('debug', 'role_id: '.$role_id.', sub_module_id: '.$sub_module_id);
+		 $staff_id = $this->session->userdata ('staff_id');
 		if(empty($sub_module_id)){
 			$sub_module_id = "1";
 		}
@@ -265,6 +266,13 @@ class BaseController extends CI_Controller {
             return null;
         }
 	
-        return $this->access->getRoleAccess($role_id, $sub_module_id);
+        $access = $this->access->getRoleAccessByStaffID($staff_id, $sub_module_id);
+
+		// If no staff-specific access found, check role-based access
+		if (!$access) {
+			$access = $this->access->getRoleAccess($role_id, $sub_module_id);
+		}
+
+		return $access;
     }
 }

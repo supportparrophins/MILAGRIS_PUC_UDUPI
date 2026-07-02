@@ -2000,4 +2000,62 @@ function getStaffDepartmentForAttendance()
     $this->db->update('tbl_staff_achievemt_info', $staffInfo);
     return TRUE;
 }
+
+function getStaffByIdForAccess($filter){
+        $this->db->from('tbl_staff as staff');
+      
+        if(!empty($filter['by_staff_id'])){
+            $this->db->where('staff.staff_id',$filter['by_staff_id']);
+        }else{
+            $this->db->where('staff.staff_id','123456');
+        }
+        $query = $this->db->get();
+        return $query->row();
+    }
+
+    function getModuleAccessInfoByStaffID($module_id,$staff_id){
+        $this->db->from('tbl_user_role_access_by_staff as access');
+        $this->db->where('access.is_deleted', 0);
+        $this->db->where('access.sub_module_id', $module_id);
+        $this->db->where('access.staff_id', $staff_id);
+        $query = $this->db->get();
+        return $query->row();
+    }
+
+       function addModuleAccessByStaffID($updateData){
+        $this->db->trans_start();
+        $this->db->insert('tbl_user_role_access_by_staff', $updateData);
+        $insert_id = $this->db->insert_id();
+        $this->db->trans_complete();
+        return $insert_id;
+    }
+
+    public function updateModuleAccessByStaffID($moduleId, $staffId, $updateData) {
+        $this->db->where('sub_module_id', $moduleId);
+        $this->db->where('staff_id', $staffId);
+        $this->db->where('is_deleted', 0);
+        $this->db->update('tbl_user_role_access_by_staff', $updateData); 
+    }
+
+     public function getAllSubModulesByStaffID($module_id,$staffID){
+        $this->db->select('module.row_id, module.menu_name, module.redirect_url, module.icon');
+        $this->db->from('tbl_sub_modules as module');
+        $this->db->join('tbl_user_role_access_by_staff as user', 'module.row_id = user.sub_module_id','left');
+        $this->db->where('module.is_deleted', 0);
+        $this->db->where('user.staff_id',$staffID);
+        $this->db->where('module.module_id',$module_id);
+        $this->db->where('user.can_access', 1);
+        $this->db->order_by('module.priority','asc');
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    function getModuleDetailsInfo(){
+        $this->db->select('menu.*, mod.menu_name as module_name');
+        $this->db->from('tbl_sub_modules as menu');
+        $this->db->join('tbl_modules as mod', 'mod.row_id = menu.module_id', 'left');
+        $this->db->where('menu.is_deleted', 0);
+        $query = $this->db->get();
+        return $query->result();
+    }
 }

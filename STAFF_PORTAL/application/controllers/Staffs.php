@@ -2815,6 +2815,9 @@ class Staffs extends BaseController
             $title = $this->input->post('title');
             $description = $this->input->post('description');
             $file_path = $this->input->post('file_path');
+
+             $accessInfo = $this->getCurrentAccess();
+            $data['accessInfo'] = $accessInfo;
             
 
             $data['title'] = $title;
@@ -2833,11 +2836,12 @@ class Staffs extends BaseController
                 $data['date'] = '';
             }
             
-            if($this->role != ROLE_PRIMARY_ADMINISTRATOR){
+            if($accessInfo->super_access != 1){
                 $filter['staff_id'] = $this->staff_id;
             }
             
             $data['achvemtInfo'] = $this->staff->getAchieventInfo($filter);
+           
           
         
             $this->load->library('pagination');
@@ -2907,4 +2911,99 @@ class Staffs extends BaseController
             if ($result == true) {echo (json_encode(array('status' => true)));} else {echo (json_encode(array('status' => false)));}
         } 
     }
+
+     function menuAccessStaffId() {
+     
+            $filter = array();
+            $filter['by_staff_id'] = $data['by_staff_id'] = $this->security->xss_clean($this->input->post('staffId'));
+            $data['AllModuleInfo'] = $this->staff->getModuleDetailsInfo();
+            if(empty($filter['by_staff_id'])){
+                $staff_id = $_SESSION['last_staffId']; 
+                $filter['by_staff_id'] = $staff_id;
+                $data['by_staff_id'] = $staff_id;
+
+            }else{
+                $filter['by_staff_id'] = $filter['by_staff_id'];
+
+                $data['by_staff_id'] = $filter['by_staff_id'];
+            }
+            $data['stafff'] = $this->staff->getStaffByIdForAccess($filter);// this is for table
+            $data['staff_model'] = $this->staff;
+            //$data['departmentInfo'] = $this->setting->getAllDepartmentInfo();
+            $data['staffInfo'] = $this->staff->getAllStaffInfo();// this for select box
+            $this->global['pageTitle'] = ''.TAB_TITLE.' : Menu Details';
+            $this->loadViews("staffs/menuAccessStaffID", $this->global,$data, NULL);
+
+    }
+
+     public function updateAccessByStaffID() {
+        if ($this->isAdmin() == TRUE) {
+            $this->loadThis();
+        } else {
+
+        $moduleIds = $this->input->post('module_id');
+        $staffId = $this->input->post('staffId');
+        $can_view = $this->input->post('can_view');
+        $can_add = $this->input->post('can_add');
+        $can_edit = $this->input->post('can_edit');
+        $can_delete = $this->input->post('can_delete');
+        $can_approve = $this->input->post('can_approve');
+        $super_access = $this->input->post('super_access');
+        $dashboard = $this->input->post('dashboard');
+        $report = $this->input->post('report');
+
+
+            
+        $AllModuleInfo = $this->staff->moduleInfo();
+
+        foreach ($AllModuleInfo as $moduleId) {
+            $moduleRowId = $moduleId->row_id;
+            
+            $ModuleInfoExists = $this->staff->getModuleInfo($moduleRowId);
+            if(!empty($ModuleInfoExists->row_id)){
+                $ModuleInfo = [
+                    'sub_module_id' => $ModuleInfoExists->row_id,
+                    'staff_id' => $staffId,
+                ];
+                $AccessInfoExists = $this->staff->getModuleAccessInfoByStaffID($ModuleInfoExists->row_id, $staffId);
+                if (empty($AccessInfoExists)) {
+                    $this->staff->addModuleAccessByStaffID($ModuleInfo);
+                }
+            }
+            $can_access = (
+                            (!empty($can_view[$moduleRowId][$staffId]) && $can_view[$moduleRowId][$staffId] == 1) ||
+                            (!empty($can_add[$moduleRowId][$staffId]) && $can_add[$moduleRowId][$staffId] == 1) ||
+                            (!empty($can_edit[$moduleRowId][$staffId]) && $can_edit[$moduleRowId][$staffId] == 1) ||
+                            (!empty($can_delete[$moduleRowId][$staffId]) && $can_delete[$moduleRowId][$staffId] == 1) ||
+                            (!empty($can_approve[$moduleRowId][$staffId]) && $can_approve[$moduleRowId][$staffId] == 1) ||
+                            (!empty($super_access[$moduleRowId][$staffId]) && $super_access[$moduleRowId][$staffId] == 1) 
+                        ) ? 1 : 0;
+
+
+            $updateData = [
+                'sub_module_id' => $moduleRowId,
+                'staff_id' => $staffId,
+                'can_view' => !empty($can_view[$moduleRowId][$staffId]) ? 1 : 0,
+                'can_add' => !empty($can_add[$moduleRowId][$staffId]) ? 1 : 0,
+                'can_edit' => !empty($can_edit[$moduleRowId][$staffId]) ? 1 : 0,
+                'can_delete' => !empty($can_delete[$moduleRowId][$staffId]) ? 1 : 0,
+                'can_access' => $can_access,
+                'can_approve' => !empty($can_approve[$moduleRowId][$staffId]) ? 1 : 0,
+                'dashboard' => !empty($dashboard[$moduleRowId][$staffId]) ? 1 : 0,
+                'report' => !empty($report[$moduleRowId][$staffId]) ? 1 : 0,
+                'super_access' => !empty($super_access[$moduleRowId][$staffId]) ? 1 : 0,
+            ];
+            $AccessInfoExists = $this->staff->getModuleAccessInfoByStaffID($moduleRowId, $staffId);
+            if (empty($AccessInfoExists)) {
+                $this->staff->addModuleAccessByStaffID($updateData);
+            } else {
+                $this->staff->updateModuleAccessByStaffID($moduleRowId, $staffId, $updateData);
+            }
+        }
+            $_SESSION['last_staffId'] = $staffId;
+            
+            redirect('menuAccessStaffId');
+        }
+    }
+
 }

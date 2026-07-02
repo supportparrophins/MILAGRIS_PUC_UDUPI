@@ -210,14 +210,15 @@ if ($noMatch) {
                                         <?php if (!empty($record->file_path)) { ?>
                                             <a href="<?php echo $record->file_path; ?>" target="_blank" class="btn btn-xs btn-primary"><i class="fa fa-file"></i></a>
                                         <?php  } ?>
+                                
                                         <!-- <a href="#" class="btn btn-xs btn-success px-2 py-1" title="Exam Info" data-placement="left" data-toggle="popover" data-trigger="focus" data-content="<b>Time : <?php echo $record->time; ?> <br>"><i class="fa fa-info"></i></a> -->
                                         <?php //if ($role == ROLE_ADMIN || $role == ROLE_SUPER_ADMIN || $role == ROLE_VICE_PRINCIPAL || $role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_TEACHING_STAFF || $this->role == ROLE_CLASS_TEACHER) { ?>
-                                        <?php //if(isset($accessInfo) && $accessInfo->can_edit==1){ ?>
+                                        <?php if(isset($accessInfo) && $accessInfo->can_edit==1){ ?>
                                             <a class="btn btn-xs btn-info" href="<?php echo base_url(); ?>editObservation/<?php echo $record->row_id; ?>" title="Edit"><i class="fas fa-pencil-alt"></i></a>
-                                        <?php //} ?>
-                                        <?php //if(isset($accessInfo) && $accessInfo->can_delete==1){ ?>
+                                        <?php } ?>
+                                        <?php if(isset($accessInfo) && $accessInfo->can_delete==1){ ?>
                                             <a class="btn btn-xs btn-danger deleteObservation px-2 py-1" href="#" data-row_id="<?php echo $record->row_id; ?>" title="Delete"><i class="fa fa-trash"></i></a>
-                                        <?php // } ?>
+                                        <?php  } ?>
                                     </td>
                                 </tr>
                             <?php }

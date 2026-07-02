@@ -72,6 +72,7 @@ class Observation extends BaseController {
                 $filter['staff_id'] = $this->staff_id;
             }
             $accessInfo = $this->getCurrentAccess();
+            $data['accessInfo'] = $accessInfo;
             $data['streamInfo'] = $this->student->getAllStreamName();
 
             // log_message('debug', 'accessInfo: '.print_r($accessInfo, true));
@@ -86,7 +87,7 @@ class Observation extends BaseController {
             $returns = $this->paginationCompress("observationListing/", $count, 100);
             $data['totalCount'] = $count;
             $data['observationInfo'] = $this->observation->getObservationInfo($filter, $returns["page"], $returns["segment"]);
-            log_message('debug', 'observationInfo: '.print_r($data['observationInfo'], true));
+            // log_message('debug', 'observationInfo: '.print_r($data['observationInfo'], true));
             $data['getStudentInfo'] = $this->observation->getStudentInfo();
             $data['getObservationId'] = $this->observation->getObservationId();
             $data['termInfo'] = $this->settings->getTermInfo();

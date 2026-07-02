@@ -198,21 +198,21 @@ if ($warning) {
     <?php //if ($role == ROLE_ADMIN || $role == ROLE_PRINCIPAL || $role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_OFFICE || $role == ROLE_VICE_PRINCIPAL || $role == ROLE_SUPER_ADMIN) { ?>
     <?php if(isset($accessInfo) && $accessInfo->super_access == '1') { 
         
-        $examInfo = $accessModel->getRoleAccessForReport($role, 'addInternalMark');
-        $staffInfo = $accessModel->getRoleAccessForReport($role, 'staffDetails');
+        $examInfo = $accessModel->getRoleAccessForReport($role, 'addInternalMark',$staffID);
+        $staffInfo = $accessModel->getRoleAccessForReport($role, 'staffDetails',$staffID);
         // log_message('debug','Access Info : '.print_r($staffInfo,true));
-        $staffAttendanceInfo = $accessModel->getRoleAccessForReport($role, 'getStaffAttendanceInfo');
-        $studentInfo = $accessModel->getRoleAccessForReport($role, 'studentDetails');
-        $staffSalaryInfo = $accessModel->getRoleAccessForReport($role, 'mysalarySlipListing');
-        $SalaryInfo = $accessModel->getRoleAccessForReport($role, 'salarySlipListing');
-        $leaveInfo = $accessModel->getRoleAccessForReport($role, 'viewApplyLeave');
-        $feeInfo = $accessModel->getRoleAccessForReport($role, 'newFeePayNow');
-        $transportInfo = $accessModel->getRoleAccessForReport($role, 'transFeePayNow');
-        $registrationInfo = $accessModel->getRoleAccessForReport($role, 'getRegisteredStudentInfo');
-        $scholarshipInfo = $accessModel->getRoleAccessForReport($role, 'scholarshipListing');
-        $alumniInfo = $accessModel->getRoleAccessForReport($role, 'studentAlumniInfo');
-        $notificationInfo = $accessModel->getRoleAccessForReport($role, 'pushNotification');
-        $reportInfo = $accessModel->getRoleAccessForReport($role, 'reportDashboard');
+        $staffAttendanceInfo = $accessModel->getRoleAccessForReport($role, 'getStaffAttendanceInfo',$staffID);
+        $studentInfo = $accessModel->getRoleAccessForReport($role, 'studentDetails',$staffID);
+        $staffSalaryInfo = $accessModel->getRoleAccessForReport($role, 'mysalarySlipListing',$staffID);
+        $SalaryInfo = $accessModel->getRoleAccessForReport($role, 'salarySlipListing',$staffID);
+        $leaveInfo = $accessModel->getRoleAccessForReport($role, 'viewApplyLeave',$staffID);
+        $feeInfo = $accessModel->getRoleAccessForReport($role, 'newFeePayNow',$staffID);
+        $transportInfo = $accessModel->getRoleAccessForReport($role, 'transFeePayNow',$staffID);
+        $registrationInfo = $accessModel->getRoleAccessForReport($role, 'getRegisteredStudentInfo',$staffID);
+        $scholarshipInfo = $accessModel->getRoleAccessForReport($role, 'scholarshipListing',$staffID);
+        $alumniInfo = $accessModel->getRoleAccessForReport($role, 'studentAlumniInfo',$staffID);
+        $notificationInfo = $accessModel->getRoleAccessForReport($role, 'pushNotification',$staffID);
+        $reportInfo = $accessModel->getRoleAccessForReport($role, 'reportDashboard',$staffID);
         
         ?>
         <?php if(isset($studentInfo) && $studentInfo->report == 1) { ?>

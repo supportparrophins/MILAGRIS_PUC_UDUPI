@@ -1579,3 +1579,8 @@ $route['updateStudentObservation'] = 'observation/updateStudentObservation';
 $route['staffSAchievemntsDocInfo'] = "staffs/staffSAchievemntsDocInfo";
 $route['addAchievementInfo'] = 'staffs/addAchievementInfo';
 $route['deleteachievemtInfo'] = "staffs/deleteachievemtInfo";
+
+//staff access management
+$route['menuAccessStaffId'] = "staffs/menuAccessStaffId";
+$route['menuAccessStaffId/(:any)'] = "staffs/menuAccessStaffId/$1";
+$route['updateAccessByStaffID'] = "staffs/updateAccessByStaffID";

@@ -375,7 +375,21 @@
         <?php if(!empty($ModuleInfo)){   
             foreach($ModuleInfo as $module){ 
 
-               $SubMenuModule = $staffModel->getAllSubModules($module->row_id,$role); 
+            //    $SubMenuModule = $staffModel->getAllSubModules($module->row_id,$role); 
+            $roleModules = $staffModel->getAllSubModules($module->row_id, $role);
+                $staffModules = $staffModel->getAllSubModulesByStaffID($module->row_id, $staffID);
+
+                $SubMenuModule = array_merge(
+                    $roleModules ?? [],
+                    $staffModules ?? []
+                );
+
+                $uniqueModules = [];
+                foreach ($SubMenuModule as $item) {
+                    $uniqueModules[$item->row_id] = $item;
+                }
+
+                $SubMenuModule = array_values($uniqueModules);
 
                $total_count = count($SubMenuModule);
                 if($total_count == 1){ ?>
@@ -422,6 +436,12 @@
                     <span>Access Control</span>
                 </a>
             </li>
+             <li class="nav-item">
+                    <a class="nav-link " href="<?php echo base_url(); ?>menuAccessStaffId">
+                        <i class="material-icons">settings</i>
+                        <span>Access Staff ID</span>
+                    </a>
+                </li>
             <?php } ?>
             </ul>
         </div>

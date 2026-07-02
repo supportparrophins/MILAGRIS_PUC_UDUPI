@@ -81,10 +81,12 @@ if ($error) {
                                     value="Back"><i class="fa fa-arrow-circle-left"></i> Back </a>
                             
                                <div class="dropdown mobile-btn float-right">
+                                             <?php if(isset($accessInfo) && $accessInfo->can_add==1){ ?>
                                     <button class="btn btn-primary float-right mobile-btn  mr-1"
                                                 data-toggle="modal" data-target="#addNewDocModel"><i
                                                     class="fa fa-plus"></i>
                                                 Add Achievement</button>
+                                                <?php  } ?>
                             </div>
                         </div>
                     </div>
@@ -153,9 +155,13 @@ if ($error) {
                                          <a href="<?php echo base_url(); ?><?php echo $std->file_path; ?>"
                                         target="_blank" class="btn btn-primary p-2"><i
                                         class="fa fa-eye"></i> View</a><?php } ?></th>
-                                        <th width="200" class="text-center"><a class="btn btn-xs btn-danger deleteachievemtInfo" href="#"
+                                        <th width="200" class="text-center">
+                                             <?php if(isset($accessInfo) && $accessInfo->can_delete==1){ ?>
+                                            <a class="btn btn-xs btn-danger deleteachievemtInfo" href="#"
                                             data-row_id="<?php echo $std->row_id; ?>" title="Delete"><i
-                                                class="fa fa-trash"></i></a></th>
+                                                class="fa fa-trash"></i></a>
+                                            <?php  } ?>
+                                        </th>
                                         
                                     </tr>
                                 <?php } }else{  ?>
