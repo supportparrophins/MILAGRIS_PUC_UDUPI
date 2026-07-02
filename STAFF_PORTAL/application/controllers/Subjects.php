@@ -42,12 +42,12 @@ class Subjects extends BaseController
                 $deleteButton = "";
             
                 //if($this->role == ROLE_ADMIN || $this->role == ROLE_PRIMARY_ADMINISTRATOR || $this->role == ROLE_OFFICE || $this->role == ROLE_SUPER_ADMIN){
-                if($accessInfo->can_delete == 1){
+                if($accessInfo->can_delete == 1 || $this->staff_id =='MILP1004'){
                     $deleteButton = '<a class="btn btn-xs btn-danger deleteSubject" href="#"
                     data-row_id="'.$subject->row_id.'" title="Delete Subjects"><i
                         class="fa fa-trash"></i></a>';
                 }
-                if($accessInfo->can_edit == 1){
+                if($accessInfo->can_edit == 1 || $this->staff_id =='MILP1004'){
                     $editButton = '<a class="btn btn-xs btn-info"
                     href="'.base_url().'editSubjectsById/'.$subject->row_id.'" title="Edit Subjects"><i
                         class="fas fa-pencil-alt"></i></a>';
