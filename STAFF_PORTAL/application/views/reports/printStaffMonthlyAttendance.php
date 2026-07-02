@@ -237,7 +237,8 @@
                 <td width="80%">
                     <div class="header-content">
                         <b class="title"><?php echo TITLE; ?></b><br>
-                        <p class="address">Near Shivagiri, Ukkali Road, Vijayapur - 586104 Dise Code : 29031401417 <br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Collge Code : EE0272</p>
+                        <p class="address">&emsp;&emsp;<?php echo SALARY_ADDRESS; ?></p>
+                        <!-- <p class="address">Near Shivagiri, Ukkali Road, Vijayapur - 586104 Dise Code : 29031401417 <br>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Collge Code : EE0272</p> -->
                     </div>
                 </td>
             </tr>
