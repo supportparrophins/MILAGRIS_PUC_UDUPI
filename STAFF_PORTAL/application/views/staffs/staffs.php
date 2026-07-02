@@ -75,7 +75,7 @@
                                     <a onclick="showLoader();window.history.back();" class="btn primary_color mobile-btn float-right text-white border_left_radius"
                                     value="Back"><i class="fa fa-arrow-circle-left"></i> Back </a>
                                     <?php // if($role == ROLE_ADMIN || $role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_SUPER_ADMIN){ ?>
-                                  <?php if(isset($accessInfo) && $accessInfo->super_access==1 || $this->staff_id=='MILP1004'){ ?>
+                                  <?php if(isset($accessInfo) && $accessInfo->can_add==1 || $this->staff_id=='MILP1004'){ ?>
                                 <div class="dropdown mobile-btn float-right">
                                     <button type="button" class="btn btn-success dropdown-toggle border_radius_none" data-toggle="dropdown">
                                         Action
@@ -87,12 +87,12 @@
                                         Add New</a> -->
                                         <a class="dropdown-item" href="<?php echo base_url(); ?>addNewStaff"><i class="fa fa-plus"></i> Add New</a>
                                     <a class="dropdown-item" id="sendNotification" href="#"> <i class="material-icons text-dark">send</i> Send Notification</a>
-                                        <a class="dropdown-item" href="#" data-toggle="modal"
+                                        <!-- <a class="dropdown-item" href="#" data-toggle="modal"
                                             data-target="#downloadFeedbackReport"><i class="fa fa-file"></i> Feedback
                                             Report</a>
                                             <a class="dropdown-item" href="#" data-toggle="modal"
                                             data-target="#downloadFeedbackReport2"><i class="fa fa-file"></i> Feedback Pending
-                                            </a>
+                                            </a> -->
 
                                 </div>
                                 

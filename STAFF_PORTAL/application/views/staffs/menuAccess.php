@@ -117,7 +117,18 @@
     transform: translateX(26px);
     } */
 
-    
+    .permission-group.all-toggle-row {
+        border-bottom: 1.5px solid rgba(0,0,0,0.15);
+        margin-bottom: 6px;
+        padding-bottom: 7px;
+    }
+    .permission-group.all-toggle-row span {
+        font-weight: 700;
+        color: #0a1628;
+    }
+    .all-toggle-row .toggle-switch input:checked + label {
+        background: #0a3d62;  /* darker blue to distinguish from regular toggles */
+    }
 
     .toggle-switch input:checked + label {
     background: #28a745;
@@ -233,7 +244,22 @@
 ?>
     <div class="col-md-4">
         <div class="card permission-card p-3 mb-2">
-            <h6><?= $menu->menu_name; ?></h6>
+            <h6>
+                <?= !empty($menu->module_name) ? htmlspecialchars($menu->module_name) . ' / ' : '' ?>
+
+                <?= preg_replace('/\s+/', ' ', trim(strip_tags(str_replace('&nbsp;', ' ', $menu->menu_name)))) ?>
+            </h6>
+
+            <!-- ALL toggle -->
+            <div class="permission-group all-toggle-row">
+                <span>All</span>
+                <div class="toggle-switch">
+                    <input type="checkbox"
+                        id="all-<?= $menu->row_id ?>-<?= $rol->roleId ?>"
+                        class="all-toggle-master">
+                    <label for="all-<?= $menu->row_id ?>-<?= $rol->roleId ?>"></label>
+                </div>
+            </div>
 
             <!-- Only this hidden input remains -->
             <input type="hidden" name="module_id[]" value="<?= $menu->row_id; ?>">
@@ -243,7 +269,7 @@
                 <span>Read</span>
                 <div class="toggle-switch">
                     <input type="checkbox"
-                        id="view-<?= $menu->row_id ?>-<?= $rol->roleId ?>"
+                        id="view-<?= $menu->row_id ?>-<?= $rol->roleId ?>" class="perm-toggle"
                         name="can_view[<?= $menu->row_id ?>][<?= $rol->roleId ?>]"
                         value="1" <?= !empty($AccessInfo->can_view) ? 'checked' : '' ?>>
                     <label for="view-<?= $menu->row_id ?>-<?= $rol->roleId ?>"></label>
@@ -255,7 +281,7 @@
                 <span>Add</span>
                 <div class="toggle-switch">
                     <input type="checkbox"
-                        id="add-<?= $menu->row_id ?>-<?= $rol->roleId ?>"
+                        id="add-<?= $menu->row_id ?>-<?= $rol->roleId ?>" class="perm-toggle"
                         name="can_add[<?= $menu->row_id ?>][<?= $rol->roleId ?>]"
                         value="1" <?= !empty($AccessInfo->can_add) ? 'checked' : '' ?>>
                     <label for="add-<?= $menu->row_id ?>-<?= $rol->roleId ?>"></label>
@@ -267,7 +293,7 @@
                 <span>Edit</span>
                 <div class="toggle-switch">
                     <input type="checkbox"
-                        id="edit-<?= $menu->row_id ?>-<?= $rol->roleId ?>"
+                        id="edit-<?= $menu->row_id ?>-<?= $rol->roleId ?>" class="perm-toggle"
                         name="can_edit[<?= $menu->row_id ?>][<?= $rol->roleId ?>]"
                         value="1" <?= !empty($AccessInfo->can_edit) ? 'checked' : '' ?>>
                     <label for="edit-<?= $menu->row_id ?>-<?= $rol->roleId ?>"></label>
@@ -279,7 +305,7 @@
                 <span>Delete</span>
                 <div class="toggle-switch">
                     <input type="checkbox"
-                        id="delete-<?= $menu->row_id ?>-<?= $rol->roleId ?>"
+                        id="delete-<?= $menu->row_id ?>-<?= $rol->roleId ?>" class="perm-toggle"
                         name="can_delete[<?= $menu->row_id ?>][<?= $rol->roleId ?>]"
                         value="1" <?= !empty($AccessInfo->can_delete) ? 'checked' : '' ?>>
                     <label for="delete-<?= $menu->row_id ?>-<?= $rol->roleId ?>"></label>
@@ -291,7 +317,7 @@
                 <span>Approve / Reject</span>
                 <div class="toggle-switch">
                     <input type="checkbox"
-                        id="approve-<?= $menu->row_id ?>-<?= $rol->roleId ?>"
+                        id="approve-<?= $menu->row_id ?>-<?= $rol->roleId ?>" class="perm-toggle"
                         name="can_approve[<?= $menu->row_id ?>][<?= $rol->roleId ?>]"
                         value="1" <?= !empty($AccessInfo->can_approve) ? 'checked' : '' ?>>
                     <label for="approve-<?= $menu->row_id ?>-<?= $rol->roleId ?>"></label>
@@ -303,7 +329,7 @@
                 <span>Super Access</span>
                 <div class="toggle-switch">
                     <input type="checkbox"
-                        id="super-<?= $menu->row_id ?>-<?= $rol->roleId ?>"
+                        id="super-<?= $menu->row_id ?>-<?= $rol->roleId ?>" class="perm-toggle"
                         name="super_access[<?= $menu->row_id ?>][<?= $rol->roleId ?>]"
                         value="1" <?= !empty($AccessInfo->super_access) ? 'checked' : '' ?>>
                     <label for="super-<?= $menu->row_id ?>-<?= $rol->roleId ?>"></label>
@@ -314,7 +340,7 @@
                 <span>Dashboard</span>
                 <div class="toggle-switch">
                     <input type="checkbox"
-                        id="dashboard-<?= $menu->row_id ?>-<?= $rol->roleId ?>"
+                        id="dashboard-<?= $menu->row_id ?>-<?= $rol->roleId ?>" class="perm-toggle"
                         name="dashboard[<?= $menu->row_id ?>][<?= $rol->roleId ?>]"
                         value="1" <?= !empty($AccessInfo->dashboard) ? 'checked' : '' ?>>
                     <label for="dashboard-<?= $menu->row_id ?>-<?= $rol->roleId ?>"></label>
@@ -325,7 +351,7 @@
                 <span>Report</span>
                 <div class="toggle-switch">
                     <input type="checkbox"
-                        id="report-<?= $menu->row_id ?>-<?= $rol->roleId ?>"
+                        id="report-<?= $menu->row_id ?>-<?= $rol->roleId ?>" class="perm-toggle"
                         name="report[<?= $menu->row_id ?>][<?= $rol->roleId ?>]"
                         value="1" <?= !empty($AccessInfo->report) ? 'checked' : '' ?>>
                     <label for="report-<?= $menu->row_id ?>-<?= $rol->roleId ?>"></label>
@@ -400,6 +426,45 @@ jQuery(document).ready(function() {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+
+    // ── Helper: sync a single card's master toggle ──
+    function syncMaster(card) {
+        var master = card.querySelector('.all-toggle-master');
+        var perms  = card.querySelectorAll('.perm-toggle');
+        if (!master || perms.length === 0) return;
+        master.checked = Array.from(perms).every(function(c) { return c.checked; });
+    }
+
+    // ── Helper: sync ALL cards' master toggles ──
+    function syncAllMasters() {
+        document.querySelectorAll('.permission-card').forEach(function(card) {
+            syncMaster(card);
+        });
+    }
+
+    // ── Per-card All toggle logic ──
+    document.querySelectorAll('.permission-card').forEach(function(card) {
+        var master = card.querySelector('.all-toggle-master');
+        var perms  = card.querySelectorAll('.perm-toggle');
+        if (!master) return;
+
+        // Master → check/uncheck all in this card
+        master.addEventListener('change', function() {
+            perms.forEach(function(cb) { cb.checked = master.checked; });
+        });
+
+        // Individual toggle → sync master
+        perms.forEach(function(cb) {
+            cb.addEventListener('change', function() {
+                syncMaster(card);
+            });
+        });
+
+        // ✅ On page load — reflect saved DB values
+        syncMaster(card);
+    });
+
+    // ── Global bulk buttons — sync masters after each action ──
     document.querySelector('.grant-all').onclick = function() {
         document.querySelectorAll('.permission-card input[type="checkbox"]').forEach(cb => cb.checked = true);
     };
@@ -408,45 +473,60 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     document.querySelector('.enable-read').onclick = function() {
         document.querySelectorAll('.permission-card input[id^="view-"]').forEach(cb => cb.checked = true);
+        syncAllMasters();
     };
     document.querySelector('.disable-read').onclick = function() {
         document.querySelectorAll('.permission-card input[id^="view-"]').forEach(cb => cb.checked = false);
+        syncAllMasters();
     };
     document.querySelector('.enable-add').onclick = function() {
         document.querySelectorAll('.permission-card input[id^="add-"]').forEach(cb => cb.checked = true);
+        syncAllMasters();
     };
     document.querySelector('.disable-add').onclick = function() {
         document.querySelectorAll('.permission-card input[id^="add-"]').forEach(cb => cb.checked = false);
+        syncAllMasters();
     };
     document.querySelector('.enable-edit').onclick = function() {
         document.querySelectorAll('.permission-card input[id^="edit-"]').forEach(cb => cb.checked = true);
+        syncAllMasters();
     };
     document.querySelector('.disable-edit').onclick = function() {
         document.querySelectorAll('.permission-card input[id^="edit-"]').forEach(cb => cb.checked = false);
+        syncAllMasters();
     };
     document.querySelector('.enable-delete').onclick = function() {
         document.querySelectorAll('.permission-card input[id^="delete-"]').forEach(cb => cb.checked = true);
+        syncAllMasters();
     };
     document.querySelector('.disable-delete').onclick = function() {
         document.querySelectorAll('.permission-card input[id^="delete-"]').forEach(cb => cb.checked = false);
+        syncAllMasters();
     };
     document.querySelector('.enable-approve').onclick = function() {
-        document.querySelectorAll('.permission-card input[id^="super-"]').forEach(cb => cb.checked = true);
+        document.querySelectorAll('.permission-card input[id^="approve-"]').forEach(cb => cb.checked = true);
+        syncAllMasters();
     };
     document.querySelector('.disable-approve').onclick = function() {
-        document.querySelectorAll('.permission-card input[id^="super-"]').forEach(cb => cb.checked = false);
+        document.querySelectorAll('.permission-card input[id^="approve-"]').forEach(cb => cb.checked = false);
+        syncAllMasters();
     };
     document.querySelector('.enable-dashboard').onclick = function() {
         document.querySelectorAll('.permission-card input[id^="dashboard-"]').forEach(cb => cb.checked = true);
+        syncAllMasters();
     };
     document.querySelector('.disable-dashboard').onclick = function() {
         document.querySelectorAll('.permission-card input[id^="dashboard-"]').forEach(cb => cb.checked = false);
+        syncAllMasters();
     };
     document.querySelector('.enable-report').onclick = function() {
         document.querySelectorAll('.permission-card input[id^="report-"]').forEach(cb => cb.checked = true);
+        syncAllMasters();
     };
     document.querySelector('.disable-report').onclick = function() {
         document.querySelectorAll('.permission-card input[id^="report-"]').forEach(cb => cb.checked = false);
+        syncAllMasters();
     };
+
 });
 </script>
