@@ -1345,7 +1345,7 @@ class Students extends BaseController
             $html = $this->load->view('students/student_excel_report_view', $data, true);
             setcookie('isDownLoaded',1);
             // Output as PDF using mPDF
-            $mpdf = new \Mpdf\Mpdf(['tempDir' => sys_get_temp_dir().DIRECTORY_SEPARATOR.'mpdf','default_font' => 'serif']);
+            $mpdf = new \Mpdf\Mpdf(['default_font' => 'serif']);
             $mpdf->SetTitle('Student Report Preview');
             $mpdf->WriteHTML($html);
             $mpdf->Output('Student_Report_Preview.pdf', 'I'); // Preview in browser
