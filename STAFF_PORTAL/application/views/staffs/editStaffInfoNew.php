@@ -1163,7 +1163,7 @@ if ($noMatch) {
 
                                                             <td>
 
-                                                                <?php if ($role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_ADMIN || $role == ROLE_OFFICE || $role == ROLE_SUPER_ADMIN) { ?>
+                                                                <?php if ($role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_ADMIN || $role == ROLE_OFFICE || $role == ROLE_SUPER_ADMIN || $this->staff_id =='MILP1004') { ?>
 
                                                                     <a class="btn btn-xs btn-danger deleteStaffSubject" href="#" data-row_id="<?php echo $staff->row_id; ?>" title="Delete Subject"><i class="fa fa-trash"></i></a>
 
@@ -1245,7 +1245,7 @@ if ($noMatch) {
 
                                                             <td>
 
-                                                                <?php if ($role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_ADMIN || $role == ROLE_OFFICE || $role == ROLE_SUPER_ADMIN) { ?>
+                                                                <?php if ($role == ROLE_PRIMARY_ADMINISTRATOR || $role == ROLE_ADMIN || $role == ROLE_OFFICE || $role == ROLE_SUPER_ADMIN || $this->staff_id == 'MILP1004') { ?>
 
                                                                     <a class="btn btn-xs btn-danger deleteStaffSection" href="#" data-row_id="<?php echo $staff->row_id; ?>" title="Delete Class"><i class="fa fa-trash"></i></a>
 
